@@ -1,0 +1,33 @@
+Hook:
+If your day disappears into writing, searching, summarizing, and making slides, these 7 AI websites can help you win back serious time.
+
+Main sections:
+1. Intro
+This video covers 7 AI websites that are practical for students, creators, and freelancers. The goal is not to automate your brain. The goal is to cut repetitive work and move faster.
+
+2. ChatGPT
+Use ChatGPT for idea generation, first drafts, rewrite help, study plans, and outlining. It is best when you give it a clear task and enough context.
+
+3. Perplexity
+Use Perplexity when you want quick research with linked sources. It is especially useful when you are trying to understand a topic quickly and need a starting point.
+
+4. Grammarly
+Use Grammarly to clean up writing across emails, assignments, and applications. Faster editing means less time fixing basic errors.
+
+5. Canva
+Canva helps with graphics, documents, and simple visual content. Its AI writing and design features can speed up the blank-page stage significantly.
+
+6. Gamma
+Gamma is useful when you need presentations fast. You give it an outline or topic and it helps you build a working first version quickly.
+
+7. Notion AI or similar workspace AI
+If you organize work in notes and docs, workspace AI tools can summarize meeting notes, extract tasks, and help you clean up rough drafts.
+
+8. Image generation tool for quick visuals
+For creators, an AI image tool can help produce concept art, thumbnails, or background visuals faster. You still need judgment, but it reduces asset-creation time.
+
+9. Recap
+The best setup is not using all 7 every day. Pick one for writing, one for research, and one for visuals. That is usually enough to save a lot of time without overcomplicating your workflow.
+
+CTA:
+If you want more AI tools that are actually useful, subscribe for the next video.

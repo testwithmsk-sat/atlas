@@ -1,0 +1,8 @@
+Hook:
+If revision feels slow, use AI to turn your notes into flashcards in minutes.
+
+Core point:
+Paste your notes into ChatGPT and ask: turn this into flashcards with one question on the front and one short answer on the back. Then ask for 10 quick revision questions. It is a simple way to study faster from notes you already have.
+
+CTA:
+Follow for more AI study shortcuts.

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Wedding signs bundle cover">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#efe2cf"/>
+      <stop offset="100%" stop-color="#c9ad87"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect x="110" y="120" width="580" height="720" rx="24" fill="#fffaf2" stroke="#b88b2d" stroke-width="6"/>
+  <text x="160" y="240" fill="#9c7b34" font-size="28" font-family="Arial, sans-serif" letter-spacing="8">EVENT SIGNAGE</text>
+  <text x="160" y="355" fill="#1c1813" font-size="68" font-family="Georgia, serif">Wedding Signs</text>
+  <text x="160" y="435" fill="#1c1813" font-size="68" font-family="Georgia, serif">Bundle</text>
+  <rect x="185" y="520" width="440" height="190" rx="16" fill="#eddcbf" stroke="#c7a547" stroke-width="4"/>
+  <text x="290" y="625" fill="#7f6424" font-size="38" font-family="Georgia, serif">WELCOME</text>
+  <text x="160" y="810" fill="#7d6a43" font-size="26" font-family="Arial, sans-serif">Reception, ceremony, and directional signs</text>
+</svg>

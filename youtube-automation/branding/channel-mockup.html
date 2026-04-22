@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Made Simple - Channel Mockup</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111827;
+      --panel-2: #182235;
+      --text: #f8fafc;
+      --muted: #a7b3c7;
+      --accent: #22c55e;
+      --line: #253247;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top right, rgba(34,197,94,.18), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(20,184,166,.14), transparent 22%),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .page {
+      width: min(1240px, calc(100% - 32px));
+      margin: 24px auto 48px;
+    }
+
+    .banner {
+      background: linear-gradient(135deg, #111827, #0f172a);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,.35);
+    }
+
+    .banner img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .identity {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin: 22px 6px 28px;
+    }
+
+    .identity img {
+      width: 112px;
+      height: 112px;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+    }
+
+    .meta h1 {
+      margin: 0 0 8px;
+      font-size: 40px;
+    }
+
+    .meta p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, .9);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .thumb {
+      aspect-ratio: 16 / 9;
+      background:
+        linear-gradient(140deg, rgba(34,197,94,.95), rgba(20,184,166,.75)),
+        #1b2a41;
+      position: relative;
+      padding: 22px;
+    }
+
+    .thumb span {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, .85);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .thumb h3 {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 20px;
+      margin: 0;
+      color: #04111d;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .body {
+      padding: 16px 16px 20px;
+    }
+
+    .body h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .meta h1 { font-size: 30px; }
+      .meta p { font-size: 16px; }
+      .identity { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="banner">
+      <img src="./channel-banner.svg" alt="AI Made Simple banner" />
+    </div>
+
+    <section class="identity">
+      <img src="./channel-profile.svg" alt="AI Made Simple profile" />
+      <div class="meta">
+        <h1>AI Made Simple</h1>
+        <p>Faceless AI tools, prompts, and productivity shortcuts for students, creators, and freelancers in India.</p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="thumb">
+          <span>FEATURED VIDEO</span>
+          <h3>5 FREE AI TOOLS</h3>
+        </div>
+        <div class="body">
+          <h4>5 Free AI Tools for Students That Save Hours Every Week</h4>
+          <p>Beginner-friendly tools for research, writing, presentations, and faster study workflows.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="thumb">
+          <span>POPULAR SHORT</span>
+          <h3>FASTER NOTES</h3>
+        </div>
+        <div class="body">
+          <h4>Use This Free AI Tool for Faster Notes</h4>
+          <p>A quick Short format built for fast discovery, strong hooks, and repeatable production.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="thumb">
+          <span>UP NEXT</span>
+          <h3>AI FOR JOBS</h3>
+        </div>
+        <div class="body">
+          <h4>Best AI Tools for Resume Building and Better Job Applications</h4>
+          <p>Practical tools that help improve resume bullets, writing clarity, and layout speed.</p>
+        </div>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

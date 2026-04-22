@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Bridal shower games bundle cover">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f7e9df"/>
+      <stop offset="100%" stop-color="#d5b19f"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect x="95" y="120" width="610" height="760" rx="30" fill="#fff8f4" stroke="#b68658" stroke-width="6"/>
+  <text x="125" y="230" fill="#a26c4d" font-size="28" font-family="Arial, sans-serif" letter-spacing="8">CELEBRATION PACK</text>
+  <text x="125" y="340" fill="#241813" font-size="68" font-family="Georgia, serif">Bridal Shower</text>
+  <text x="125" y="420" fill="#241813" font-size="68" font-family="Georgia, serif">Games Bundle</text>
+  <circle cx="220" cy="610" r="70" fill="#f1dbc7"/>
+  <circle cx="400" cy="610" r="70" fill="#ead2c0"/>
+  <circle cx="580" cy="610" r="70" fill="#e1c0aa"/>
+  <text x="125" y="820" fill="#7d5f52" font-size="26" font-family="Arial, sans-serif">Party-ready printable games and host extras</text>
+</svg>

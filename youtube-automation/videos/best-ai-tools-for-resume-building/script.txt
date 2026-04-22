@@ -1,0 +1,27 @@
+Hook:
+If your resume still sounds flat and generic, these AI tools can help you write stronger bullets, improve wording, and build a cleaner first draft much faster.
+
+Main sections:
+1. Intro
+This video is for students, freshers, and job seekers who need a resume but do not know where to start. AI will not replace your actual experience, but it can help you present that experience much better.
+
+2. ChatGPT for bullet rewriting
+Start with ChatGPT. Paste your current resume bullet and ask it to rewrite the line using stronger action verbs, measurable impact, and a cleaner structure. For example, instead of saying worked on college event management, ask it to create 5 resume bullet versions based on planning, coordination, and team work. This is one of the fastest ways to improve weak wording.
+
+3. Grammarly for polishing
+Next is Grammarly. After you draft your resume, run it through Grammarly to fix grammar, phrasing, and clarity issues. A resume should feel tight and professional. Even a small wording mistake can make it feel rushed. Grammarly is useful for final cleanup, especially if English writing is not your strongest area.
+
+4. Canva for layout
+The third tool is Canva. It gives you cleaner resume layouts and fast editing without needing design skills. This matters because a resume is not only about words. It also needs to look readable and organized. Pick a simple format and avoid overdesigned templates.
+
+5. AI plus job description matching
+Here is a practical workflow. Copy the job description, then ask ChatGPT to identify the top skills and keywords. Now compare those to your resume. This helps you tailor your resume for each role instead of sending the same version everywhere.
+
+6. Common mistake warning
+Do not ask AI to invent fake achievements or skills. Use it to improve wording, structure, and relevance. Fake claims can backfire in interviews very quickly.
+
+7. Recap
+Use ChatGPT to strengthen bullets, Grammarly to polish the writing, and Canva to keep the resume clean. Then tailor each version based on the actual job description.
+
+CTA:
+If you want more beginner-friendly AI tools for jobs, freelancing, and study, subscribe for the next video.

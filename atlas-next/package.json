@@ -1,0 +1,21 @@
+{
+  "name": "atlas-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prepare:downloads": "powershell -ExecutionPolicy Bypass -File ./scripts/prepare-download-packages.ps1",
+    "sync:downloads": "node ./scripts/sync-downloads.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.104.0",
+    "next": "^16.2.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "stripe": "^22.0.2"
+  }
+}

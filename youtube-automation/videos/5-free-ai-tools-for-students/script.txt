@@ -1,0 +1,27 @@
+Hook:
+If you are still doing notes, summaries, slides, and rewriting by hand, you are wasting hours every week. Here are 5 AI tools students can start using right now to save time and study smarter.
+
+Main sections:
+1. Intro
+Today I am covering 5 beginner-friendly AI tools for students. These are useful for research, writing, presentations, and revision. You do not need advanced skills, and most of them have a free entry point.
+
+2. ChatGPT
+The first tool is ChatGPT. The easiest use case is turning a messy topic into a study plan. You can paste a chapter name and ask it to explain the topic in simple English, create a revision schedule, or generate quiz questions. The trick is to be specific. Instead of asking for help with biology, ask for a 7-day revision plan for photosynthesis with daily tasks and memory questions. It is also useful for simplifying difficult paragraphs before an exam.
+
+3. Perplexity
+The second tool is Perplexity. This is useful when you want fast answers with linked sources. If you are researching a topic and do not want random copied notes, this can help you understand the topic and see where the information came from. Use it for background reading, project research, and quick comparisons. Still verify important facts, but it saves time finding a starting point.
+
+4. Grammarly
+The third tool is Grammarly. This is a great student tool if you write assignments, emails, or scholarship applications. It helps make your writing clearer and more polished. Even if your English is decent, Grammarly can help fix awkward phrasing, grammar mistakes, and tone issues. That matters when your writing needs to sound clean and confident.
+
+5. Canva
+The fourth tool is Canva. Most students know Canva for posters, but its AI features also help with writing and design speed. You can draft text, create clean visual layouts, and build class presentations faster. If you are someone who spends too much time making slides look good, Canva can save you a lot of effort.
+
+6. Gamma
+The fifth tool is Gamma. This is one of the easiest ways to turn an idea or rough outline into a presentation. If you need a deck for a college topic, seminar, or project, Gamma can generate a structured first version quickly. You still need to improve and personalize it, but it cuts the time needed to start from zero.
+
+7. Recap
+If you only try one tool today, start with the one that solves your biggest bottleneck. Use ChatGPT for planning, Perplexity for research, Grammarly for writing, Canva for visuals, and Gamma for presentations. Do not use AI to avoid thinking. Use it to save time and improve your work.
+
+CTA:
+If you want more simple AI tools like this, subscribe and check the next video.

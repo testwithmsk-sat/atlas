@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Budget wedding planner bundle cover">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f1e7d6"/>
+      <stop offset="100%" stop-color="#cdb89d"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect x="90" y="110" width="620" height="780" rx="30" fill="#faf7f2" stroke="#b9984b" stroke-width="6"/>
+  <text x="120" y="230" fill="#927534" font-size="28" font-family="Arial, sans-serif" letter-spacing="8">PLANNING SYSTEM</text>
+  <text x="120" y="340" fill="#221d18" font-size="66" font-family="Georgia, serif">Budget Wedding</text>
+  <text x="120" y="420" fill="#221d18" font-size="66" font-family="Georgia, serif">Planner Bundle</text>
+  <line x1="120" y1="500" x2="610" y2="500" stroke="#ccb081" stroke-width="6"/>
+  <line x1="120" y1="570" x2="610" y2="570" stroke="#d5bea0" stroke-width="4"/>
+  <line x1="120" y1="640" x2="610" y2="640" stroke="#d5bea0" stroke-width="4"/>
+  <line x1="120" y1="710" x2="610" y2="710" stroke="#d5bea0" stroke-width="4"/>
+  <text x="120" y="825" fill="#7d6a43" font-size="26" font-family="Arial, sans-serif">Checklists, budget tracking, and planning pages</text>
+</svg>

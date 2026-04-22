@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="2560" height="1440" fill="url(#bg)"/>
+  <circle cx="2150" cy="280" r="220" fill="#1f2937"/>
+  <circle cx="280" cy="1180" r="280" fill="#1f2937"/>
+  <rect x="250" y="340" width="2060" height="760" rx="64" fill="#0b1220" stroke="#243041" stroke-width="8"/>
+  <rect x="360" y="470" width="220" height="220" rx="52" fill="url(#panel)"/>
+  <text x="470" y="608" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="116" font-weight="700" fill="#0f172a">AI</text>
+  <text x="670" y="600" font-family="Arial, Helvetica, sans-serif" font-size="160" font-weight="700" fill="#f8fafc">AI MADE SIMPLE</text>
+  <text x="670" y="730" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="400" fill="#cbd5e1">Faceless AI tools, prompts, and productivity shortcuts</text>
+  <text x="670" y="840" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="400" fill="#94a3b8">For students, creators, and freelancers in India</text>
+  <rect x="670" y="910" width="380" height="88" rx="24" fill="#22c55e"/>
+  <text x="860" y="968" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700" fill="#0f172a">NEW VIDEOS EVERY WEEK</text>
+</svg>

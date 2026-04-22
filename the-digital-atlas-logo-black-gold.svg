@@ -1,0 +1,16 @@
+<svg width="1400" height="420" viewBox="0 0 1400 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="420" rx="32" fill="#0C0C0C"/>
+  <circle cx="190" cy="210" r="96" fill="#121212" stroke="#D4AF37" stroke-width="3"/>
+  <circle cx="190" cy="210" r="72" stroke="#F3D57A" stroke-width="2.5" stroke-dasharray="5 9"/>
+  <path d="M190 126C157.6 126 131 162.1 131 210C131 257.9 157.6 294 190 294C222.4 294 249 257.9 249 210C249 162.1 222.4 126 190 126Z" stroke="#D4AF37" stroke-width="4"/>
+  <path d="M190 126V294" stroke="#D4AF37" stroke-width="4"/>
+  <path d="M141 176C157 184 173.3 188 190 188C206.7 188 223 184 239 176" stroke="#D4AF37" stroke-width="4" stroke-linecap="round"/>
+  <path d="M141 244C157 236 173.3 232 190 232C206.7 232 223 236 239 244" stroke="#D4AF37" stroke-width="4" stroke-linecap="round"/>
+  <path d="M108 210H272" stroke="#D4AF37" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="190" cy="210" r="14" fill="#F3D57A"/>
+  <path d="M190 156L198.9 183.1H227.4L204.2 199.9L213.1 227L190 210.2L166.9 227L175.8 199.9L152.6 183.1H181.1L190 156Z" fill="#0C0C0C"/>
+  <text x="338" y="185" fill="#F5E7B2" font-family="Georgia, 'Times New Roman', serif" font-size="70" letter-spacing="1.8">THE DIGITAL</text>
+  <text x="338" y="268" fill="#D4AF37" font-family="Georgia, 'Times New Roman', serif" font-size="88" font-weight="700" letter-spacing="2.4">ATLAS</text>
+  <line x1="340" y1="301" x2="1038" y2="301" stroke="#B8891E" stroke-width="3"/>
+  <text x="340" y="344" fill="#C9B26B" font-family="Verdana, Geneva, sans-serif" font-size="24" letter-spacing="6">DIGITAL PRODUCTS FOR MODERN LIFE</text>
+</svg>

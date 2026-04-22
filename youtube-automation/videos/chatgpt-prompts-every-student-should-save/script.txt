@@ -1,0 +1,30 @@
+Hook:
+Most students use ChatGPT badly. If you ask better questions, you get much better results. Here are prompts every student should save.
+
+Main sections:
+1. Intro
+This video is not about using AI to cheat. It is about using better prompts to learn faster, organize work, and save time.
+
+2. Prompt for study plans
+Use this prompt: I am studying [topic] for an exam in [number] days. Make a realistic revision plan with daily tasks, key concepts, and self-test questions. This turns a vague goal into a clear plan.
+
+3. Prompt for simplification
+Use this prompt: Explain [topic] in simple English like I am a beginner. Then give me 3 examples and 5 quiz questions. This is useful for difficult subjects and confusing chapters.
+
+4. Prompt for note summaries
+Use this prompt: Summarize these notes into 5 bullet points, then create flashcards and 10 quick revision questions. This helps when your notes are too long or messy.
+
+5. Prompt for assignments
+Use this prompt: Help me outline an assignment on [topic]. Give me an introduction idea, 3 main sections, and a conclusion suggestion. This is useful when you do not know how to begin.
+
+6. Prompt for presentations
+Use this prompt: Turn this topic into a 7-slide presentation outline with one key point per slide and simple speaker notes. This helps you start faster and stay organized.
+
+7. Prompt for homework planning
+Use this prompt: I have these tasks, deadlines, and this much time today. Make a realistic schedule in order of priority with short breaks. This works especially well during busy weeks.
+
+8. Recap
+Good prompts give context, a specific goal, and the format you want back. That is the biggest difference between random AI output and something actually useful.
+
+CTA:
+If you want more useful AI prompts and student tools, subscribe for the next video.

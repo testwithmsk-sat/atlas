@@ -1,0 +1,8 @@
+Hook:
+If your class notes are long and messy, this AI tool can help you turn them into quick summaries in minutes.
+
+Core point:
+Use ChatGPT or a similar AI assistant to clean up rough notes and turn them into bullet summaries, flashcards, and revision questions. Paste your notes and say: summarize this into 5 key points, then create 10 quiz questions. This works best when your notes already contain the right information and you want speed, not magic.
+
+CTA:
+Follow for more simple AI tools and student shortcuts.
