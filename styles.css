@@ -1790,6 +1790,12 @@ body.drag-mode [data-sort-item] {
     padding: 12px 14px;
   }
 
+  .topbar.is-menu-open {
+    position: relative;
+    top: 0;
+    z-index: auto;
+  }
+
   .menu-toggle {
     display: inline-flex;
     margin-left: auto;

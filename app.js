@@ -400,6 +400,7 @@ if (toggleButton && nav) {
   toggleButton.addEventListener("click", () => {
     const isOpen = nav.classList.toggle("is-open");
     toggleButton.setAttribute("aria-expanded", String(isOpen));
+    topbar?.classList.toggle("is-menu-open", isOpen);
 
     if (!isOpen) {
       nav.querySelectorAll(".nav-item--dropdown").forEach((item) => {
@@ -426,6 +427,7 @@ if (toggleButton && nav) {
     link.addEventListener("click", () => {
       nav.classList.remove("is-open");
       toggleButton.setAttribute("aria-expanded", "false");
+      topbar?.classList.remove("is-menu-open");
       nav.querySelectorAll(".nav-item--dropdown").forEach((item) => {
         item.classList.remove("is-expanded");
       });
