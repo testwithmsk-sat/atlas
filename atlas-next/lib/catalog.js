@@ -1,10 +1,10 @@
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { fallbackProducts } from "@/lib/products";
 import { categoryDirectory, getCategoryBySlug, starterCatalogPlan } from "@/lib/catalog-taxonomy";
+import { normalizePriceLabel, parseNumericAmount } from "@/lib/currency";
 
 export function parsePriceLabel(label) {
-  const value = Number(String(label || "").replace(/[^0-9.]/g, ""));
-  return Number.isFinite(value) ? value : 0;
+  return parseNumericAmount(label);
 }
 
 function normalizeProduct(row) {
@@ -16,7 +16,7 @@ function normalizeProduct(row) {
     subcategory: row.subcategory || "",
     subcategorySlug: row.subcategory_slug || "",
     badge: row.badge || "Featured",
-    priceLabel: row.price_label,
+    priceLabel: normalizePriceLabel(row.price_label),
     status: row.status || "Digital download",
     productType: row.product_type || "Digital download",
     summary: row.summary,
@@ -71,6 +71,22 @@ export async function getProductsByCategorySlug(categorySlug) {
   return products.filter((product) => product.categorySlug === categorySlug);
 }
 
+export async function getBundleProducts() {
+  const products = await getAllProducts();
+  return products.filter((product) => {
+    if (product.isPurchasable === false) return false;
+    return /(bundle|pack|suite|kit|library)/i.test(`${product.name} ${product.productType}`);
+  });
+}
+
+export async function getBestSellerProducts() {
+  const products = await getAllProducts();
+  return products.filter((product) => {
+    if (product.isPurchasable === false) return false;
+    return /(best seller|favorite|essential|launch ready)/i.test(product.badge || "");
+  });
+}
+
 function createPlaceholderProduct(entry, categorySlug, liveProducts) {
   const category = getCategoryBySlug(categorySlug);
   const subcategory = category?.subcategories.find((item) => item.slug === entry.subcategorySlug) || null;
@@ -92,7 +108,7 @@ function createPlaceholderProduct(entry, categorySlug, liveProducts) {
     productType: entry.productType,
     summary: `${entry.productType} planned for the ${category?.name || "catalog"} collection.`,
     image: fallbackImage,
-    highlights: ["Planned category placeholder", "Not available for checkout yet"],
+    highlights: ["Coming soon in this collection", "Not available for checkout yet"],
     isPurchasable: false,
     isPlaceholder: true
   };

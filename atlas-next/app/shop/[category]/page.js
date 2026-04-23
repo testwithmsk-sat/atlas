@@ -37,8 +37,8 @@ export default async function CategoryPage({ params }) {
         <h1>{category.name}</h1>
         <p>{category.description}</p>
         <div className="category-page-meta">
-          <span>{liveCount} live products</span>
-          <span>{plannedCount} planned placeholders</span>
+          <span>{liveCount} available now</span>
+          <span>{plannedCount} coming soon</span>
         </div>
         <div className="hero-actions">
           <Link className="button button-secondary" href="/shop">
@@ -59,7 +59,7 @@ export default async function CategoryPage({ params }) {
                 <h2>{group.name}</h2>
               </div>
               <p className="subcategory-count">
-                {group.liveCount} live • {group.plannedCount} planned
+                {group.liveCount} available now | {group.plannedCount} coming soon
               </p>
             </div>
 
@@ -71,9 +71,9 @@ export default async function CategoryPage({ params }) {
               </div>
             ) : (
               <article className="info-card empty-state-card">
-                <p className="eyebrow">Coming Next</p>
+                <p className="eyebrow">Coming Soon</p>
                 <h3>No products in this subcategory yet</h3>
-                <p>This section is ready for products when the next items in this collection are added.</p>
+                <p>Check back soon for new products in this collection.</p>
               </article>
             )}
           </section>

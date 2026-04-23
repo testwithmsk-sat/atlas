@@ -14,8 +14,7 @@ export default async function ShopPage() {
         <p className="eyebrow">Catalog</p>
         <h1>Open a category page, then browse products inside that collection.</h1>
         <p>
-          Start with the category directory, then move into a focused collection page where related products stay
-          grouped together instead of appearing in one mixed shop grid.
+          Start with the category directory and open the collection that matches what you want to buy.
         </p>
       </div>
       <section className="catalog-directory">

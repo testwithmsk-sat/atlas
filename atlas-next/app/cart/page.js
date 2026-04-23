@@ -2,21 +2,19 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart-provider";
+import { formatInrAmount } from "@/lib/currency";
 
 export default function CartPage() {
   const { items, hydrated, subtotal, updateQuantity, removeItem, clearCart } = useCart();
 
-  const totalLabel = `$${subtotal.toFixed(2)}`;
+  const totalLabel = formatInrAmount(subtotal);
 
   return (
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Cart</p>
-        <h1>Cart foundation for the future in-site purchase flow.</h1>
-        <p>
-          This is the starter route where real add-to-cart state, discount codes, shipping-free digital checkout,
-          and payment summary logic will live next.
-        </p>
+        <h1>Review your items before checkout.</h1>
+        <p>Update quantities, remove products, and confirm your order total before you continue to payment.</p>
       </div>
 
       <div className="cart-layout">
@@ -25,7 +23,7 @@ export default function CartPage() {
           {hydrated && items.length === 0 ? (
             <article className="info-card">
               <h2>Your cart is empty.</h2>
-              <p>Start with the shop page, then add products here to continue toward native checkout.</p>
+              <p>Browse the shop and add the products you want to purchase.</p>
               <Link className="button button-primary" href="/shop">
                 Browse Products
               </Link>
@@ -55,7 +53,7 @@ export default function CartPage() {
                   </button>
                 </div>
               </div>
-              <strong>${(item.priceValue * item.quantity).toFixed(2)}</strong>
+              <strong>{formatInrAmount(item.priceValue * item.quantity)}</strong>
             </article>
           ))}
         </div>
@@ -74,10 +72,10 @@ export default function CartPage() {
             </div>
             <div>
               <span>Delivery</span>
-              <strong>Digital</strong>
+              <strong>Instant digital access</strong>
             </div>
           </div>
-          <p>Next step: connect this summary to Stripe, order creation, and download delivery after payment.</p>
+          <p>Your subtotal updates automatically as you edit the cart.</p>
           <div className="summary-actions">
             <Link className="button button-primary" href="/checkout">
               Continue To Checkout

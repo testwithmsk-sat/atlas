@@ -15,7 +15,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
       <article className="info-card">
         <p className="eyebrow">Signed In</p>
         <h3>{email}</h3>
-        <p>Your future downloads, orders, and account settings will live here.</p>
+        <p>Your orders, downloads, and account details are available here.</p>
         <form action={signOutFormAction}>
           <button className="button button-primary" type="submit">
             Sign Out
@@ -30,7 +30,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
     <>
       <article className="info-card">
         <p className="eyebrow">Sign In</p>
-        <h3>Customer login starter</h3>
+        <h3>Access your account</h3>
         <form className="auth-form" action={signInFormAction}>
           <label>
             <span>Email</span>
@@ -46,14 +46,14 @@ export function AccountAuthPanel({ email, hasSupabase }) {
         </form>
         <p className="status-note">
           {hasSupabase
-            ? signInState.message || "Connect Supabase auth tables and this flow can go live."
-            : "Add Supabase env keys to enable real sign in."}
+            ? signInState.message || "Sign in to view your orders and purchased downloads."
+            : "Sign in will be available soon."}
         </p>
       </article>
 
       <article className="info-card">
         <p className="eyebrow">Create Account</p>
-        <h3>New buyer setup</h3>
+        <h3>Create your customer account</h3>
         <form className="auth-form" action={signUpFormAction}>
           <label>
             <span>Email</span>
@@ -69,8 +69,8 @@ export function AccountAuthPanel({ email, hasSupabase }) {
         </form>
         <p className="status-note">
           {hasSupabase
-            ? signUpState.message || "New customers will use this route for purchases and downloads."
-            : "Account creation is waiting for Supabase setup."}
+            ? signUpState.message || "Create an account to keep track of your purchases."
+            : "Account creation will be available soon."}
         </p>
       </article>
     </>

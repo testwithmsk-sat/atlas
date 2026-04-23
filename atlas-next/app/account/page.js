@@ -1,5 +1,6 @@
 import { AccountAuthPanel } from "@/components/account-auth-panel";
 import { hasSupabaseConfig } from "@/lib/env";
+import { formatInrAmount } from "@/lib/currency";
 import { getDownloadLibrary, getOrdersForCustomer } from "@/lib/orders";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
@@ -20,25 +21,22 @@ export default async function AccountPage({ searchParams }) {
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Account</p>
-        <h1>Customer accounts now have a real auth starter.</h1>
-        <p>
-          This page is now wired for Supabase-ready sign in and sign up, while still staying safe to run before live
-          credentials are added.
-        </p>
+        <h1>Your account for orders and downloads.</h1>
+        <p>Sign in to review your purchases, access available downloads, and manage your customer account.</p>
         {checkoutState === "success" ? (
-          <p className="status-note">Checkout completed. Your order history will appear here after sync.</p>
+          <p className="status-note">Checkout completed. Your order details will appear here after payment sync.</p>
         ) : null}
       </div>
 
       <div className="split-panel">
         <AccountAuthPanel email={email} hasSupabase={hasSupabaseConfig} />
         <article className="info-card">
-          <h3>Recommended backend</h3>
-          <p>Supabase Auth plus product and order tables is still the cleanest next move for this site.</p>
+          <h3>Why create an account</h3>
+          <p>Keeping your purchases tied to one account makes downloads and order history easier to manage.</p>
           <ul className="feature-list">
-            <li>Sign in and account creation are now wired for Supabase.</li>
-            <li>Orders and downloads can attach to the authenticated customer next.</li>
-            <li>Use <code>.env.example</code> and <code>supabase-schema.sql</code> to continue setup.</li>
+            <li>Review past orders in one place.</li>
+            <li>Access available download links faster.</li>
+            <li>Use one email address consistently when you buy.</li>
           </ul>
         </article>
       </div>
@@ -56,7 +54,7 @@ export default async function AccountPage({ searchParams }) {
                     <p>{order.created_at ? new Date(order.created_at).toLocaleDateString() : "Recent order"}</p>
                   </div>
                   <div>
-                    <strong>${Number(order.amount_total || 0).toFixed(2)}</strong>
+                    <strong>{formatInrAmount(order.amount_total || 0)}</strong>
                     <p>{order.status}</p>
                   </div>
                 </article>
@@ -65,8 +63,8 @@ export default async function AccountPage({ searchParams }) {
           ) : (
             <p className="status-note">
               {email
-                ? "No orders yet. Once Stripe webhook sync is active, purchases will show here."
-                : "Sign in to view future orders."}
+                ? "No orders yet. Your completed purchases will appear here."
+                : "Sign in to view your orders."}
             </p>
           )}
         </article>
@@ -98,8 +96,8 @@ export default async function AccountPage({ searchParams }) {
           ) : (
             <p className="status-note">
               {email
-                ? "Your paid orders will create private signed download links here automatically."
-                : "Sign in to unlock your future download library."}
+                ? "Available downloads tied to your purchases will appear here."
+                : "Sign in to unlock your download library."}
             </p>
           )}
         </article>

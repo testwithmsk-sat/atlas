@@ -2,14 +2,15 @@
 
 import { CheckoutButton } from "@/components/checkout-button";
 import { useCart } from "@/components/cart-provider";
+import { formatInrAmount } from "@/lib/currency";
 
 export function CheckoutSummary() {
   const { itemCount, subtotal } = useCart();
 
   return (
     <article className="summary-card">
-      <p className="eyebrow">Recommended stack</p>
-      <h2>Next.js + Razorpay + Supabase</h2>
+      <p className="eyebrow">Order Summary</p>
+      <h2>Checkout total</h2>
       <div className="summary-lines">
         <div>
           <span>Items in cart</span>
@@ -17,10 +18,10 @@ export function CheckoutSummary() {
         </div>
         <div>
           <span>Current subtotal</span>
-          <strong>${subtotal.toFixed(2)}</strong>
+          <strong>{formatInrAmount(subtotal)}</strong>
         </div>
       </div>
-      <p>This structure is now prepared for Razorpay order creation, payment verification, and download delivery.</p>
+      <p>Complete your payment securely with Razorpay to confirm this order.</p>
       <CheckoutButton />
     </article>
   );

@@ -1,3 +1,5 @@
+import { normalizePriceLabel } from "@/lib/currency";
+
 const categoryImages = {
   wedding: "/products/wedding-invitation-template-bundle.svg",
   "events-parties": "/products/bridal-shower-games-bundle.svg",
@@ -33,7 +35,7 @@ function createProduct({
     subcategory,
     subcategorySlug,
     badge,
-    priceLabel,
+    priceLabel: normalizePriceLabel(priceLabel),
     status: status || (isPurchasable ? "Digital download" : "Coming soon"),
     productType,
     summary,
@@ -137,9 +139,9 @@ const pdfImportedProducts = [
       image,
       summary,
       highlights: [
-        "Imported from your PDF product collection",
-        "Added to the website catalog as a separate item",
-        "Ready for final pricing and live-download setup later"
+        "Part of the growing Digital Atlas collection",
+        "Designed for printable or digital delivery",
+        "Ready to feature in its category collection"
       ]
     });
   })
@@ -162,7 +164,7 @@ export const fallbackProducts = [
     highlights: [
       "Ready-to-style invitation bundle",
       "Designed for modern printable delivery",
-      "Ideal for a future in-site digital checkout flow"
+      "A polished choice for elegant wedding stationery"
     ]
   }),
   createProduct({
@@ -180,8 +182,8 @@ export const fallbackProducts = [
     summary: "A wedding planning and budget system designed to help customers organize details and spending clearly.",
     highlights: [
       "Budget tracking and planning pages",
-      "Strong candidate for account-based download delivery",
-      "Fits future cart and bundle upsell flows"
+      "Easy to use throughout the planning process",
+      "A strong companion to wedding stationery bundles"
     ]
   }),
   createProduct({
@@ -219,7 +221,7 @@ export const fallbackProducts = [
     highlights: [
       "Party-ready printable product",
       "Great for category merchandising",
-      "Good starter item for future bundle logic"
+      "Simple to use for bridal shower hosting"
     ]
   }),
 

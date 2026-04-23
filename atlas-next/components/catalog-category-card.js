@@ -17,9 +17,7 @@ export function CatalogCategoryCard({ category, href, liveCount = 0, plannedCoun
         ))}
       </div>
       <p className="catalog-meta">
-        {hasProducts
-          ? `${liveCount} live ${liveCount === 1 ? "product" : "products"} • ${plannedCount} planned`
-          : "No products planned yet"}
+        {hasProducts ? `${liveCount} available now | ${plannedCount} coming soon` : "New products coming soon"}
       </p>
     </Link>
   );

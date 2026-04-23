@@ -1,15 +1,11 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { parseNumericAmount } from "@/lib/currency";
 
 const CART_STORAGE_KEY = "tda-next-cart";
 
 const CartContext = createContext(null);
-
-const parsePrice = (label) => {
-  const value = Number(label.replace(/[^0-9.]/g, ""));
-  return Number.isFinite(value) ? value : 0;
-};
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
@@ -52,7 +48,7 @@ export function CartProvider({ children }) {
             name: product.name,
             image: product.image,
             priceLabel: product.priceLabel,
-            priceValue: parsePrice(product.priceLabel),
+            priceValue: parseNumericAmount(product.priceLabel),
             status: product.status,
             isPurchasable: product.isPurchasable !== false,
             quantity: 1

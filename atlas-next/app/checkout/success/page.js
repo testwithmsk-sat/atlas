@@ -15,24 +15,23 @@ export default async function CheckoutSuccessPage({ searchParams }) {
         <p className="eyebrow">Order Confirmed</p>
         <h1>Thanks for your purchase.</h1>
         <p>
-          Your Razorpay payment was verified successfully. The next step is syncing the order into your account history
-          and download library.
+          Your payment was received successfully. You can review your account or continue shopping below.
         </p>
       </div>
 
       <div className="split-panel">
         <article className="info-card">
-          <h3>What happens next</h3>
+          <h3>Your order</h3>
           <ul className="feature-list">
-            <li>Your verified Razorpay payment records the order in Supabase.</li>
-            <li>Your purchased products appear in the account download area.</li>
-            <li>Order history can later trigger delivery emails automatically.</li>
+            <li>Your payment reference has been recorded.</li>
+            <li>Your account will show completed purchases when available.</li>
+            <li>You can continue browsing the catalog anytime.</li>
           </ul>
         </article>
         <article className="summary-card">
           <p className="eyebrow">Payment Reference</p>
           <h2>{paymentId || "Pending payment sync"}</h2>
-          <p>{orderId ? `Order ${orderId} was created successfully.` : "If your backend is fully configured, this purchase will show inside your account shortly."}</p>
+          <p>{orderId ? `Order ${orderId} was created successfully.` : "Your order details will appear as soon as the payment sync is complete."}</p>
           <div className="summary-actions">
             <Link className="button button-primary" href="/account">
               Go To Account

@@ -7,8 +7,8 @@ import { categoryDirectory } from "@/lib/catalog-taxonomy";
 const primaryLinks = [
   { href: "/shop", label: "Shop", isDropdown: true },
   { href: "/categories", label: "Categories" },
-  { href: "/shop", label: "Bundles" },
-  { href: "/shop", label: "Best Sellers" },
+  { href: "/bundles", label: "Bundles" },
+  { href: "/best-sellers", label: "Best Sellers" },
   { href: "/account", label: "Account" }
 ];
 

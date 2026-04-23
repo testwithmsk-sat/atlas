@@ -15,8 +15,7 @@ export default async function CategoriesPage() {
         <p className="eyebrow">Categories</p>
         <h1>Browse every collection before opening products.</h1>
         <p>
-          Explore the full category directory and open dedicated shopping pages for wedding products, events, business
-          templates, planners, creative assets, and more.
+          Explore the full category directory and jump into dedicated shopping pages for the products you want.
         </p>
       </div>
 
