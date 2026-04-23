@@ -264,6 +264,14 @@ const syncStoreHeader = () => {
     return `
       <div class="nav-item nav-item--dropdown">
         <a class="nav-link nav-link--dropdown" href="${link.href}" aria-haspopup="true">${link.label}</a>
+        <button
+          class="nav-submenu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-label="Toggle ${link.label} categories"
+        >
+          <span></span>
+        </button>
         <div class="nav-dropdown-menu" aria-label="${link.label} categories">
           ${submenu}
         </div>
@@ -392,12 +400,38 @@ if (toggleButton && nav) {
   toggleButton.addEventListener("click", () => {
     const isOpen = nav.classList.toggle("is-open");
     toggleButton.setAttribute("aria-expanded", String(isOpen));
+
+    if (!isOpen) {
+      nav.querySelectorAll(".nav-item--dropdown").forEach((item) => {
+        item.classList.remove("is-expanded");
+      });
+      nav.querySelectorAll(".nav-submenu-toggle").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+      });
+    }
+  });
+
+  nav.querySelectorAll(".nav-submenu-toggle").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      const dropdownItem = button.closest(".nav-item--dropdown");
+      if (!dropdownItem) return;
+
+      const isExpanded = dropdownItem.classList.toggle("is-expanded");
+      button.setAttribute("aria-expanded", String(isExpanded));
+    });
   });
 
   nav.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       nav.classList.remove("is-open");
       toggleButton.setAttribute("aria-expanded", "false");
+      nav.querySelectorAll(".nav-item--dropdown").forEach((item) => {
+        item.classList.remove("is-expanded");
+      });
+      nav.querySelectorAll(".nav-submenu-toggle").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+      });
     });
   });
 }
