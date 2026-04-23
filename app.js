@@ -245,6 +245,7 @@ const dragState = {
   item: null,
   sourceContainer: null
 };
+let lastScrollY = window.scrollY;
 
 const syncStoreHeader = () => {
   if (!topbar || !nav || !navCta) return;
@@ -295,6 +296,27 @@ const syncStoreHeader = () => {
 };
 
 syncStoreHeader();
+
+const syncTopbarVisibility = () => {
+  if (!topbar) return;
+
+  const currentScrollY = window.scrollY;
+  const menuOpen = topbar.classList.contains("is-menu-open");
+  const isNearTop = currentScrollY <= 24;
+  const isScrollingDown = currentScrollY > lastScrollY;
+  const passedHideThreshold = currentScrollY > 120;
+
+  if (menuOpen || isNearTop || !passedHideThreshold || !isScrollingDown) {
+    topbar.classList.remove("is-hidden");
+  } else {
+    topbar.classList.add("is-hidden");
+  }
+
+  lastScrollY = currentScrollY;
+};
+
+window.addEventListener("scroll", syncTopbarVisibility, { passive: true });
+window.addEventListener("load", syncTopbarVisibility);
 
 const setCatalogFilter = (filter) => {
   const normalizedFilter = filter || "all";
@@ -401,6 +423,7 @@ if (toggleButton && nav) {
     const isOpen = nav.classList.toggle("is-open");
     toggleButton.setAttribute("aria-expanded", String(isOpen));
     topbar?.classList.toggle("is-menu-open", isOpen);
+    topbar?.classList.remove("is-hidden");
 
     if (!isOpen) {
       nav.querySelectorAll(".nav-item--dropdown").forEach((item) => {
@@ -428,6 +451,7 @@ if (toggleButton && nav) {
       nav.classList.remove("is-open");
       toggleButton.setAttribute("aria-expanded", "false");
       topbar?.classList.remove("is-menu-open");
+      topbar?.classList.remove("is-hidden");
       nav.querySelectorAll(".nav-item--dropdown").forEach((item) => {
         item.classList.remove("is-expanded");
       });
