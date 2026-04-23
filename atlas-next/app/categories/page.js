@@ -2,22 +2,24 @@ import { CatalogCategoryCard } from "@/components/catalog-category-card";
 import { getCategoryDirectoryWithCounts } from "@/lib/catalog";
 
 export const metadata = {
-  title: "Shop | The Digital Atlas"
+  title: "Categories | The Digital Atlas",
+  description: "Browse every Digital Atlas category and open a focused category page."
 };
 
-export default async function ShopPage() {
+export default async function CategoriesPage() {
   const categories = await getCategoryDirectoryWithCounts();
 
   return (
     <section className="section-block">
       <div className="page-intro">
-        <p className="eyebrow">Catalog</p>
-        <h1>Open a category page, then browse products inside that collection.</h1>
+        <p className="eyebrow">Categories</p>
+        <h1>Browse every collection before opening products.</h1>
         <p>
-          Start with the category directory, then move into a focused collection page where related products stay
-          grouped together instead of appearing in one mixed shop grid.
+          Explore the full category directory and open dedicated shopping pages for wedding products, events, business
+          templates, planners, creative assets, and more.
         </p>
       </div>
+
       <section className="catalog-directory">
         {categories.map((category) => (
           <CatalogCategoryCard

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
 export function ProductCard({ product }) {
+  const isPlaceholder = product.isPlaceholder === true;
+
   return (
     <article className="product-card">
       <div className="product-card-image">
@@ -13,7 +15,11 @@ export function ProductCard({ product }) {
       <p>{product.summary}</p>
       <div className="card-meta">
         <span>{product.priceLabel}</span>
-        <Link href={`/products/${product.slug}`}>View product</Link>
+        {isPlaceholder ? (
+          <span className="card-link-muted">Preview only</span>
+        ) : (
+          <Link href={`/products/${product.slug}`}>View product</Link>
+        )}
       </div>
       <div className="card-actions">
         <AddToCartButton product={product} className="button button-secondary product-card-button" />

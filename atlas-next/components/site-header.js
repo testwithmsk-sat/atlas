@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart-provider";
+import { categoryDirectory } from "@/lib/catalog-taxonomy";
 
 const primaryLinks = [
-  { href: "/shop", label: "Shop" },
-  { href: "/shop", label: "Categories" },
+  { href: "/shop", label: "Shop", isDropdown: true },
+  { href: "/categories", label: "Categories" },
   { href: "/shop", label: "Bundles" },
   { href: "/shop", label: "Best Sellers" },
   { href: "/account", label: "Account" }
@@ -23,9 +24,24 @@ export function SiteHeader() {
 
       <nav className="primary-nav" aria-label="Primary">
         {primaryLinks.map((link) => (
-          <Link key={`${link.href}-${link.label}`} href={link.href}>
-            {link.label}
-          </Link>
+          link.isDropdown ? (
+            <div className="nav-dropdown" key={link.label}>
+              <Link className="nav-dropdown-trigger" href={link.href} aria-haspopup="true">
+                {link.label}
+              </Link>
+              <div className="nav-dropdown-menu" role="menu" aria-label="Shop categories">
+                {categoryDirectory.map((category) => (
+                  <Link key={category.slug} href={`/shop/${category.slug}`} role="menuitem">
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <Link key={`${link.href}-${link.label}`} href={link.href}>
+              {link.label}
+            </Link>
+          )
         ))}
       </nav>
 
