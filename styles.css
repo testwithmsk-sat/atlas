@@ -1778,7 +1778,7 @@ body.drag-mode [data-sort-item] {
   }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 1024px) {
   .announcement-bar {
     flex-direction: column;
     text-align: center;
