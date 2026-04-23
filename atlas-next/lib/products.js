@@ -719,14 +719,49 @@ export const fallbackProducts = [
   ...pdfImportedProducts
 ];
 
+const hiddenProductSlugs = new Set([
+  "save-the-date-canva-suite",
+  "wedding-timeline-checklist-kit",
+  "table-number-card-set",
+  "bachelorette-weekend-itinerary",
+  "birthday-party-invitation-pack",
+  "baby-shower-games-pack",
+  "party-welcome-sign-template",
+  "client-welcome-guide-template",
+  "service-proposal-template",
+  "lead-magnet-workbook-template",
+  "instagram-launch-template-pack",
+  "sop-template-library",
+  "monthly-budget-spreadsheet",
+  "debt-payoff-tracker",
+  "goal-planner-notion-system",
+  "daily-routine-planner-pack",
+  "family-command-center-kit",
+  "modern-resume-template-pack",
+  "job-application-tracker",
+  "student-study-planner",
+  "teacher-lesson-planner-bundle",
+  "pinterest-pin-template-bundle",
+  "content-calendar-dashboard",
+  "ebook-workbook-template-kit",
+  "wedding-svg-bundle",
+  "brand-mockup-scene-pack",
+  "procreate-brush-starter-kit",
+  "fillable-invoice-pdf",
+  "guided-journal-workbook",
+  "editable-checklist-library"
+]);
+
+const activeFallbackProducts = fallbackProducts.filter((product) => !hiddenProductSlugs.has(product.slug));
+
 export function getAllProducts() {
-  return fallbackProducts;
+  return activeFallbackProducts;
 }
 
 export function getFeaturedProducts() {
-  return fallbackProducts.slice(0, 3);
+  return activeFallbackProducts.slice(0, 3);
 }
 
 export function getProductBySlug(slug) {
-  return fallbackProducts.find((product) => product.slug === slug);
+  return activeFallbackProducts.find((product) => product.slug === slug);
 }

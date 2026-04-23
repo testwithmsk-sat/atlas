@@ -4,6 +4,7 @@ const topbar = document.querySelector(".topbar");
 const navCta = document.querySelector(".nav-cta");
 const filterButtons = document.querySelectorAll(".filter-chip");
 const productCards = document.querySelectorAll(".product-card");
+const productGrid = document.querySelector(".product-grid");
 const demoForms = document.querySelectorAll("[data-demo-form]");
 const demoUser = document.querySelector("[data-demo-user]");
 
@@ -25,9 +26,119 @@ const EDITOR_QUERY_KEY = "editor";
 
 const AI_STATE_KEY = "tda-ai-helper-state";
 const AI_EDITOR_ENABLED_KEY = "tda-ai-helper-enabled";
+const CATEGORY_PAGE_DATA = {
+  wedding: {
+    label: "Wedding",
+    eyebrow: "Wedding Collection",
+    title: "Elegant wedding printables, planners, and celebration details.",
+    description:
+      "Browse the live wedding products from The Digital Atlas in one place, from invitation suites to planning bundles and signage collections.",
+    note: "Live wedding products are grouped here so customers can browse this collection without going back to the full shop.",
+    products: [
+      {
+        badge: "Best Seller",
+        title: "Wedding Invitation Template Bundle",
+        text: "A refined printable invitation suite for couples who want an elegant look without paying for custom stationery design.",
+        meta: "Printable template set",
+        price: "$7.50+"
+      },
+      {
+        badge: "Planning Essential",
+        title: "Budget Wedding Planner Bundle",
+        text: "A practical planner bundle for couples who want a more organized wedding while keeping spending visible and manageable.",
+        meta: "Printable planner bundle",
+        price: "$7.50+"
+      },
+      {
+        badge: "Ceremony Favorite",
+        title: "Wedding Signs Bundle",
+        text: "A coordinated signage set for couples who want their ceremony and reception details to feel intentional and visually cohesive.",
+        meta: "Printable sign collection",
+        price: "$5.99+"
+      }
+    ]
+  },
+  "events-parties": {
+    label: "Events & Parties",
+    eyebrow: "Events & Parties",
+    title: "Party-ready printables and event bundles for polished celebrations.",
+    description:
+      "This category holds live event and celebration products for hosts who want printable bundles that are fast to use and easy to love.",
+    note: "Right now this category has one live product, with room to grow as more celebration bundles are added.",
+    products: [
+      {
+        badge: "Party Favorite",
+        title: "Bridal Shower Games Bundle",
+        text: "A ready-made printable party pack for hosts who want bridal shower activities that feel polished, fun, and easy to run.",
+        meta: "Printable games bundle",
+        price: "$5.70+"
+      }
+    ]
+  },
+  business: {
+    label: "Business",
+    eyebrow: "Business Templates",
+    title: "Business products will live here as the category expands.",
+    description:
+      "Use this page for client-facing templates, operations documents, and polished business downloads when they are ready to launch.",
+    note: "No live business products are published yet."
+  },
+  "planners-productivity": {
+    label: "Planners & Productivity",
+    eyebrow: "Planning Tools",
+    title: "Planner and productivity products will be grouped here.",
+    description:
+      "This category is reserved for organization tools, planning systems, and digital resources that help customers manage everyday life.",
+    note: "No live planner or productivity products are published yet."
+  },
+  "career-education": {
+    label: "Career & Education",
+    eyebrow: "Career & Education",
+    title: "Career and education resources will appear in this category.",
+    description:
+      "Use this space for job-search tools, resume kits, study resources, and education-focused templates when those products are ready.",
+    note: "No live career or education products are published yet."
+  },
+  "social-content": {
+    label: "Social & Content",
+    eyebrow: "Social & Content",
+    title: "Content and creator products will live here.",
+    description:
+      "This category is for social templates, content planning resources, and creator-focused digital products as they are launched.",
+    note: "No live social or content products are published yet."
+  },
+  "creative-assets": {
+    label: "Creative Assets",
+    eyebrow: "Creative Assets",
+    title: "Creative asset packs will appear in this category.",
+    description:
+      "This page is reserved for mockups, graphics, brushes, SVGs, and other asset-based digital products when they are added to the catalog.",
+    note: "No live creative asset products are published yet."
+  },
+  "templates-documents": {
+    label: "Templates & Documents",
+    eyebrow: "Templates & Documents",
+    title: "Document-style templates and editable resources will live here.",
+    description:
+      "Use this page for fillable PDFs, editable checklists, journals, and document bundles as those products are prepared for launch.",
+    note: "No live templates or document products are published yet."
+  }
+};
 const PRIMARY_NAV_LINKS = [
-  { href: "shop.html", label: "Shop" },
-  { href: "category-wedding.html", label: "Categories" },
+  {
+    href: "shop.html",
+    label: "Shop",
+    submenu: [
+      { href: "category.html?category=wedding", label: "Wedding" },
+      { href: "category.html?category=events-parties", label: "Events & Parties" },
+      { href: "category.html?category=business", label: "Business" },
+      { href: "category.html?category=planners-productivity", label: "Planners & Productivity" },
+      { href: "category.html?category=career-education", label: "Career & Education" },
+      { href: "category.html?category=social-content", label: "Social & Content" },
+      { href: "category.html?category=creative-assets", label: "Creative Assets" },
+      { href: "category.html?category=templates-documents", label: "Templates & Documents" }
+    ]
+  },
   { href: "bundles.html", label: "Bundles" },
   { href: "shop.html#shop", label: "Best Sellers" },
   { href: "free-resources.html", label: "Freebies" },
@@ -40,7 +151,7 @@ const NAV_TOOL_LINKS = [
 const EXPORTABLE_PAGES = [
   "index.html",
   "shop.html",
-  "category-wedding.html",
+  "category.html",
   "bundles.html",
   "free-resources.html",
   "about.html",
@@ -139,9 +250,26 @@ const syncStoreHeader = () => {
   if (!topbar || !nav || !navCta) return;
 
   nav.setAttribute("aria-label", "Primary navigation");
-  nav.innerHTML = PRIMARY_NAV_LINKS.map(
-    (link) => `<a href="${link.href}">${link.label}</a>`
-  ).join("");
+  nav.innerHTML = PRIMARY_NAV_LINKS.map((link) => {
+    if (!link.submenu?.length) {
+      return `<a class="nav-link" href="${link.href}">${link.label}</a>`;
+    }
+
+    const submenu = link.submenu
+      .map(
+        (item) => `<a class="nav-dropdown-link" href="${item.href}">${item.label}</a>`
+      )
+      .join("");
+
+    return `
+      <div class="nav-item nav-item--dropdown">
+        <a class="nav-link nav-link--dropdown" href="${link.href}" aria-haspopup="true">${link.label}</a>
+        <div class="nav-dropdown-menu" aria-label="${link.label} categories">
+          ${submenu}
+        </div>
+      </div>
+    `;
+  }).join("");
 
   let navTools = topbar.querySelector(".nav-tools");
   if (!navTools) {
@@ -159,6 +287,104 @@ const syncStoreHeader = () => {
 };
 
 syncStoreHeader();
+
+const setCatalogFilter = (filter) => {
+  const normalizedFilter = filter || "all";
+  let visibleCount = 0;
+
+  filterButtons.forEach((chip) => {
+    const isActive = chip.dataset.filter === normalizedFilter;
+    chip.classList.toggle("is-active", isActive);
+  });
+
+  productCards.forEach((card) => {
+    const categorySlug = card.dataset.categorySlug || card.dataset.category || "";
+    const matches = normalizedFilter === "all" || categorySlug === normalizedFilter;
+    card.dataset.hidden = String(!matches);
+    card.hidden = !matches;
+    if (matches) visibleCount += 1;
+  });
+
+  let emptyState = document.querySelector(".catalog-empty-state");
+  if (pageKey === "shop" && productGrid) {
+    if (visibleCount === 0) {
+      if (!emptyState) {
+        emptyState = document.createElement("p");
+        emptyState.className = "catalog-empty-state";
+        productGrid.appendChild(emptyState);
+      }
+      emptyState.textContent = "No products are live in this category yet.";
+    } else if (emptyState) {
+      emptyState.remove();
+    }
+  }
+};
+
+const applyCatalogFilterFromQuery = () => {
+  const category = urlParams.get("category");
+  if (!category) return;
+  setCatalogFilter(category);
+};
+
+const renderCategoryPage = () => {
+  if (pageKey !== "category") return;
+
+  const category = urlParams.get("category") || "wedding";
+  const categoryData = CATEGORY_PAGE_DATA[category] || CATEGORY_PAGE_DATA.wedding;
+  const eyebrowNode = document.querySelector("[data-category-eyebrow]");
+  const titleNode = document.querySelector("[data-category-title]");
+  const textNode = document.querySelector("[data-category-text]");
+  const noteNode = document.querySelector("[data-category-note]");
+  const breadcrumbNode = document.querySelector("[data-category-breadcrumb]");
+  const productGridNode = document.querySelector("[data-category-products]");
+  const sideListNode = document.querySelector("[data-category-links]");
+
+  if (eyebrowNode) eyebrowNode.textContent = categoryData.eyebrow;
+  if (titleNode) titleNode.textContent = categoryData.title;
+  if (textNode) textNode.textContent = categoryData.description;
+  if (noteNode) noteNode.textContent = categoryData.note || "";
+  if (breadcrumbNode) breadcrumbNode.textContent = categoryData.label;
+
+  if (sideListNode) {
+    sideListNode.innerHTML = Object.entries(CATEGORY_PAGE_DATA)
+      .map(([slug, item]) => `<li><a href="category.html?category=${slug}">${item.label}</a></li>`)
+      .join("");
+  }
+
+  if (!productGridNode) return;
+
+  const products = categoryData.products || [];
+  if (products.length === 0) {
+    productGridNode.innerHTML = `
+      <article class="product-card product-card--empty">
+        <span class="product-tag">Coming Soon</span>
+        <h3>No live products yet</h3>
+        <p>This category page is ready, but products have not been published here yet.</p>
+        <div class="meta-row">
+          <span>Category prepared</span>
+          <strong>Launch later</strong>
+        </div>
+      </article>
+    `;
+    return;
+  }
+
+  productGridNode.innerHTML = products
+    .map(
+      (product) => `
+        <article class="product-card">
+          <span class="product-tag">${product.badge}</span>
+          <h3>${product.title}</h3>
+          <p>${product.text}</p>
+          <div class="meta-row">
+            <span>${product.meta}</span>
+            <strong>${product.price}</strong>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+};
 
 const isEditorMode = () => urlParams.get(EDITOR_QUERY_KEY) === "1" || localStorage.getItem(AI_EDITOR_ENABLED_KEY) === "true";
 
@@ -178,15 +404,7 @@ if (toggleButton && nav) {
 
 filterButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    const filter = button.dataset.filter;
-
-    filterButtons.forEach((chip) => chip.classList.remove("is-active"));
-    button.classList.add("is-active");
-
-    productCards.forEach((card) => {
-      const matches = filter === "all" || card.dataset.category === filter;
-      card.dataset.hidden = String(!matches);
-    });
+    setCatalogFilter(button.dataset.filter);
   });
 });
 
@@ -1049,7 +1267,7 @@ const createSupportReply = (message) => {
     return {
       text: "Wedding products are framed as elegant, editable resources like invitations, signage, planners, and event support downloads.",
       ctas: [
-        { label: "Wedding Category", href: "category-wedding.html" },
+        { label: "Browse Shop", href: supportBotLinks.shop },
         { label: "Shop", href: supportBotLinks.shop }
       ]
     };
@@ -1407,6 +1625,8 @@ const createAiHelper = () => {
 };
 
 applyContentState();
+applyCatalogFilterFromQuery();
+renderCategoryPage();
 setDragHandlers();
 ensureHeadAssets();
 ensureFooterSupport();
