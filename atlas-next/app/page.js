@@ -13,7 +13,7 @@ export default async function HomePage() {
           <h1>Build the full store inside the website, not around it.</h1>
           <p className="hero-text">
             This new app is the migration foundation for a real product catalog, in-site cart, account access,
-            digital delivery, and later Stripe checkout.
+            digital delivery, and Razorpay checkout for Indian payments.
           </p>
           <div className="hero-actions">
             <Link className="button button-primary" href="/shop">
@@ -30,7 +30,7 @@ export default async function HomePage() {
             <li>Products will be managed from data instead of hard-coded HTML pages.</li>
             <li>Cart and checkout will happen inside the site.</li>
             <li>Customer accounts will unlock downloads and order history.</li>
-            <li>Stripe and database wiring can be added on top of this structure.</li>
+            <li>Razorpay and database wiring can be added on top of this structure.</li>
           </ul>
         </div>
       </section>
@@ -65,7 +65,7 @@ export default async function HomePage() {
           <p className="eyebrow">Payments Later</p>
           <h3>In-site checkout roadmap</h3>
           <p>
-            This starter app includes a checkout route now so we can wire Stripe, email confirmations, and digital
+            This starter app includes a checkout route now so we can wire Razorpay, email confirmations, and digital
             download delivery in the next phase without rebuilding again.
           </p>
         </article>

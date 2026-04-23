@@ -68,18 +68,56 @@ export async function getDownloadLibrary(email) {
   return downloads.filter((item) => item.fileUrl);
 }
 
-export async function saveCompletedCheckout({ session, lineItems }) {
+async function grantDownloadsForOrder({ supabase, orderId, customerEmail, status, items }) {
+  await supabase.from("customer_downloads").delete().eq("order_id", orderId);
+
+  if (status !== "paid") {
+    return { ok: true };
+  }
+
+  const productSlugs = [...new Set((items || []).map((item) => item.product_slug).filter(Boolean))];
+
+  if (productSlugs.length > 0 && customerEmail) {
+    const { data: downloadFiles, error: downloadFilesError } = await supabase
+      .from("download_files")
+      .select("id, product_slug")
+      .eq("is_active", true)
+      .in("product_slug", productSlugs);
+
+    if (downloadFilesError) {
+      return { ok: false, reason: "download-file-query-failed", error: downloadFilesError };
+    }
+
+    const downloads = (downloadFiles || []).map((file) => ({
+      order_id: orderId,
+      customer_email: customerEmail,
+      product_slug: file.product_slug,
+      download_file_id: file.id
+    }));
+
+    if (downloads.length > 0) {
+      const { error: downloadInsertError } = await supabase.from("customer_downloads").insert(downloads);
+      if (downloadInsertError) {
+        return { ok: false, reason: "download-grant-insert-failed", error: downloadInsertError };
+      }
+    }
+  }
+
+  return { ok: true };
+}
+
+export async function createPendingCheckoutOrder({ gatewayOrderId, items, amountTotal, currency }) {
   const supabase = getSupabaseAdmin();
   if (!supabase) return { ok: false, reason: "supabase-admin-missing" };
 
   const orderPayload = {
-    stripe_checkout_session_id: session.id,
-    customer_email: session.customer_details?.email || session.customer_email || "",
-    customer_name: session.customer_details?.name || "",
-    amount_total: Number(session.amount_total || 0) / 100,
-    currency: (session.currency || "usd").toUpperCase(),
-    payment_status: session.payment_status || "unpaid",
-    status: session.payment_status === "paid" ? "paid" : "pending"
+    stripe_checkout_session_id: gatewayOrderId,
+    customer_email: "",
+    customer_name: "",
+    amount_total: Number(amountTotal || 0),
+    currency: String(currency || "INR").toUpperCase(),
+    payment_status: "pending",
+    status: "pending"
   };
 
   const { data: orderRow, error: orderError } = await supabase
@@ -94,57 +132,76 @@ export async function saveCompletedCheckout({ session, lineItems }) {
 
   await supabase.from("order_items").delete().eq("order_id", orderRow.id);
 
-  const items = (lineItems || []).map((item) => {
-    const product = item.price?.product;
-    const slug = typeof product === "object" && product?.metadata?.slug ? product.metadata.slug : "";
-    const unitAmount = Number(item.price?.unit_amount || 0) / 100;
-
+  const orderItems = (items || []).map((item) => {
+    const unitAmount = Number(item.unit_amount || 0);
     return {
       order_id: orderRow.id,
-      product_slug: slug,
-      product_name: item.description || "Digital product",
+      product_slug: item.product_slug || "",
+      product_name: item.product_name || "Digital product",
       quantity: item.quantity || 1,
       unit_amount: unitAmount,
       line_total: unitAmount * Number(item.quantity || 1)
     };
   });
 
-  if (items.length > 0) {
-    const { error: itemError } = await supabase.from("order_items").insert(items);
+  if (orderItems.length > 0) {
+    const { error: itemError } = await supabase.from("order_items").insert(orderItems);
     if (itemError) return { ok: false, reason: "order-item-insert-failed", error: itemError };
   }
 
-  await supabase.from("customer_downloads").delete().eq("order_id", orderRow.id);
+  return { ok: true, orderId: orderRow.id };
+}
 
-  if (orderPayload.status === "paid") {
-    const productSlugs = [...new Set(items.map((item) => item.product_slug).filter(Boolean))];
+export async function finalizeCheckoutOrder({
+  gatewayOrderId,
+  customerEmail,
+  customerName,
+  amountTotal,
+  currency,
+  paymentStatus = "paid"
+}) {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return { ok: false, reason: "supabase-admin-missing" };
 
-    if (productSlugs.length > 0 && orderPayload.customer_email) {
-      const { data: downloadFiles, error: downloadFilesError } = await supabase
-        .from("download_files")
-        .select("id, product_slug")
-        .eq("is_active", true)
-        .in("product_slug", productSlugs);
+  const status = paymentStatus === "paid" || paymentStatus === "captured" ? "paid" : "pending";
+  const updatePayload = {
+    customer_email: customerEmail || "",
+    customer_name: customerName || "",
+    amount_total: Number(amountTotal || 0),
+    currency: String(currency || "INR").toUpperCase(),
+    payment_status: paymentStatus,
+    status
+  };
 
-      if (downloadFilesError) {
-        return { ok: false, reason: "download-file-query-failed", error: downloadFilesError };
-      }
+  const { data: orderRow, error: orderError } = await supabase
+    .from("orders")
+    .update(updatePayload)
+    .eq("stripe_checkout_session_id", gatewayOrderId)
+    .select("id")
+    .single();
 
-      const downloads = (downloadFiles || []).map((file) => ({
-        order_id: orderRow.id,
-        customer_email: orderPayload.customer_email,
-        product_slug: file.product_slug,
-        download_file_id: file.id
-      }));
-
-      if (downloads.length > 0) {
-        const { error: downloadInsertError } = await supabase.from("customer_downloads").insert(downloads);
-        if (downloadInsertError) {
-          return { ok: false, reason: "download-grant-insert-failed", error: downloadInsertError };
-        }
-      }
-    }
+  if (orderError || !orderRow) {
+    return { ok: false, reason: "order-update-failed", error: orderError };
   }
+
+  const { data: items, error: itemsError } = await supabase
+    .from("order_items")
+    .select("product_slug, quantity, unit_amount, line_total")
+    .eq("order_id", orderRow.id);
+
+  if (itemsError) {
+    return { ok: false, reason: "order-items-fetch-failed", error: itemsError };
+  }
+
+  const grantResult = await grantDownloadsForOrder({
+    supabase,
+    orderId: orderRow.id,
+    customerEmail: customerEmail || "",
+    status,
+    items: items || []
+  });
+
+  if (!grantResult.ok) return grantResult;
 
   return { ok: true, orderId: orderRow.id };
 }

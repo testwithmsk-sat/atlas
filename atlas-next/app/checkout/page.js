@@ -11,7 +11,7 @@ export default async function CheckoutPage({ searchParams }) {
         <h1>In-site payment flow starts here.</h1>
         <p>
           This page is the placeholder for your future native checkout. The next implementation layer should add
-          Stripe Elements, customer email capture, order creation, and digital file delivery.
+          Razorpay checkout, customer email capture, order creation, and digital file delivery.
         </p>
         {status === "cancelled" ? <p className="status-note">Checkout was cancelled. Your cart is still available.</p> : null}
       </div>
@@ -20,7 +20,7 @@ export default async function CheckoutPage({ searchParams }) {
         <article className="info-card">
           <h3>What gets added next</h3>
           <ul className="feature-list">
-            <li>Stripe checkout form</li>
+            <li>Razorpay checkout modal</li>
             <li>Customer contact details</li>
             <li>Order record creation</li>
             <li>Automatic download access after payment</li>

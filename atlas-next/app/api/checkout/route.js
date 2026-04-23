@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getProductsBySlugs, parsePriceLabel } from "@/lib/catalog";
-import { env, hasStripeConfig } from "@/lib/env";
-import { getStripe } from "@/lib/stripe";
+import { createPendingCheckoutOrder } from "@/lib/orders";
+import { createRazorpayOrder } from "@/lib/razorpay";
+import { env, hasRazorpayConfig } from "@/lib/env";
 
 export async function POST(request) {
   const { items = [] } = await request.json();
@@ -10,16 +11,11 @@ export async function POST(request) {
     return NextResponse.json({ error: "Your cart is empty." }, { status: 400 });
   }
 
-  if (!hasStripeConfig) {
+  if (!hasRazorpayConfig) {
     return NextResponse.json(
-      { error: "Stripe is not configured yet. Add STRIPE_SECRET_KEY to enable real checkout." },
+      { error: "Razorpay is not configured yet. Add Razorpay API keys to enable real checkout." },
       { status: 503 }
     );
-  }
-
-  const stripe = getStripe();
-  if (!stripe) {
-    return NextResponse.json({ error: "Stripe client is unavailable." }, { status: 500 });
   }
 
   const catalogProducts = await getProductsBySlugs(items.map((item) => item.slug));
@@ -33,17 +29,10 @@ export async function POST(request) {
     if (unitAmount <= 0) return null;
 
     return {
+      product_slug: product.slug,
+      product_name: product.name,
       quantity: Math.max(1, Number(item.quantity || 1)),
-      price_data: {
-        currency: "usd",
-        unit_amount: unitAmount,
-        product_data: {
-          name: product.name,
-          metadata: {
-            slug: product.slug || ""
-          }
-        }
-      }
+      unit_amount: unitAmount / 100
     };
   });
 
@@ -52,14 +41,37 @@ export async function POST(request) {
     return NextResponse.json({ error: "No valid products were found for checkout." }, { status: 400 });
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    customer_creation: "always",
-    success_url: `${env.siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${env.siteUrl}/checkout?status=cancelled`,
-    allow_promotion_codes: true,
-    line_items: validLineItems
+  const amount = validLineItems.reduce(
+    (sum, item) => sum + Math.round(Number(item.unit_amount || 0) * 100) * Number(item.quantity || 1),
+    0
+  );
+
+  const receipt = `atlas_${Date.now()}`;
+  const razorpayOrder = await createRazorpayOrder({
+    amount,
+    receipt,
+    notes: {
+      source: "the-digital-atlas"
+    }
   });
 
-  return NextResponse.json({ url: session.url });
+  const pendingOrder = await createPendingCheckoutOrder({
+    gatewayOrderId: razorpayOrder.id,
+    items: validLineItems,
+    amountTotal: amount / 100,
+    currency: env.razorpayCurrency
+  });
+
+  if (!pendingOrder.ok) {
+    return NextResponse.json({ error: "Unable to prepare your order for checkout." }, { status: 500 });
+  }
+
+  return NextResponse.json({
+    key: env.razorpayKeyId,
+    orderId: razorpayOrder.id,
+    amount: razorpayOrder.amount,
+    currency: razorpayOrder.currency,
+    name: "The Digital Atlas",
+    description: "Digital product order"
+  });
 }

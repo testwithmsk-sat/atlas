@@ -9,7 +9,7 @@ export function CheckoutSummary() {
   return (
     <article className="summary-card">
       <p className="eyebrow">Recommended stack</p>
-      <h2>Next.js + Stripe + Supabase</h2>
+      <h2>Next.js + Razorpay + Supabase</h2>
       <div className="summary-lines">
         <div>
           <span>Items in cart</span>
@@ -20,7 +20,7 @@ export function CheckoutSummary() {
           <strong>${subtotal.toFixed(2)}</strong>
         </div>
       </div>
-      <p>This structure is already prepared for that full upgrade path.</p>
+      <p>This structure is now prepared for Razorpay order creation, payment verification, and download delivery.</p>
       <CheckoutButton />
     </article>
   );
