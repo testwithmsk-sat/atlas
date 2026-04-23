@@ -1,6 +1,6 @@
 import { AccountAuthPanel } from "@/components/account-auth-panel";
 import { hasSupabaseConfig } from "@/lib/env";
-import { formatInrAmount } from "@/lib/currency";
+import { formatUsdAmount } from "@/lib/currency";
 import { getDownloadLibrary, getOrdersForCustomer } from "@/lib/orders";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
@@ -54,7 +54,7 @@ export default async function AccountPage({ searchParams }) {
                     <p>{order.created_at ? new Date(order.created_at).toLocaleDateString() : "Recent order"}</p>
                   </div>
                   <div>
-                    <strong>{formatInrAmount(order.amount_total || 0)}</strong>
+                    <strong>{formatUsdAmount(order.amount_total || 0)}</strong>
                     <p>{order.status}</p>
                   </div>
                 </article>

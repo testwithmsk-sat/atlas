@@ -2,7 +2,7 @@
 
 import { CheckoutButton } from "@/components/checkout-button";
 import { useCart } from "@/components/cart-provider";
-import { formatInrAmount } from "@/lib/currency";
+import { formatUsdAmount } from "@/lib/currency";
 
 export function CheckoutSummary() {
   const { itemCount, subtotal } = useCart();
@@ -18,7 +18,7 @@ export function CheckoutSummary() {
         </div>
         <div>
           <span>Current subtotal</span>
-          <strong>{formatInrAmount(subtotal)}</strong>
+          <strong>{formatUsdAmount(subtotal)}</strong>
         </div>
       </div>
       <p>Complete your payment securely with Razorpay to confirm this order.</p>

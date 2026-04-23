@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart-provider";
-import { formatInrAmount } from "@/lib/currency";
+import { formatUsdAmount } from "@/lib/currency";
 
 export default function CartPage() {
   const { items, hydrated, subtotal, updateQuantity, removeItem, clearCart } = useCart();
 
-  const totalLabel = formatInrAmount(subtotal);
+  const totalLabel = formatUsdAmount(subtotal);
 
   return (
     <section className="section-block">
@@ -53,7 +53,7 @@ export default function CartPage() {
                   </button>
                 </div>
               </div>
-              <strong>{formatInrAmount(item.priceValue * item.quantity)}</strong>
+              <strong>{formatUsdAmount(item.priceValue * item.quantity)}</strong>
             </article>
           ))}
         </div>
