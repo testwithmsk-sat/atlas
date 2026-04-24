@@ -42,6 +42,40 @@ export default async function ProductPage({ params }) {
           <strong>{product.priceLabel}</strong>
           <span>{product.status}</span>
         </div>
+        <div className="product-details-grid">
+          <article className="product-detail-card">
+            <p className="eyebrow">Product Details</p>
+            <h3>What you get</h3>
+            <dl className="product-spec-list">
+              <div>
+                <dt>Pages</dt>
+                <dd>{product.details?.pageCount || "See listing details"}</dd>
+              </div>
+              <div>
+                <dt>Format</dt>
+                <dd>{product.productType}</dd>
+              </div>
+              <div>
+                <dt>Editable</dt>
+                <dd>{product.details?.editable || "See listing details"}</dd>
+              </div>
+              <div>
+                <dt>Printable</dt>
+                <dd>{product.details?.printable || "See listing details"}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article className="product-detail-card">
+            <p className="eyebrow">Included</p>
+            <h3>Inside this product</h3>
+            <ul className="detail-list compact-detail-list">
+              {(product.details?.includes || []).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
         <ul className="detail-list">
           {product.highlights.map((highlight) => (
             <li key={highlight}>{highlight}</li>

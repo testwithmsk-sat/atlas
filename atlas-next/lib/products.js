@@ -23,6 +23,185 @@ const liveImportedProductSlugs = new Set([
   "budget-bride-burgundy-thank-you-card"
 ]);
 
+const pdfDeliverySlugs = new Set([
+  "budget-bride-botanical-rsvp-card",
+  "budget-bride-botanical-save-the-date",
+  "budget-bride-botanical-thank-you-card",
+  "budget-bride-rose-details-card",
+  "budget-bride-minimal-thank-you-card",
+  "budget-bride-burgundy-rsvp-card",
+  "budget-bride-burgundy-save-the-date",
+  "budget-bride-burgundy-details-card",
+  "budget-bride-burgundy-thank-you-card",
+  "budget-bride-plan-classic-invitation",
+  "budget-bride-botanical-details-3-page-suite",
+  "budget-bride-digital-atlas-suite"
+]);
+
+const productDetailOverrides = {
+  "wedding-invitation-template-bundle": {
+    pageCount: "Multiple template pages",
+    includes: ["Invitation design", "Matching wedding stationery pages", "Coordinated printable bundle"],
+    editable: "Yes, template-based files are intended for customization before download or print.",
+    printable: "Yes, designed for digital export and professional or home printing."
+  },
+  "budget-wedding-planner-bundle": {
+    pageCount: "Multiple planner pages",
+    includes: ["Budget tracking sheets", "Planning pages", "Wedding organization layouts"],
+    editable: "Yes, planner templates are designed for repeated customization and reuse.",
+    printable: "Yes, suitable for home or professional printing."
+  },
+  "wedding-signs-bundle": {
+    pageCount: "Multiple sign designs",
+    includes: ["Wedding signage layouts", "Reception and ceremony details", "Coordinated printable signs"],
+    editable: "Yes, sign templates are meant to be personalized before printing.",
+    printable: "Yes, formatted for large-format or standard print workflows."
+  },
+  "bridal-shower-games-bundle": {
+    pageCount: "Multiple game pages",
+    includes: ["Printable shower games", "Party activity sheets", "Ready-to-use celebration extras"],
+    editable: "Yes, game templates can be personalized before use.",
+    printable: "Yes, ready for quick home or shop printing."
+  },
+  "budget-bride-plan-classic-invitation": {
+    pageCount: "12 pages",
+    includes: ["Invitation page", "RSVP and details pages", "Matching suite pages for a botanical wedding set"],
+    editable: "Delivered as a PDF suite; editability depends on your PDF editing workflow.",
+    printable: "Yes, designed for digital download and printing."
+  },
+  "budget-bride-plan-rose-invitation": {
+    pageCount: "12 pages",
+    includes: ["Invitation page", "RSVP and details pages", "Matching suite pages for a rose-themed wedding set"],
+    editable: "Yes, designed as a wedding stationery suite for personalization before printing.",
+    printable: "Yes, suitable for digital export and print."
+  },
+  "budget-bride-plan-welcome-sign": {
+    pageCount: "12 pages",
+    includes: ["Stationery pages", "Wedding signage pages", "Planning and celebration extras"],
+    editable: "Yes, designed as a suite customers can personalize before printing.",
+    printable: "Yes, built for printable wedding delivery."
+  },
+  "budget-events-and-parties-bundle": {
+    pageCount: "10 pages",
+    includes: ["Invitations", "Games and activities", "Signs, menus, tags, and itinerary pages"],
+    editable: "Yes, bundle pages are designed for event customization.",
+    printable: "Yes, formatted for digital download and printing."
+  },
+  "budget-business-starter-template-pack": {
+    pageCount: "12 pages",
+    includes: ["Client documents", "Marketing assets", "Operations templates"],
+    editable: "Yes, intended for editing in your document or design workflow.",
+    printable: "Yes, printable where relevant, with digital-first template usage."
+  },
+  "budget-bride-botanical-rsvp-card": {
+    pageCount: "1 page",
+    includes: ["RSVP response card", "Meal and attendance fields", "Botanical wedding styling"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, ready for home or professional printing."
+  },
+  "budget-bride-botanical-save-the-date": {
+    pageCount: "1 page",
+    includes: ["Save the date card", "Couple and date layout", "Botanical wedding styling"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, ready for digital or printed announcement use."
+  },
+  "budget-bride-botanical-thank-you-card": {
+    pageCount: "1 page",
+    includes: ["Thank you card layout", "Botanical coordinated styling", "Wedding stationery design"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, designed for easy printing."
+  },
+  "budget-bride-rose-details-card": {
+    pageCount: "1 page",
+    includes: ["Wedding details card", "Space for venue and event notes", "Rose-themed styling"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, ready for print or digital sharing."
+  },
+  "budget-bride-minimal-thank-you-card": {
+    pageCount: "1 page",
+    includes: ["Minimal thank you card", "Clean stationery layout", "Coordinated wedding note design"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, formatted for print."
+  },
+  "budget-bride-burgundy-rsvp-card": {
+    pageCount: "1 page",
+    includes: ["RSVP response card", "Attendance and meal fields", "Burgundy wedding styling"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, suitable for home or professional printing."
+  },
+  "budget-bride-burgundy-save-the-date": {
+    pageCount: "1 page",
+    includes: ["Save the date card", "Formal burgundy layout", "Coordinated wedding announcement styling"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, designed for digital and print delivery."
+  },
+  "budget-bride-burgundy-details-card": {
+    pageCount: "1 page",
+    includes: ["Wedding details card", "Additional event information layout", "Burgundy coordinated styling"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, designed for print use."
+  },
+  "budget-bride-burgundy-thank-you-card": {
+    pageCount: "1 page",
+    includes: ["Thank you card layout", "Rich burgundy design", "Coordinated post-wedding stationery"],
+    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
+    printable: "Yes, ready for printing."
+  },
+  "budget-bride-botanical-details-3-page-suite": {
+    pageCount: "3 pages",
+    includes: ["Coordinated details inserts", "Guest information pages", "Botanical wedding suite styling"],
+    editable: "Delivered as a PDF suite; editability depends on your PDF editing workflow.",
+    printable: "Yes, ready for digital download and print."
+  },
+  "budget-bride-digital-atlas-suite": {
+    pageCount: "Multiple coordinated pages",
+    includes: ["Signature Digital Atlas suite pages", "Wedding stationery layouts", "Curated printable collection"],
+    editable: "Delivered as a PDF suite; editability depends on your PDF editing workflow.",
+    printable: "Yes, ready for digital download and printing."
+  }
+};
+
+function inferProductDetails({ slug, name, productType, summary, highlights, isPurchasable }) {
+  const override = productDetailOverrides[slug];
+  if (override) return override;
+
+  const text = `${name} ${productType} ${summary} ${(highlights || []).join(" ")}`;
+  const pageMatch = text.match(/(\d+)-page/i);
+  const pageCount = pageMatch
+    ? `${pageMatch[1]} pages`
+    : /(suite|bundle|pack|kit|collection|library)/i.test(text)
+      ? "Multiple pages or files"
+      : "1 page or file";
+
+  const includes = [];
+  if (/invitation/i.test(text)) includes.push("Invitation-focused layout");
+  if (/rsvp/i.test(text)) includes.push("RSVP or response content");
+  if (/details/i.test(text)) includes.push("Event or guest information section");
+  if (/sign/i.test(text)) includes.push("Printable sign or display design");
+  if (/planner|checklist|budget/i.test(text)) includes.push("Planning or organization pages");
+  if (/itinerary|guide|workbook/i.test(text)) includes.push("Structured content pages");
+  if (includes.length === 0) includes.push("Coordinated digital product files");
+
+  const editable = /canva|notion|spreadsheet/i.test(text)
+    ? "Yes, this product is intended to be customized in its supported editing tool."
+    : pdfDeliverySlugs.has(slug)
+      ? "Delivered as a PDF file; editability depends on your PDF editor."
+      : isPurchasable === false
+        ? "Editable details will be finalized when this product goes live."
+        : "Designed for customization in a compatible design or document editor.";
+
+  const printable = /notion/i.test(text)
+    ? "Primarily a digital-use product rather than a print-first file."
+    : "Yes, suitable for digital download and printing where applicable.";
+
+  return {
+    pageCount,
+    includes,
+    editable,
+    printable
+  };
+}
+
 function createProduct({
   slug,
   name,
@@ -37,9 +216,10 @@ function createProduct({
   productType,
   image,
   isPurchasable = false,
-  status
+  status,
+  details
 }) {
-  return {
+  const product = {
     slug,
     name,
     category,
@@ -54,6 +234,11 @@ function createProduct({
     image: image || categoryImages[categorySlug] || categoryImages.wedding,
     highlights,
     isPurchasable
+  };
+
+  return {
+    ...product,
+    details: details || inferProductDetails(product)
   };
 }
 
