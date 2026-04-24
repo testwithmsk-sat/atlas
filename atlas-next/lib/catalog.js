@@ -26,6 +26,17 @@ function normalizeProduct(row) {
   };
 }
 
+function compareProductsForListing(left, right) {
+  const leftPurchasable = left.isPurchasable !== false;
+  const rightPurchasable = right.isPurchasable !== false;
+
+  if (leftPurchasable !== rightPurchasable) {
+    return leftPurchasable ? -1 : 1;
+  }
+
+  return left.name.localeCompare(right.name);
+}
+
 export async function getAllProducts() {
   const client = getSupabaseAdmin();
   if (!client) return fallbackProducts;
@@ -36,14 +47,16 @@ export async function getAllProducts() {
     .eq("is_active", true)
     .order("created_at", { ascending: false });
 
-  if (error || !data?.length) return fallbackProducts;
+  if (error || !data?.length) {
+    return [...fallbackProducts].sort(compareProductsForListing);
+  }
 
   const productMap = new Map(fallbackProducts.map((product) => [product.slug, product]));
   data.map(normalizeProduct).forEach((product) => {
     productMap.set(product.slug, product);
   });
 
-  return Array.from(productMap.values());
+  return Array.from(productMap.values()).sort(compareProductsForListing);
 }
 
 export async function getFeaturedProducts() {
@@ -184,11 +197,11 @@ export async function getCategoryPageData(categorySlug) {
     .map((group) => ({
       ...group,
       items: group.items.sort((left, right) => {
-        if (left.isPlaceholder === right.isPlaceholder) {
-          return left.name.localeCompare(right.name);
+        if (left.isPlaceholder !== right.isPlaceholder) {
+          return left.isPlaceholder ? 1 : -1;
         }
 
-        return left.isPlaceholder ? 1 : -1;
+        return compareProductsForListing(left, right);
       })
     }));
 
