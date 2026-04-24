@@ -60,9 +60,9 @@ function createProduct({
 const pdfImportedProducts = [
   ...[
     ["budget-bride-botanical-invitation-template", "Budget Bride Botanical Invitation Template", "wedding", "Invitations & Stationery", "Wedding invitation template", "/products/pdf/wedding-budget-1/page-01.png", "A botanical wedding invitation with formal serif styling and a timeless ivory stationery look.", "$6.99"],
-    ["budget-bride-botanical-rsvp-card", "Budget Bride Botanical RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/pdf/wedding-budget-1/page-02.png", "A matching RSVP card with meal choices and classic botanical wedding styling.", "$3.49"],
+    ["budget-bride-botanical-rsvp-card", "Budget Bride Botanical RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/added/budget-bride-botanical-rsvp-card.svg", "A matching RSVP card with meal choices and classic botanical wedding styling.", "$3.49"],
     ["budget-bride-botanical-details-card", "Budget Bride Botanical Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/pdf/wedding-budget-1/page-03.png", "A coordinated wedding details card for accommodations, transport, and event notes.", "$3.49"],
-    ["budget-bride-botanical-save-the-date", "Budget Bride Botanical Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/pdf/wedding-budget-1/page-04.png", "A botanical save-the-date design with classic wedding announcement styling.", "$4.99"],
+    ["budget-bride-botanical-save-the-date", "Budget Bride Botanical Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/added/budget-bride-botanical-save-the-date.svg", "A botanical save-the-date design with classic wedding announcement styling.", "$4.99"],
     ["budget-bride-botanical-welcome-sign", "Budget Bride Botanical Welcome Sign", "wedding", "Signs & Day-Of Details", "Wedding welcome sign", "/products/pdf/wedding-budget-1/page-05.png", "A wedding welcome sign designed to coordinate with a classic botanical stationery suite.", "$5.99"],
     ["budget-bride-botanical-seating-chart", "Budget Bride Botanical Seating Chart", "wedding", "Signs & Day-Of Details", "Seating chart template", "/products/pdf/wedding-budget-1/page-06.png", "A botanical seating chart layout for elegant wedding guest display.", "$6.99"],
     ["budget-bride-botanical-table-number", "Budget Bride Botanical Table Number", "wedding", "Signs & Day-Of Details", "Table number template", "/products/pdf/wedding-budget-1/page-07.png", "A simple coordinated table number design for classic wedding tablescapes.", "$3.99"],
@@ -70,11 +70,11 @@ const pdfImportedProducts = [
     ["budget-bride-botanical-budget-planner", "Budget Bride Botanical Budget Planner", "wedding", "Planning & Budget", "Wedding budget planner", "/products/pdf/wedding-budget-1/page-09.png", "A botanical wedding budget planner page for estimated and actual cost tracking.", "$5.99"],
     ["budget-bride-botanical-bridal-shower-bingo", "budget Bride Botanical Bridal Shower Bingo", "wedding", "Showers & Parties", "Bridal shower game", "/products/pdf/wedding-budget-1/page-10.png", "A botanical bridal shower bingo sheet for printable celebration games.", "$2.99"],
     ["budget-bride-botanical-bachelorette-itinerary", "Budget Bride Botanical Bachelorette Itinerary", "wedding", "Showers & Parties", "Bachelorette itinerary", "/products/pdf/wedding-budget-1/page-11.png", "A botanical bachelorette itinerary page for organizing a celebration weekend.", "$4.49"],
-    ["budget-bride-botanical-thank-you-card", "Budget Bride Botanical Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/pdf/wedding-budget-1/page-12.png", "A coordinating thank you card for post-wedding notes in the botanical collection.", "$3.49"],
+    ["budget-bride-botanical-thank-you-card", "Budget Bride Botanical Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/added/budget-bride-botanical-thank-you-card.svg", "A coordinating thank you card for post-wedding notes in the botanical collection.", "$3.49"],
 
     ["budget-bride-rose-invitation-template", "Budget Bride Rose Invitation Template", "wedding", "Invitations & Stationery", "Wedding invitation template", "/products/pdf/wedding-budget-2/page-01.png", "A romantic rose-framed invitation design with soft floral styling and modern script lettering.", "$6.99"],
     ["budget-bride-rose-rsvp-card", "Budget Bride Rose RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/pdf/wedding-budget-2/page-02.png", "A floral RSVP card with simple response options and a soft wedding palette.", "$3.49"],
-    ["budget-bride-rose-details-card", "Budget Bride Rose Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/pdf/wedding-budget-2/page-03.png", "A floral wedding details card for accommodations, dress code, and event notes.", "$3.49"],
+    ["budget-bride-rose-details-card", "Budget Bride Rose Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/added/budget-bride-rose-details-card.svg", "A floral wedding details card for accommodations, dress code, and event notes.", "$3.49"],
     ["budget-bride-blush-save-the-date", "Budget Bride Blush Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/pdf/wedding-budget-2/page-04.png", "A blush-toned save-the-date card with soft geometric framing and elegant wedding styling.", "$4.99"],
     ["budget-bride-rustic-floral-welcome-sign", "Budget Bride Rustic Floral Welcome Sign", "wedding", "Signs & Day-Of Details", "Wedding welcome sign", "/products/pdf/wedding-budget-2/page-05.png", "A rustic floral welcome sign with dark wood texture and soft white botanical accents.", "$6.49"],
     ["budget-bride-art-deco-seating-chart", "Budget Bride Art Deco Seating Chart", "wedding", "Signs & Day-Of Details", "Seating chart template", "/products/pdf/wedding-budget-2/page-06.png", "A seating chart with a clean art-deco inspired frame and elegant guest layout.", "$6.99"],
@@ -83,19 +83,19 @@ const pdfImportedProducts = [
     ["budget-bride-minimal-budget-planner", "Budget Bride Minimal Budget Planner", "wedding", "Planning & Budget", "Wedding budget planner", "/products/pdf/wedding-budget-2/page-09.png", "A clean budget planning page for tracking wedding categories, estimates, and actual spending.", "$5.99"],
     ["budget-bride-lavender-bridal-shower-bingo", "Budget Bride Lavender Bridal Shower Bingo", "wedding", "Showers & Parties", "Bridal shower game", "/products/pdf/wedding-budget-2/page-10.png", "A lavender bridal shower bingo sheet with a soft celebratory floral border.", "$2.99"],
     ["budget-bride-pink-bachelorette-itinerary", "Budget Bride Pink Bachelorette Itinerary", "wedding", "Showers & Parties", "Bachelorette itinerary", "/products/pdf/wedding-budget-2/page-11.png", "A pink bachelorette itinerary with a playful but polished celebration layout.", "$4.49"],
-    ["budget-bride-minimal-thank-you-card", "Budget Bride Minimal Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/pdf/wedding-budget-2/page-12.png", "A soft minimal thank you card with delicate wedding stationery styling.", "$3.49"],
+    ["budget-bride-minimal-thank-you-card", "Budget Bride Minimal Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/added/budget-bride-minimal-thank-you-card.svg", "A soft minimal thank you card with delicate wedding stationery styling.", "$3.49"],
 
     ["budget-bride-burgundy-welcome-sign", "Budget Bride Burgundy Welcome Sign", "wedding", "Signs & Day-Of Details", "Wedding welcome sign", "/products/pdf/wedding-budget-3/page-01.png", "A burgundy welcome sign with gold lettering and floral corner details for a dramatic wedding entrance.", "$6.49"],
-    ["budget-bride-burgundy-rsvp-card", "Budget Bride Burgundy RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/pdf/wedding-budget-3/page-02.png", "A dark romantic RSVP card with menu options and gold-accent styling.", "$3.49"],
-    ["budget-bride-burgundy-save-the-date", "Budget Bride Burgundy Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/pdf/wedding-budget-3/page-03.png", "A burgundy save-the-date card with a dramatic formal wedding look.", "$4.99"],
-    ["budget-bride-burgundy-details-card", "Budget Bride Burgundy Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/pdf/wedding-budget-3/page-04.png", "A matching burgundy details card with transportation and additional wedding information.", "$3.49"],
+    ["budget-bride-burgundy-rsvp-card", "Budget Bride Burgundy RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/added/budget-bride-burgundy-rsvp-card.svg", "A dark romantic RSVP card with menu options and gold-accent styling.", "$3.49"],
+    ["budget-bride-burgundy-save-the-date", "Budget Bride Burgundy Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/added/budget-bride-burgundy-save-the-date.svg", "A burgundy save-the-date card with a dramatic formal wedding look.", "$4.99"],
+    ["budget-bride-burgundy-details-card", "Budget Bride Burgundy Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/added/budget-bride-burgundy-details-card.svg", "A matching burgundy details card with transportation and additional wedding information.", "$3.49"],
     ["budget-bride-burgundy-seating-chart", "Budget Bride Burgundy Seating Chart", "wedding", "Signs & Day-Of Details", "Seating chart template", "/products/pdf/wedding-budget-3/page-06.png", "A burgundy wedding seating chart designed for a romantic evening reception aesthetic.", "$6.99"],
     ["budget-bride-burgundy-table-number-set", "Budget Bride Burgundy Table Number Set", "wedding", "Signs & Day-Of Details", "Table number collection", "/products/pdf/wedding-budget-3/page-07.png", "A coordinating burgundy table number collection for formal wedding tables.", "$4.49"],
     ["budget-bride-burgundy-planning-checklist", "Budget Bride Burgundy Planning Checklist", "wedding", "Planning & Budget", "Wedding planner page", "/products/pdf/wedding-budget-3/page-08.png", "A burgundy planning checklist for couples who want a richer, formal wedding planning style.", "$5.99"],
     ["budget-bride-burgundy-budget-planner", "Budget Bride Burgundy Budget Planner", "wedding", "Planning & Budget", "Wedding budget planner", "/products/pdf/wedding-budget-3/page-09.png", "A burgundy wedding budget planner page with a formal event-inspired look.", "$5.99"],
     ["budget-bride-burgundy-bridal-shower-bingo", "Budget Bride Burgundy Bridal Shower Bingo", "wedding", "Showers & Parties", "Bridal shower game", "/products/pdf/wedding-budget-3/page-10.png", "A dark romantic bridal shower bingo sheet for themed celebration events.", "$2.99"],
     ["budget-bride-burgundy-bachelorette-itinerary", "Budget Bride Burgundy Bachelorette Itinerary", "wedding", "Showers & Parties", "Bachelorette itinerary", "/products/pdf/wedding-budget-3/page-11.png", "A burgundy bachelorette itinerary for a more dramatic celebration aesthetic.", "$4.49"],
-    ["budget-bride-burgundy-thank-you-card", "Budget Bride Burgundy Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/pdf/wedding-budget-3/page-12.png", "A matching burgundy thank you card with rich formal styling.", "$3.49"],
+    ["budget-bride-burgundy-thank-you-card", "Budget Bride Burgundy Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/added/budget-bride-burgundy-thank-you-card.svg", "A matching burgundy thank you card with rich formal styling.", "$3.49"],
 
     ["budget-events-baby-shower-bingo", "Budget Events Baby Shower Bingo", "events-parties", "Games & Activities", "Baby shower game", "/products/pdf/events-1/page-02.png", "A baby shower bingo sheet designed for printable party play and easy guest participation.", "$3.49"],
     ["budget-events-birthday-party-invitation", "Budget Events Birthday Party Invitation", "events-parties", "Party Invitations", "Birthday invitation", "/products/pdf/events-1/page-03.png", "A birthday invitation template with bold party styling and editable celebration details.", "$4.99"],
@@ -249,7 +249,7 @@ export const fallbackProducts = [
     priceLabel: "₹999",
     productType: "Wedding stationery suite",
     isPurchasable: true,
-    image: "/products/budget-bride-plan-1.png",
+    image: "/products/added/budget-bride-plan-classic-invitation.svg",
     summary: "A botanical wedding suite with invitation, RSVP, details card, save the date, signage, planning sheets, and celebration extras in one coordinated collection.",
     highlights: [
       "12-page coordinated botanical wedding collection",
@@ -268,7 +268,7 @@ export const fallbackProducts = [
     priceLabel: "$8.99",
     productType: "Wedding details bundle",
     isPurchasable: true,
-    image: "/products/budget-bride-botanical-details-suite.svg",
+    image: "/products/added/budget-bride-botanical-details-3-page-suite.svg",
     summary:
       "A compact botanical details suite with coordinated inserts for wedding notes, schedule details, and guest information in one printable set.",
     highlights: [
@@ -288,7 +288,7 @@ export const fallbackProducts = [
     priceLabel: "$11.99",
     productType: "Wedding stationery suite",
     isPurchasable: true,
-    image: "/products/budget-bride-digital-atlas-suite.svg",
+    image: "/products/added/budget-bride-digital-atlas-suite.svg",
     summary:
       "A signature Digital Atlas wedding suite with coordinated stationery pages designed for customers who want a polished printable set in one purchase.",
     highlights: [

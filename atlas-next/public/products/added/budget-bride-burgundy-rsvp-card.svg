@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Burgundy RSVP Card</title>
+  <desc id="desc">Preview card for Burgundy RSVP Card sold by The Digital Atlas.</desc>
+  <rect width="1200" height="1500" fill="#f3e6e8"/>
+  <rect x="80" y="80" width="1040" height="1340" rx="42" fill="#fffaf4" stroke="#7a3945" stroke-width="5"/>
+  <circle cx="260" cy="290" r="120" fill="#7a3945" opacity="0.08"/>
+  <circle cx="940" cy="1140" r="170" fill="#7a3945" opacity="0.08"/>
+  <path d="M175 1185c72-88 112-174 132-254" fill="none" stroke="#7a3945" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M1008 330c-72 88-112 174-132 254" fill="none" stroke="#7a3945" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <text x="600" y="240" text-anchor="middle" fill="#7a3945" font-family="Arial, sans-serif" font-size="30" letter-spacing="7">THE DIGITAL ATLAS</text>
+  <text x="600" y="450" text-anchor="middle" fill="#2a211b" font-family="Georgia, 'Times New Roman', serif" font-size="86">Burgundy</text>
+  <text x="600" y="555" text-anchor="middle" fill="#2a211b" font-family="Georgia, 'Times New Roman', serif" font-size="74">RSVP Card</text>
+  <text x="600" y="650" text-anchor="middle" fill="#7a3945" font-family="Arial, sans-serif" font-size="33" letter-spacing="6">INSTANT DIGITAL DOWNLOAD</text>
+  <rect x="250" y="760" width="700" height="1" fill="#7a3945" opacity="0.35"/>
+  <text x="600" y="905" text-anchor="middle" fill="#4f4032" font-family="Arial, sans-serif" font-size="38">Elegant printable wedding stationery</text>
+  <text x="600" y="975" text-anchor="middle" fill="#4f4032" font-family="Arial, sans-serif" font-size="38">Curated for modern celebrations</text>
+  <text x="600" y="1225" text-anchor="middle" fill="#7a3945" font-family="Arial, sans-serif" font-size="28" letter-spacing="5">Wedding / Invitations & Stationery</text>
+</svg>
