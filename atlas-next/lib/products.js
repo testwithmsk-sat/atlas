@@ -11,6 +11,18 @@ const categoryImages = {
   "templates-documents": "/products/budget-wedding-planner-bundle.svg"
 };
 
+const liveImportedProductSlugs = new Set([
+  "budget-bride-botanical-rsvp-card",
+  "budget-bride-botanical-save-the-date",
+  "budget-bride-botanical-thank-you-card",
+  "budget-bride-rose-details-card",
+  "budget-bride-minimal-thank-you-card",
+  "budget-bride-burgundy-rsvp-card",
+  "budget-bride-burgundy-save-the-date",
+  "budget-bride-burgundy-details-card",
+  "budget-bride-burgundy-thank-you-card"
+]);
+
 function createProduct({
   slug,
   name,
@@ -138,6 +150,7 @@ const pdfImportedProducts = [
       productType,
       image,
       summary,
+      isPurchasable: liveImportedProductSlugs.has(slug),
       highlights: [
         "Part of the growing Digital Atlas collection",
         "Designed for printable or digital delivery",
@@ -242,6 +255,46 @@ export const fallbackProducts = [
       "12-page coordinated botanical wedding collection",
       "Includes stationery, signage, planning, and shower extras",
       "Delivered as a printable PDF suite"
+    ]
+  }),
+  createProduct({
+    slug: "budget-bride-botanical-details-3-page-suite",
+    name: "Budget Bride Botanical Details 3-Page Suite",
+    category: "Wedding",
+    categorySlug: "wedding",
+    subcategory: "Invitations & Stationery",
+    subcategorySlug: "invitations-stationery",
+    badge: "Download Ready",
+    priceLabel: "$8.99",
+    productType: "Wedding details bundle",
+    isPurchasable: true,
+    image: "/products/budget-bride-botanical-details-suite.svg",
+    summary:
+      "A compact botanical details suite with coordinated inserts for wedding notes, schedule details, and guest information in one printable set.",
+    highlights: [
+      "3-page botanical details collection",
+      "Built for matching invitation add-ons",
+      "Instant PDF download after checkout"
+    ]
+  }),
+  createProduct({
+    slug: "budget-bride-digital-atlas-suite",
+    name: "Budget Bride Digital Atlas Wedding Suite",
+    category: "Wedding",
+    categorySlug: "wedding",
+    subcategory: "Invitations & Stationery",
+    subcategorySlug: "invitations-stationery",
+    badge: "Signature Suite",
+    priceLabel: "$11.99",
+    productType: "Wedding stationery suite",
+    isPurchasable: true,
+    image: "/products/budget-bride-digital-atlas-suite.svg",
+    summary:
+      "A signature Digital Atlas wedding suite with coordinated stationery pages designed for customers who want a polished printable set in one purchase.",
+    highlights: [
+      "Curated Digital Atlas wedding suite",
+      "Coordinated stationery pages in one PDF",
+      "Ready for printable or digital delivery"
     ]
   }),
   createProduct({

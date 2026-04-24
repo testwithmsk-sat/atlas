@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Budget Bride Botanical Details 3-Page Suite</title>
+  <desc id="desc">Botanical wedding details suite preview card for The Digital Atlas.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f1e7" />
+      <stop offset="100%" stop-color="#eadcc8" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#bg)" />
+  <rect x="88" y="88" width="1024" height="1324" rx="40" fill="#fffaf4" stroke="#d4b894" stroke-width="6" />
+  <g fill="none" stroke="#8d6d46" stroke-width="5" stroke-linecap="round">
+    <path d="M170 1240c90-84 132-190 154-270" />
+    <path d="M202 1178c46 8 90 20 132 46" />
+    <path d="M222 1096c38 20 72 50 98 88" />
+    <path d="M1030 260c-90 84-132 190-154 270" />
+    <path d="M998 322c-46-8-90-20-132-46" />
+    <path d="M978 404c-38-20-72-50-98-88" />
+  </g>
+  <text x="600" y="270" text-anchor="middle" fill="#8d6d46" font-family="Georgia, 'Times New Roman', serif" font-size="32" letter-spacing="8">THE DIGITAL ATLAS</text>
+  <text x="600" y="430" text-anchor="middle" fill="#2a211b" font-family="Georgia, 'Times New Roman', serif" font-size="86">Budget Bride</text>
+  <text x="600" y="530" text-anchor="middle" fill="#2a211b" font-family="Georgia, 'Times New Roman', serif" font-size="72">Botanical Details</text>
+  <text x="600" y="620" text-anchor="middle" fill="#8d6d46" font-family="Arial, sans-serif" font-size="34" letter-spacing="7">3-PAGE WEDDING SUITE</text>
+  <rect x="238" y="742" width="724" height="1" fill="#d4b894" />
+  <text x="600" y="860" text-anchor="middle" fill="#4f4032" font-family="Arial, sans-serif" font-size="38">Coordinated guest information inserts</text>
+  <text x="600" y="930" text-anchor="middle" fill="#4f4032" font-family="Arial, sans-serif" font-size="38">Botanical styling for matching stationery</text>
+  <text x="600" y="1000" text-anchor="middle" fill="#4f4032" font-family="Arial, sans-serif" font-size="38">Instant digital download</text>
+  <text x="600" y="1220" text-anchor="middle" fill="#8d6d46" font-family="Arial, sans-serif" font-size="28" letter-spacing="5">WEDDING / INVITATIONS &amp; STATIONERY</text>
+</svg>

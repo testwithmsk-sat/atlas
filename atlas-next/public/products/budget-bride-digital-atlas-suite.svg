@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+  <title id="title">Budget Bride Digital Atlas Wedding Suite</title>
+  <desc id="desc">Digital Atlas signature wedding suite preview card.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7efe5" />
+      <stop offset="55%" stop-color="#efe1cf" />
+      <stop offset="100%" stop-color="#dcc2a0" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#sky)" />
+  <rect x="78" y="78" width="1044" height="1344" rx="46" fill="#fffaf4" stroke="#9f6f3b" stroke-width="5" />
+  <circle cx="320" cy="330" r="120" fill="#f3e4cf" />
+  <circle cx="890" cy="1090" r="150" fill="#f0dcc1" />
+  <text x="600" y="250" text-anchor="middle" fill="#9f6f3b" font-family="Arial, sans-serif" font-size="30" letter-spacing="7">SIGNATURE COLLECTION</text>
+  <text x="600" y="430" text-anchor="middle" fill="#2a211b" font-family="Georgia, 'Times New Roman', serif" font-size="88">Budget Bride</text>
+  <text x="600" y="530" text-anchor="middle" fill="#2a211b" font-family="Georgia, 'Times New Roman', serif" font-size="82">Digital Atlas Suite</text>
+  <text x="600" y="625" text-anchor="middle" fill="#7b5a33" font-family="Arial, sans-serif" font-size="34" letter-spacing="6">CURATED WEDDING STATIONERY SET</text>
+  <g fill="#fffaf4" stroke="#cba77c" stroke-width="4">
+    <rect x="238" y="760" width="220" height="280" rx="20" />
+    <rect x="490" y="720" width="220" height="320" rx="20" />
+    <rect x="742" y="780" width="220" height="260" rx="20" />
+  </g>
+  <g fill="#9f6f3b" font-family="Georgia, 'Times New Roman', serif" font-size="28" text-anchor="middle">
+    <text x="348" y="840">Invite</text>
+    <text x="600" y="820">Details</text>
+    <text x="852" y="860">RSVP</text>
+  </g>
+  <text x="600" y="1180" text-anchor="middle" fill="#4f4032" font-family="Arial, sans-serif" font-size="38">Designed for polished printable delivery</text>
+  <text x="600" y="1245" text-anchor="middle" fill="#4f4032" font-family="Arial, sans-serif" font-size="38">A complete wedding suite in one download</text>
+  <text x="600" y="1340" text-anchor="middle" fill="#9f6f3b" font-family="Arial, sans-serif" font-size="28" letter-spacing="5">THE DIGITAL ATLAS</text>
+</svg>

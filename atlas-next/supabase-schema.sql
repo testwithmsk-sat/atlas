@@ -13,6 +13,7 @@ create table if not exists public.products (
   summary text not null,
   image text,
   highlights jsonb default '[]'::jsonb,
+  is_purchasable boolean default true,
   is_active boolean default true,
   created_at timestamptz default now()
 );
@@ -87,9 +88,14 @@ alter table public.products add column if not exists category_slug text;
 alter table public.products add column if not exists subcategory text;
 alter table public.products add column if not exists subcategory_slug text;
 alter table public.products add column if not exists product_type text default 'Digital download';
+alter table public.products add column if not exists is_purchasable boolean default true;
 alter table public.download_files add column if not exists storage_bucket text;
 alter table public.download_files add column if not exists storage_path text;
 alter table public.download_files add column if not exists access_mode text default 'signed';
+
+update public.products
+set is_purchasable = true
+where is_purchasable is null;
 
 create index if not exists orders_customer_email_idx on public.orders(customer_email);
 create index if not exists order_items_order_id_idx on public.order_items(order_id);
@@ -232,6 +238,245 @@ set
   highlights = excluded.highlights,
   is_active = excluded.is_active;
 
+insert into public.products (
+  slug,
+  name,
+  category,
+  category_slug,
+  subcategory,
+  subcategory_slug,
+  badge,
+  price_label,
+  status,
+  product_type,
+  summary,
+  image,
+  highlights,
+  is_purchasable,
+  is_active
+)
+values
+  (
+    'budget-bride-botanical-rsvp-card',
+    'Budget Bride Botanical RSVP Card',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$3.49',
+    'Digital download',
+    'RSVP card template',
+    'A matching RSVP card with meal choices and classic botanical wedding styling.',
+    '/products/pdf/wedding-budget-1/page-02.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-botanical-save-the-date',
+    'Budget Bride Botanical Save The Date',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$4.99',
+    'Digital download',
+    'Save the date template',
+    'A botanical save-the-date design with classic wedding announcement styling.',
+    '/products/pdf/wedding-budget-1/page-04.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-botanical-thank-you-card',
+    'Budget Bride Botanical Thank You Card',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$3.49',
+    'Digital download',
+    'Thank you card template',
+    'A coordinating thank you card for post-wedding notes in the botanical collection.',
+    '/products/pdf/wedding-budget-1/page-12.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-rose-details-card',
+    'Budget Bride Rose Details Card',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$3.49',
+    'Digital download',
+    'Details card template',
+    'A floral wedding details card for accommodations, dress code, and event notes.',
+    '/products/pdf/wedding-budget-2/page-03.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-minimal-thank-you-card',
+    'Budget Bride Minimal Thank You Card',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$3.49',
+    'Digital download',
+    'Thank you card template',
+    'A soft minimal thank you card with delicate wedding stationery styling.',
+    '/products/pdf/wedding-budget-2/page-12.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-burgundy-rsvp-card',
+    'Budget Bride Burgundy RSVP Card',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$3.49',
+    'Digital download',
+    'RSVP card template',
+    'A dark romantic RSVP card with menu options and gold-accent styling.',
+    '/products/pdf/wedding-budget-3/page-02.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-burgundy-save-the-date',
+    'Budget Bride Burgundy Save The Date',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$4.99',
+    'Digital download',
+    'Save the date template',
+    'A burgundy save-the-date card with a dramatic formal wedding look.',
+    '/products/pdf/wedding-budget-3/page-03.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-burgundy-details-card',
+    'Budget Bride Burgundy Details Card',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$3.49',
+    'Digital download',
+    'Details card template',
+    'A matching burgundy details card with transportation and additional wedding information.',
+    '/products/pdf/wedding-budget-3/page-04.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-burgundy-thank-you-card',
+    'Budget Bride Burgundy Thank You Card',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Price',
+    '$3.49',
+    'Digital download',
+    'Thank you card template',
+    'A matching burgundy thank you card with rich formal styling.',
+    '/products/pdf/wedding-budget-3/page-12.png',
+    '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-plan-classic-invitation',
+    'Budget Bride Botanical Wedding Suite',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Launch Ready',
+    '$10.74',
+    'Digital download',
+    'Wedding stationery suite',
+    'A botanical wedding suite with invitation, RSVP, details card, save the date, signage, planning sheets, and celebration extras in one coordinated collection.',
+    '/products/budget-bride-plan-1.png',
+    '["12-page coordinated botanical wedding collection", "Includes stationery, signage, planning, and shower extras", "Delivered as a printable PDF suite"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-botanical-details-3-page-suite',
+    'Budget Bride Botanical Details 3-Page Suite',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Download Ready',
+    '$8.99',
+    'Digital download',
+    'Wedding details bundle',
+    'A compact botanical details suite with coordinated inserts for wedding notes, schedule details, and guest information in one printable set.',
+    '/products/budget-bride-botanical-details-suite.svg',
+    '["3-page botanical details collection", "Built for matching invitation add-ons", "Instant PDF download after checkout"]'::jsonb,
+    true,
+    true
+  ),
+  (
+    'budget-bride-digital-atlas-suite',
+    'Budget Bride Digital Atlas Wedding Suite',
+    'Wedding',
+    'wedding',
+    'Invitations & Stationery',
+    'invitations-stationery',
+    'Signature Suite',
+    '$11.99',
+    'Digital download',
+    'Wedding stationery suite',
+    'A signature Digital Atlas wedding suite with coordinated stationery pages designed for customers who want a polished printable set in one purchase.',
+    '/products/budget-bride-digital-atlas-suite.svg',
+    '["Curated Digital Atlas wedding suite", "Coordinated stationery pages in one PDF", "Ready for printable or digital delivery"]'::jsonb,
+    true,
+    true
+  )
+on conflict (slug) do update
+set
+  name = excluded.name,
+  category = excluded.category,
+  category_slug = excluded.category_slug,
+  subcategory = excluded.subcategory,
+  subcategory_slug = excluded.subcategory_slug,
+  badge = excluded.badge,
+  price_label = excluded.price_label,
+  status = excluded.status,
+  product_type = excluded.product_type,
+  summary = excluded.summary,
+  image = excluded.image,
+  highlights = excluded.highlights,
+  is_purchasable = excluded.is_purchasable,
+  is_active = excluded.is_active;
+
 insert into public.download_files (product_slug, file_name, file_url, storage_bucket, storage_path, file_type, access_mode, sort_order, is_active)
 values
   (
@@ -282,6 +527,38 @@ on conflict (product_slug, storage_bucket, storage_path) do update
 set
   file_name = excluded.file_name,
   file_url = excluded.file_url,
+  file_type = excluded.file_type,
+  access_mode = excluded.access_mode,
+  sort_order = excluded.sort_order,
+  is_active = excluded.is_active;
+
+insert into public.download_files (
+  product_slug,
+  file_name,
+  file_url,
+  storage_bucket,
+  storage_path,
+  file_type,
+  access_mode,
+  sort_order,
+  is_active
+)
+values
+  ('budget-bride-botanical-rsvp-card', 'Budget_Botanical_RSVP_Suite-v3.pdf', '/downloads/wedding/budget-bride-botanical-rsvp-card.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-botanical-save-the-date', 'Budget_Botanical_SaveTheDate_Bundle.pdf', '/downloads/wedding/budget-bride-botanical-save-the-date.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-botanical-thank-you-card', 'Budget_Botanical_ThankYou_Bundle.pdf', '/downloads/wedding/budget-bride-botanical-thank-you-card.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-rose-details-card', 'Budget_Botanical_Rose_Details_Suite.pdf', '/downloads/wedding/budget-bride-rose-details-card.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-minimal-thank-you-card', 'Budget_Bride_Minimal_ThankYou_Suite.pdf', '/downloads/wedding/budget-bride-minimal-thank-you-card.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-burgundy-rsvp-card', 'Budget_Botanical_Burgundy_RSVP_Suite.pdf', '/downloads/wedding/budget-bride-burgundy-rsvp-card.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-burgundy-save-the-date', 'Budget_Botanical_Burgundy_SaveTheDate_Bundle.pdf', '/downloads/wedding/budget-bride-burgundy-save-the-date.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-burgundy-details-card', 'Budget_Botanical_Burgundy_Details_Bundle.pdf', '/downloads/wedding/budget-bride-burgundy-details-card.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-burgundy-thank-you-card', 'Budget_Botanical_Burgundy_ThankYou_Bundle.pdf', '/downloads/wedding/budget-bride-burgundy-thank-you-card.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-plan-classic-invitation', 'Budget_Botanical_Wedding_Suite-v2.pdf', '/downloads/wedding/budget-bride-plan-classic-invitation.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-botanical-details-3-page-suite', 'Budget_Bride_Botanical_Details_3Page_v2.pdf', '/downloads/wedding/budget-bride-botanical-details-3-page-suite.pdf', null, null, 'pdf', 'public', 0, true),
+  ('budget-bride-digital-atlas-suite', 'Budget_Bride_Digital_Atlas_Suite.pdf', '/downloads/wedding/budget-bride-digital-atlas-suite.pdf', null, null, 'pdf', 'public', 0, true)
+on conflict (product_slug, file_url) do update
+set
+  file_name = excluded.file_name,
   file_type = excluded.file_type,
   access_mode = excluded.access_mode,
   sort_order = excluded.sort_order,
