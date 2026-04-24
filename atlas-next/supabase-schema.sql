@@ -268,7 +268,7 @@ values
     'Digital download',
     'RSVP card template',
     'A matching RSVP card with meal choices and classic botanical wedding styling.',
-    '/products/added/budget-bride-botanical-rsvp-card.svg',
+    '/products/added/budget-bride-botanical-rsvp-card.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -285,7 +285,7 @@ values
     'Digital download',
     'Save the date template',
     'A botanical save-the-date design with classic wedding announcement styling.',
-    '/products/added/budget-bride-botanical-save-the-date.svg',
+    '/products/added/budget-bride-botanical-save-the-date.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -302,7 +302,7 @@ values
     'Digital download',
     'Thank you card template',
     'A coordinating thank you card for post-wedding notes in the botanical collection.',
-    '/products/added/budget-bride-botanical-thank-you-card.svg',
+    '/products/added/budget-bride-botanical-thank-you-card.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -319,7 +319,7 @@ values
     'Digital download',
     'Details card template',
     'A floral wedding details card for accommodations, dress code, and event notes.',
-    '/products/added/budget-bride-rose-details-card.svg',
+    '/products/added/budget-bride-rose-details-card.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -336,7 +336,7 @@ values
     'Digital download',
     'Thank you card template',
     'A soft minimal thank you card with delicate wedding stationery styling.',
-    '/products/added/budget-bride-minimal-thank-you-card.svg',
+    '/products/added/budget-bride-minimal-thank-you-card.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -353,7 +353,7 @@ values
     'Digital download',
     'RSVP card template',
     'A dark romantic RSVP card with menu options and gold-accent styling.',
-    '/products/added/budget-bride-burgundy-rsvp-card.svg',
+    '/products/added/budget-bride-burgundy-rsvp-card.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -370,7 +370,7 @@ values
     'Digital download',
     'Save the date template',
     'A burgundy save-the-date card with a dramatic formal wedding look.',
-    '/products/added/budget-bride-burgundy-save-the-date.svg',
+    '/products/added/budget-bride-burgundy-save-the-date.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -387,7 +387,7 @@ values
     'Digital download',
     'Details card template',
     'A matching burgundy details card with transportation and additional wedding information.',
-    '/products/added/budget-bride-burgundy-details-card.svg',
+    '/products/added/budget-bride-burgundy-details-card.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -404,7 +404,7 @@ values
     'Digital download',
     'Thank you card template',
     'A matching burgundy thank you card with rich formal styling.',
-    '/products/added/budget-bride-burgundy-thank-you-card.svg',
+    '/products/added/budget-bride-burgundy-thank-you-card.png',
     '["Part of the growing Digital Atlas collection", "Designed for printable or digital delivery", "Ready to feature in its category collection"]'::jsonb,
     true,
     true
@@ -421,7 +421,7 @@ values
     'Digital download',
     'Wedding stationery suite',
     'A botanical wedding suite with invitation, RSVP, details card, save the date, signage, planning sheets, and celebration extras in one coordinated collection.',
-    '/products/added/budget-bride-plan-classic-invitation.svg',
+    '/products/added/budget-bride-plan-classic-invitation.png',
     '["12-page coordinated botanical wedding collection", "Includes stationery, signage, planning, and shower extras", "Delivered as a printable PDF suite"]'::jsonb,
     true,
     true
@@ -438,7 +438,7 @@ values
     'Digital download',
     'Wedding details bundle',
     'A compact botanical details suite with coordinated inserts for wedding notes, schedule details, and guest information in one printable set.',
-    '/products/added/budget-bride-botanical-details-3-page-suite.svg',
+    '/products/added/budget-bride-botanical-details-3-page-suite.png',
     '["3-page botanical details collection", "Built for matching invitation add-ons", "Instant PDF download after checkout"]'::jsonb,
     true,
     true
@@ -455,7 +455,7 @@ values
     'Digital download',
     'Wedding stationery suite',
     'A signature Digital Atlas wedding suite with coordinated stationery pages designed for customers who want a polished printable set in one purchase.',
-    '/products/added/budget-bride-digital-atlas-suite.svg',
+    '/products/added/budget-bride-digital-atlas-suite.png',
     '["Curated Digital Atlas wedding suite", "Coordinated stationery pages in one PDF", "Ready for printable or digital delivery"]'::jsonb,
     true,
     true
