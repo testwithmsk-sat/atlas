@@ -15,7 +15,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
       <article className="info-card">
         <p className="eyebrow">Signed In</p>
         <h3>{email}</h3>
-        <p>Your account is available, but the public site is currently in a minimal state.</p>
+        <p>Your account is ready for order history, future downloads, and returning purchases.</p>
         <form action={signOutFormAction}>
           <button className="button button-primary" type="submit">
             Sign Out
@@ -46,7 +46,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
         </form>
         <p className="status-note">
           {hasSupabase
-            ? signInState.message || "Sign in to access your account while the site is empty."
+            ? signInState.message || "Sign in to access your account, orders, and future downloads."
             : "Sign in will be available soon."}
         </p>
       </article>
@@ -69,7 +69,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
         </form>
         <p className="status-note">
           {hasSupabase
-            ? signUpState.message || "Create an account for future access when the site is active again."
+            ? signUpState.message || "Create an account so customers can return to their purchases later."
             : "Account creation will be available soon."}
         </p>
       </article>

@@ -1,21 +1,29 @@
+import { ProductCard } from "@/components/product-card";
+import { getBundleProducts } from "@/lib/catalog";
+
 export const metadata = {
-  title: "Status | The Digital Atlas",
-  description: "No grouped sections are currently shown on The Digital Atlas."
+  title: "Bundles | The Digital Atlas",
+  description: "Wedding bundle offers on The Digital Atlas."
 };
 
-export default function BundlesPage() {
+export default async function BundlesPage() {
+  const bundles = await getBundleProducts();
+
   return (
     <section className="section-block">
       <div className="page-intro">
-        <p className="eyebrow">Status</p>
-        <h1>This page is currently empty.</h1>
-        <p>This page has been cleared and no preview sections are being shown.</p>
+        <p className="eyebrow">Bundle Offer</p>
+        <h1>One wedding bundle, priced to convert.</h1>
+        <p>
+          The main bundle packages the full editable wedding collection into a single premium offer with the guide
+          included free.
+        </p>
       </div>
-      <article className="info-card">
-        <p className="eyebrow">Empty State</p>
-        <h2>Grouped sections have been removed.</h2>
-        <p>There is nothing to browse here until future updates are published again.</p>
-      </article>
+      <div className="product-grid">
+        {bundles.map((product) => (
+          <ProductCard key={product.slug} product={product} />
+        ))}
+      </div>
     </section>
   );
 }

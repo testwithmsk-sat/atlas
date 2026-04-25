@@ -3,6 +3,10 @@ import Link from "next/link";
 export function CatalogCategoryCard({ category, href, liveCount = 0, plannedCount = 0 }) {
   const totalCount = liveCount + plannedCount;
   const hasProducts = totalCount > 0;
+  const countLabel =
+    plannedCount > 0
+      ? `${liveCount} available now | ${plannedCount} coming soon`
+      : `${liveCount} available now`;
 
   return (
     <Link className="catalog-card catalog-card--link" href={href}>
@@ -16,9 +20,7 @@ export function CatalogCategoryCard({ category, href, liveCount = 0, plannedCoun
           </span>
         ))}
       </div>
-      <p className="catalog-meta">
-        {hasProducts ? `${liveCount} available now | ${plannedCount} coming soon` : "New products coming soon"}
-      </p>
+      <p className="catalog-meta">{hasProducts ? countLabel : "New products coming soon"}</p>
     </Link>
   );
 }

@@ -1,1007 +1,367 @@
 import { normalizePriceLabel } from "@/lib/currency";
 
-const categoryImages = {
-  wedding: "/products/wedding-invitation-template-bundle.svg",
-  "events-parties": "/products/bridal-shower-games-bundle.svg",
-  business: "/products/budget-wedding-planner-bundle.svg",
-  "planners-productivity": "/products/budget-wedding-planner-bundle.svg",
-  "career-education": "/products/wedding-signs-bundle.svg",
-  "social-content": "/products/bridal-shower-games-bundle.svg",
-  "creative-assets": "/products/wedding-signs-bundle.svg",
-  "templates-documents": "/products/budget-wedding-planner-bundle.svg"
+const weddingSubcategories = {
+  "invitations-stationery": "Invitations & Stationery",
+  "planning-budget": "Planning & Budget",
+  "signs-day-of-details": "Signs & Day-Of Details",
+  "showers-parties": "Showers & Parties"
 };
 
-const liveImportedProductSlugs = new Set([
-  "budget-bride-botanical-rsvp-card",
-  "budget-bride-botanical-save-the-date",
-  "budget-bride-botanical-thank-you-card",
-  "budget-bride-rose-details-card",
-  "budget-bride-minimal-thank-you-card",
-  "budget-bride-burgundy-rsvp-card",
-  "budget-bride-burgundy-save-the-date",
-  "budget-bride-burgundy-details-card",
-  "budget-bride-burgundy-thank-you-card"
-]);
-
-const pdfDeliverySlugs = new Set([
-  "budget-bride-botanical-rsvp-card",
-  "budget-bride-botanical-save-the-date",
-  "budget-bride-botanical-thank-you-card",
-  "budget-bride-rose-details-card",
-  "budget-bride-minimal-thank-you-card",
-  "budget-bride-burgundy-rsvp-card",
-  "budget-bride-burgundy-save-the-date",
-  "budget-bride-burgundy-details-card",
-  "budget-bride-burgundy-thank-you-card",
-  "budget-bride-plan-classic-invitation",
-  "budget-bride-botanical-details-3-page-suite",
-  "budget-bride-digital-atlas-suite"
-]);
-
-const productDetailOverrides = {
-  "wedding-invitation-template-bundle": {
-    pageCount: "Multiple template pages",
-    includes: ["Invitation design", "Matching wedding stationery pages", "Coordinated printable bundle"],
-    editable: "Yes, template-based files are intended for customization before download or print.",
-    printable: "Yes, designed for digital export and professional or home printing."
-  },
-  "budget-wedding-planner-bundle": {
-    pageCount: "Multiple planner pages",
-    includes: ["Budget tracking sheets", "Planning pages", "Wedding organization layouts"],
-    editable: "Yes, planner templates are designed for repeated customization and reuse.",
-    printable: "Yes, suitable for home or professional printing."
-  },
-  "wedding-signs-bundle": {
-    pageCount: "Multiple sign designs",
-    includes: ["Wedding signage layouts", "Reception and ceremony details", "Coordinated printable signs"],
-    editable: "Yes, sign templates are meant to be personalized before printing.",
-    printable: "Yes, formatted for large-format or standard print workflows."
-  },
-  "bridal-shower-games-bundle": {
-    pageCount: "Multiple game pages",
-    includes: ["Printable shower games", "Party activity sheets", "Ready-to-use celebration extras"],
-    editable: "Yes, game templates can be personalized before use.",
-    printable: "Yes, ready for quick home or shop printing."
-  },
-  "budget-bride-plan-classic-invitation": {
-    pageCount: "12 pages",
-    includes: ["Invitation page", "RSVP and details pages", "Matching suite pages for a botanical wedding set"],
-    editable: "Delivered as a PDF suite; editability depends on your PDF editing workflow.",
-    printable: "Yes, designed for digital download and printing."
-  },
-  "budget-bride-plan-rose-invitation": {
-    pageCount: "12 pages",
-    includes: ["Invitation page", "RSVP and details pages", "Matching suite pages for a rose-themed wedding set"],
-    editable: "Yes, designed as a wedding stationery suite for personalization before printing.",
-    printable: "Yes, suitable for digital export and print."
-  },
-  "budget-bride-plan-welcome-sign": {
-    pageCount: "12 pages",
-    includes: ["Stationery pages", "Wedding signage pages", "Planning and celebration extras"],
-    editable: "Yes, designed as a suite customers can personalize before printing.",
-    printable: "Yes, built for printable wedding delivery."
-  },
-  "budget-events-and-parties-bundle": {
-    pageCount: "10 pages",
-    includes: ["Invitations", "Games and activities", "Signs, menus, tags, and itinerary pages"],
-    editable: "Yes, bundle pages are designed for event customization.",
-    printable: "Yes, formatted for digital download and printing."
-  },
-  "budget-business-starter-template-pack": {
-    pageCount: "12 pages",
-    includes: ["Client documents", "Marketing assets", "Operations templates"],
-    editable: "Yes, intended for editing in your document or design workflow.",
-    printable: "Yes, printable where relevant, with digital-first template usage."
-  },
-  "budget-bride-botanical-rsvp-card": {
-    pageCount: "1 page",
-    includes: ["RSVP response card", "Meal and attendance fields", "Botanical wedding styling"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, ready for home or professional printing."
-  },
-  "budget-bride-botanical-save-the-date": {
-    pageCount: "1 page",
-    includes: ["Save the date card", "Couple and date layout", "Botanical wedding styling"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, ready for digital or printed announcement use."
-  },
-  "budget-bride-botanical-thank-you-card": {
-    pageCount: "1 page",
-    includes: ["Thank you card layout", "Botanical coordinated styling", "Wedding stationery design"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, designed for easy printing."
-  },
-  "budget-bride-rose-details-card": {
-    pageCount: "1 page",
-    includes: ["Wedding details card", "Space for venue and event notes", "Rose-themed styling"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, ready for print or digital sharing."
-  },
-  "budget-bride-minimal-thank-you-card": {
-    pageCount: "1 page",
-    includes: ["Minimal thank you card", "Clean stationery layout", "Coordinated wedding note design"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, formatted for print."
-  },
-  "budget-bride-burgundy-rsvp-card": {
-    pageCount: "1 page",
-    includes: ["RSVP response card", "Attendance and meal fields", "Burgundy wedding styling"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, suitable for home or professional printing."
-  },
-  "budget-bride-burgundy-save-the-date": {
-    pageCount: "1 page",
-    includes: ["Save the date card", "Formal burgundy layout", "Coordinated wedding announcement styling"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, designed for digital and print delivery."
-  },
-  "budget-bride-burgundy-details-card": {
-    pageCount: "1 page",
-    includes: ["Wedding details card", "Additional event information layout", "Burgundy coordinated styling"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, designed for print use."
-  },
-  "budget-bride-burgundy-thank-you-card": {
-    pageCount: "1 page",
-    includes: ["Thank you card layout", "Rich burgundy design", "Coordinated post-wedding stationery"],
-    editable: "Delivered as a PDF file; editability depends on your PDF editor.",
-    printable: "Yes, ready for printing."
-  },
-  "budget-bride-botanical-details-3-page-suite": {
-    pageCount: "3 pages",
-    includes: ["Coordinated details inserts", "Guest information pages", "Botanical wedding suite styling"],
-    editable: "Delivered as a PDF suite; editability depends on your PDF editing workflow.",
-    printable: "Yes, ready for digital download and print."
-  },
-  "budget-bride-digital-atlas-suite": {
-    pageCount: "Multiple coordinated pages",
-    includes: ["Signature Digital Atlas suite pages", "Wedding stationery layouts", "Curated printable collection"],
-    editable: "Delivered as a PDF suite; editability depends on your PDF editing workflow.",
-    printable: "Yes, ready for digital download and printing."
-  }
+const weddingImages = {
+  "invitations-stationery": "/products/wedding-invitation-template-bundle.svg",
+  "planning-budget": "/products/budget-wedding-planner-bundle.svg",
+  "signs-day-of-details": "/products/wedding-signs-bundle.svg",
+  "showers-parties": "/products/bridal-shower-games-bundle.svg"
 };
-
-function inferProductDetails({ slug, name, productType, summary, highlights, isPurchasable }) {
-  const override = productDetailOverrides[slug];
-  if (override) return override;
-
-  const text = `${name} ${productType} ${summary} ${(highlights || []).join(" ")}`;
-  const pageMatch = text.match(/(\d+)-page/i);
-  const pageCount = pageMatch
-    ? `${pageMatch[1]} pages`
-    : /(suite|bundle|pack|kit|collection|library)/i.test(text)
-      ? "Multiple pages or files"
-      : "1 page or file";
-
-  const includes = [];
-  if (/invitation/i.test(text)) includes.push("Invitation-focused layout");
-  if (/rsvp/i.test(text)) includes.push("RSVP or response content");
-  if (/details/i.test(text)) includes.push("Event or guest information section");
-  if (/sign/i.test(text)) includes.push("Printable sign or display design");
-  if (/planner|checklist|budget/i.test(text)) includes.push("Planning or organization pages");
-  if (/itinerary|guide|workbook/i.test(text)) includes.push("Structured content pages");
-  if (includes.length === 0) includes.push("Coordinated digital product files");
-
-  const editable = /canva|notion|spreadsheet/i.test(text)
-    ? "Yes, this product is intended to be customized in its supported editing tool."
-    : pdfDeliverySlugs.has(slug)
-      ? "Delivered as a PDF file; editability depends on your PDF editor."
-      : isPurchasable === false
-        ? "Editable details will be finalized when this product goes live."
-        : "Designed for customization in a compatible design or document editor.";
-
-  const printable = /notion/i.test(text)
-    ? "Primarily a digital-use product rather than a print-first file."
-    : "Yes, suitable for digital download and printing where applicable.";
-
-  return {
-    pageCount,
-    includes,
-    editable,
-    printable
-  };
-}
 
 function createProduct({
   slug,
   name,
-  category,
-  categorySlug,
-  subcategory,
   subcategorySlug,
   badge,
-  priceLabel,
+  price,
+  compareAt,
   summary,
   highlights,
   productType,
   image,
-  isPurchasable = false,
-  status,
-  details
+  details,
+  bundleContents,
+  isBundle = false,
+  isFeatured = false,
+  isBestSeller = false
 }) {
-  const product = {
+  return {
     slug,
     name,
-    category,
-    categorySlug,
-    subcategory,
+    category: "Wedding",
+    categorySlug: "wedding",
+    subcategory: weddingSubcategories[subcategorySlug],
     subcategorySlug,
     badge,
-    priceLabel: normalizePriceLabel(priceLabel),
-    status: status || (isPurchasable ? "Digital download" : "Coming soon"),
+    priceLabel: normalizePriceLabel(price),
+    compareAtPriceLabel: compareAt ? normalizePriceLabel(compareAt) : "",
+    status: "Digital download",
     productType,
     summary,
-    image: image || categoryImages[categorySlug] || categoryImages.wedding,
+    image: image || weddingImages[subcategorySlug] || weddingImages["invitations-stationery"],
     highlights,
-    isPurchasable
-  };
-
-  return {
-    ...product,
-    details: details || inferProductDetails(product)
+    isPurchasable: true,
+    isBundle,
+    isFeatured,
+    isBestSeller,
+    details,
+    bundleContents: bundleContents || []
   };
 }
-
-const pdfImportedProducts = [
-  ...[
-    ["budget-bride-botanical-invitation-template", "Budget Bride Botanical Invitation Template", "wedding", "Invitations & Stationery", "Wedding invitation template", "/products/pdf/wedding-budget-1/page-01.png", "A botanical wedding invitation with formal serif styling and a timeless ivory stationery look.", "$6.99"],
-    ["budget-bride-botanical-rsvp-card", "Budget Bride Botanical RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/added/budget-bride-botanical-rsvp-card.png", "A matching RSVP card with meal choices and classic botanical wedding styling.", "$3.49"],
-    ["budget-bride-botanical-details-card", "Budget Bride Botanical Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/pdf/wedding-budget-1/page-03.png", "A coordinated wedding details card for accommodations, transport, and event notes.", "$3.49"],
-    ["budget-bride-botanical-save-the-date", "Budget Bride Botanical Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/added/budget-bride-botanical-save-the-date.png", "A botanical save-the-date design with classic wedding announcement styling.", "$4.99"],
-    ["budget-bride-botanical-welcome-sign", "Budget Bride Botanical Welcome Sign", "wedding", "Signs & Day-Of Details", "Wedding welcome sign", "/products/pdf/wedding-budget-1/page-05.png", "A wedding welcome sign designed to coordinate with a classic botanical stationery suite.", "$5.99"],
-    ["budget-bride-botanical-seating-chart", "Budget Bride Botanical Seating Chart", "wedding", "Signs & Day-Of Details", "Seating chart template", "/products/pdf/wedding-budget-1/page-06.png", "A botanical seating chart layout for elegant wedding guest display.", "$6.99"],
-    ["budget-bride-botanical-table-number", "Budget Bride Botanical Table Number", "wedding", "Signs & Day-Of Details", "Table number template", "/products/pdf/wedding-budget-1/page-07.png", "A simple coordinated table number design for classic wedding tablescapes.", "$3.99"],
-    ["budget-bride-botanical-planning-checklist", "Budget Bride Botanical Planning Checklist", "wedding", "Planning & Budget", "Wedding planner page", "/products/pdf/wedding-budget-1/page-08.png", "A wedding planning checklist page with botanical detailing and structured task tracking.", "$5.99"],
-    ["budget-bride-botanical-budget-planner", "Budget Bride Botanical Budget Planner", "wedding", "Planning & Budget", "Wedding budget planner", "/products/pdf/wedding-budget-1/page-09.png", "A botanical wedding budget planner page for estimated and actual cost tracking.", "$5.99"],
-    ["budget-bride-botanical-bridal-shower-bingo", "budget Bride Botanical Bridal Shower Bingo", "wedding", "Showers & Parties", "Bridal shower game", "/products/pdf/wedding-budget-1/page-10.png", "A botanical bridal shower bingo sheet for printable celebration games.", "$2.99"],
-    ["budget-bride-botanical-bachelorette-itinerary", "Budget Bride Botanical Bachelorette Itinerary", "wedding", "Showers & Parties", "Bachelorette itinerary", "/products/pdf/wedding-budget-1/page-11.png", "A botanical bachelorette itinerary page for organizing a celebration weekend.", "$4.49"],
-    ["budget-bride-botanical-thank-you-card", "Budget Bride Botanical Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/added/budget-bride-botanical-thank-you-card.png", "A coordinating thank you card for post-wedding notes in the botanical collection.", "$3.49"],
-
-    ["budget-bride-rose-invitation-template", "Budget Bride Rose Invitation Template", "wedding", "Invitations & Stationery", "Wedding invitation template", "/products/pdf/wedding-budget-2/page-01.png", "A romantic rose-framed invitation design with soft floral styling and modern script lettering.", "$6.99"],
-    ["budget-bride-rose-rsvp-card", "Budget Bride Rose RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/pdf/wedding-budget-2/page-02.png", "A floral RSVP card with simple response options and a soft wedding palette.", "$3.49"],
-    ["budget-bride-rose-details-card", "Budget Bride Rose Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/added/budget-bride-rose-details-card.png", "A floral wedding details card for accommodations, dress code, and event notes.", "$3.49"],
-    ["budget-bride-blush-save-the-date", "Budget Bride Blush Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/pdf/wedding-budget-2/page-04.png", "A blush-toned save-the-date card with soft geometric framing and elegant wedding styling.", "$4.99"],
-    ["budget-bride-rustic-floral-welcome-sign", "Budget Bride Rustic Floral Welcome Sign", "wedding", "Signs & Day-Of Details", "Wedding welcome sign", "/products/pdf/wedding-budget-2/page-05.png", "A rustic floral welcome sign with dark wood texture and soft white botanical accents.", "$6.49"],
-    ["budget-bride-art-deco-seating-chart", "Budget Bride Art Deco Seating Chart", "wedding", "Signs & Day-Of Details", "Seating chart template", "/products/pdf/wedding-budget-2/page-06.png", "A seating chart with a clean art-deco inspired frame and elegant guest layout.", "$6.99"],
-    ["budget-bride-blue-table-number", "Budget Bride Blue Table Number", "wedding", "Signs & Day-Of Details", "Table number template", "/products/pdf/wedding-budget-2/page-07.png", "A blue and gold table number card for elevated wedding table styling.", "$3.99"],
-    ["budget-bride-minimal-planning-checklist", "Budget Bride Minimal Planning Checklist", "wedding", "Planning & Budget", "Wedding planner page", "/products/pdf/wedding-budget-2/page-08.png", "A minimal wedding planning checklist with a clean editorial organization style.", "$5.99"],
-    ["budget-bride-minimal-budget-planner", "Budget Bride Minimal Budget Planner", "wedding", "Planning & Budget", "Wedding budget planner", "/products/pdf/wedding-budget-2/page-09.png", "A clean budget planning page for tracking wedding categories, estimates, and actual spending.", "$5.99"],
-    ["budget-bride-lavender-bridal-shower-bingo", "Budget Bride Lavender Bridal Shower Bingo", "wedding", "Showers & Parties", "Bridal shower game", "/products/pdf/wedding-budget-2/page-10.png", "A lavender bridal shower bingo sheet with a soft celebratory floral border.", "$2.99"],
-    ["budget-bride-pink-bachelorette-itinerary", "Budget Bride Pink Bachelorette Itinerary", "wedding", "Showers & Parties", "Bachelorette itinerary", "/products/pdf/wedding-budget-2/page-11.png", "A pink bachelorette itinerary with a playful but polished celebration layout.", "$4.49"],
-    ["budget-bride-minimal-thank-you-card", "Budget Bride Minimal Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/added/budget-bride-minimal-thank-you-card.png", "A soft minimal thank you card with delicate wedding stationery styling.", "$3.49"],
-
-    ["budget-bride-burgundy-welcome-sign", "Budget Bride Burgundy Welcome Sign", "wedding", "Signs & Day-Of Details", "Wedding welcome sign", "/products/pdf/wedding-budget-3/page-01.png", "A burgundy welcome sign with gold lettering and floral corner details for a dramatic wedding entrance.", "$6.49"],
-    ["budget-bride-burgundy-rsvp-card", "Budget Bride Burgundy RSVP Card", "wedding", "Invitations & Stationery", "RSVP card template", "/products/added/budget-bride-burgundy-rsvp-card.png", "A dark romantic RSVP card with menu options and gold-accent styling.", "$3.49"],
-    ["budget-bride-burgundy-save-the-date", "Budget Bride Burgundy Save The Date", "wedding", "Invitations & Stationery", "Save the date template", "/products/added/budget-bride-burgundy-save-the-date.png", "A burgundy save-the-date card with a dramatic formal wedding look.", "$4.99"],
-    ["budget-bride-burgundy-details-card", "Budget Bride Burgundy Details Card", "wedding", "Invitations & Stationery", "Details card template", "/products/added/budget-bride-burgundy-details-card.png", "A matching burgundy details card with transportation and additional wedding information.", "$3.49"],
-    ["budget-bride-burgundy-seating-chart", "Budget Bride Burgundy Seating Chart", "wedding", "Signs & Day-Of Details", "Seating chart template", "/products/pdf/wedding-budget-3/page-06.png", "A burgundy wedding seating chart designed for a romantic evening reception aesthetic.", "$6.99"],
-    ["budget-bride-burgundy-table-number-set", "Budget Bride Burgundy Table Number Set", "wedding", "Signs & Day-Of Details", "Table number collection", "/products/pdf/wedding-budget-3/page-07.png", "A coordinating burgundy table number collection for formal wedding tables.", "$4.49"],
-    ["budget-bride-burgundy-planning-checklist", "Budget Bride Burgundy Planning Checklist", "wedding", "Planning & Budget", "Wedding planner page", "/products/pdf/wedding-budget-3/page-08.png", "A burgundy planning checklist for couples who want a richer, formal wedding planning style.", "$5.99"],
-    ["budget-bride-burgundy-budget-planner", "Budget Bride Burgundy Budget Planner", "wedding", "Planning & Budget", "Wedding budget planner", "/products/pdf/wedding-budget-3/page-09.png", "A burgundy wedding budget planner page with a formal event-inspired look.", "$5.99"],
-    ["budget-bride-burgundy-bridal-shower-bingo", "Budget Bride Burgundy Bridal Shower Bingo", "wedding", "Showers & Parties", "Bridal shower game", "/products/pdf/wedding-budget-3/page-10.png", "A dark romantic bridal shower bingo sheet for themed celebration events.", "$2.99"],
-    ["budget-bride-burgundy-bachelorette-itinerary", "Budget Bride Burgundy Bachelorette Itinerary", "wedding", "Showers & Parties", "Bachelorette itinerary", "/products/pdf/wedding-budget-3/page-11.png", "A burgundy bachelorette itinerary for a more dramatic celebration aesthetic.", "$4.49"],
-    ["budget-bride-burgundy-thank-you-card", "Budget Bride Burgundy Thank You Card", "wedding", "Invitations & Stationery", "Thank you card template", "/products/added/budget-bride-burgundy-thank-you-card.png", "A matching burgundy thank you card with rich formal styling.", "$3.49"],
-
-    ["budget-events-baby-shower-bingo", "Budget Events Baby Shower Bingo", "events-parties", "Games & Activities", "Baby shower game", "/products/pdf/events-1/page-02.png", "A baby shower bingo sheet designed for printable party play and easy guest participation.", "$3.49"],
-    ["budget-events-birthday-party-invitation", "Budget Events Birthday Party Invitation", "events-parties", "Party Invitations", "Birthday invitation", "/products/pdf/events-1/page-03.png", "A birthday invitation template with bold party styling and editable celebration details.", "$4.99"],
-    ["budget-events-party-welcome-sign", "Budget Events Party Welcome Sign", "events-parties", "Signs & Decor", "Party welcome sign", "/products/pdf/events-1/page-04.png", "A welcome sign for birthdays and celebration events with dramatic party styling.", "$5.99"],
-    ["budget-events-party-game-card", "Budget Events Party Game Card", "events-parties", "Games & Activities", "Printable game", "/products/pdf/events-1/page-05.png", "A printable party game card layout for group activities and celebration prompts.", "$2.99"],
-    ["budget-events-party-decor-sign", "Budget Events Party Decor Sign", "events-parties", "Signs & Decor", "Decor sign", "/products/pdf/events-1/page-06.png", "A party decor sign template for birthday or event table displays.", "$4.49"],
-    ["budget-events-planning-checklist", "Budget Events Planning Checklist", "events-parties", "Signs & Decor", "Event planner", "/products/pdf/events-1/page-07.png", "An event planning checklist page for food, decor, setup, and guest organization.", "$4.99"],
-    ["budget-events-menu-card", "Budget Events Menu Card", "events-parties", "Signs & Decor", "Menu card", "/products/pdf/events-1/page-08.png", "A printable event menu card for food and drink display at parties and celebrations.", "$3.49"],
-    ["budget-events-favor-tags", "Budget Events Favor Tags", "events-parties", "Signs & Decor", "Favor tag set", "/products/pdf/events-1/page-09.png", "A printable favor tag sheet for attaching thank-you tags to party gifts and bags.", "$3.49"],
-    ["budget-events-photo-booth-sign", "Budget Events Photo Booth Sign", "events-parties", "Signs & Decor", "Photo booth sign", "/products/pdf/events-1/page-10.png", "A photo booth sign for parties and event selfie stations.", "$4.49"],
-    ["budget-events-itinerary", "Budget Events Itinerary", "events-parties", "Signs & Decor", "Event itinerary", "/products/pdf/events-1/page-11.png", "An event itinerary page for organizing a full party or celebration schedule.", "$4.99"],
-
-    ["budget-business-invoice-template-blue", "Budget Business Invoice Template Blue", "business", "Client Documents", "Invoice template", "/products/pdf/business-1/page-01.png", "A clean blue invoice template with professional billing, payment notes, and totals.", "$9.99"],
-    ["budget-business-project-proposal", "Budget Business Project Proposal", "business", "Client Documents", "Proposal template", "/products/pdf/business-1/page-02.png", "A structured project proposal template with scope, deliverables, timeline, and pricing.", "$14.99"],
-    ["budget-business-service-agreement", "Budget Business Service Agreement", "business", "Client Documents", "Contract template", "/products/pdf/business-1/page-03.png", "A service agreement template for formalizing client work and payment terms.", "$12.99"],
-    ["budget-business-client-welcome-guide", "Budget Business Client Welcome Guide", "business", "Client Documents", "Client welcome guide", "/products/pdf/business-1/page-04.png", "A multi-page client welcome guide for premium onboarding and service presentation.", "$16.99"],
-    ["budget-business-brand-kit", "Budget Business Brand Kit", "business", "Marketing & Sales", "Brand kit", "/products/pdf/business-1/page-05.png", "A business brand kit template for logos, colors, typography, imagery, and visual systems.", "$14.99"],
-    ["budget-business-media-kit", "Budget Business Media Kit", "business", "Marketing & Sales", "Media kit", "/products/pdf/business-1/page-06.png", "A media kit template for creators and businesses presenting audience, services, and brand details.", "$15.99"],
-    ["budget-business-promotional-flyer", "Budget Business Promotional Flyer", "business", "Marketing & Sales", "Promotional flyer", "/products/pdf/business-1/page-07.png", "A one-page promotional flyer or service spotlight layout for business marketing.", "$8.99"],
-    ["budget-business-content-planner", "Budget Business Content Planner", "business", "Marketing & Sales", "Content planner", "/products/pdf/business-1/page-08.png", "A content planning dashboard for campaigns, publishing schedules, and topic tracking.", "$10.99"],
-    ["budget-business-lead-magnet-workbook", "Budget Business Lead Magnet Workbook", "business", "Marketing & Sales", "Lead magnet workbook", "/products/pdf/business-1/page-09.png", "A workbook template for opt-ins, educational content, and freebie offers.", "$12.99"],
-    ["budget-business-pricing-guide", "Budget Business Pricing Guide", "business", "Marketing & Sales", "Pricing guide", "/products/pdf/business-1/page-10.png", "A pricing guide template for presenting service packages, investments, and add-ons.", "$11.99"],
-    ["budget-business-presentation-deck", "Budget Business Presentation Deck", "business", "Marketing & Sales", "Presentation deck", "/products/pdf/business-1/page-11.png", "A business presentation deck for services, strategy, or internal reporting.", "$14.99"],
-    ["budget-business-sop-template", "Budget Business SOP Template", "business", "Operations & Systems", "SOP template", "/products/pdf/business-1/page-12.png", "A standard operating procedure template for documenting repeatable workflows and client delivery systems.", "$13.99"]
-  ].map(([slug, name, categorySlug, subcategory, productType, image, summary, priceLabel]) => {
-    const categoryMap = {
-      wedding: "Wedding",
-      "events-parties": "Events & Parties",
-      business: "Business"
-    };
-    const subcategorySlugMap = {
-      "Invitations & Stationery": "invitations-stationery",
-      "Signs & Day-Of Details": "signs-day-of-details",
-      "Planning & Budget": "planning-budget",
-      "Showers & Parties": "showers-parties",
-      "Party Invitations": "party-invitations",
-      "Games & Activities": "games-activities",
-      "Signs & Decor": "signs-decor",
-      "Client Documents": "client-documents",
-      "Marketing & Sales": "marketing-sales",
-      "Operations & Systems": "operations-systems"
-    };
-    return createProduct({
-      slug,
-      name,
-      category: categoryMap[categorySlug],
-      categorySlug,
-      subcategory,
-      subcategorySlug: subcategorySlugMap[subcategory],
-      badge: "Launch Price",
-      priceLabel,
-      productType,
-      image,
-      summary,
-      isPurchasable: liveImportedProductSlugs.has(slug),
-      highlights: [
-        "Part of the growing Digital Atlas collection",
-        "Designed for printable or digital delivery",
-        "Ready to feature in its category collection"
-      ]
-    });
-  })
-];
 
 export const fallbackProducts = [
   createProduct({
-    slug: "wedding-invitation-template-bundle",
-    name: "Wedding Invitation Template Bundle",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Invitations & Stationery",
+    slug: "editable-wedding-pdf-template-bundle",
+    name: "Editable Wedding PDF Template Bundle",
     subcategorySlug: "invitations-stationery",
     badge: "Best Seller",
-    priceLabel: "₹649",
-    productType: "Canva template bundle",
-    isPurchasable: true,
-    image: "/products/wedding-invitation-template-bundle.svg",
-    summary: "A polished wedding stationery suite with a premium look for couples who want elegant printable details.",
+    price: 59,
+    compareAt: 89,
+    productType: "Bundle of 10 editable PDFs",
+    summary:
+      "A complete wedding bundle with 10 fillable PDF templates plus a customer how-to guide, packaged as one premium digital download.",
     highlights: [
-      "Ready-to-style invitation bundle",
-      "Designed for modern printable delivery",
-      "A polished choice for elegant wedding stationery"
-    ]
+      "11 files in one bundle with the guide included free",
+      "Customers can type directly into the pink fillable fields",
+      "Built for Adobe Acrobat Reader and other PDF viewers",
+      "Perfect as the high-value wedding offer on your storefront"
+    ],
+    details: {
+      size: "Mixed sizes including 5x7, 6x4, A5, letter, and tall menu formats",
+      pages: "10 editable templates plus a 3-page customer guide",
+      format: "ZIP download with fillable PDFs",
+      editable: "Yes. Every template includes real clickable fillable fields for customer details.",
+      printable: "Yes. Files are designed for digital sharing and print-ready export.",
+      includes: [
+        "Wedding Invitation",
+        "Wedding Programme",
+        "Seating Chart",
+        "Menu Card",
+        "Instagram Stories set",
+        "Budget Planner",
+        "Favour Tags and Thank You Card",
+        "Bridal Party Proposal Cards",
+        "Welcome Sign and Bar Menu",
+        "RSVP Card"
+      ]
+    },
+    bundleContents: [
+      "00 Customer How-To Guide",
+      "01 Wedding Invitation",
+      "02 Wedding Programme",
+      "03 Seating Chart",
+      "04 Menu Card",
+      "05 Instagram Stories",
+      "06 Budget Planner",
+      "07 Favour Tags and Thank You Card",
+      "08 Bridal Party Proposal Cards",
+      "09 Welcome Sign and Bar Menu",
+      "10 RSVP Card"
+    ],
+    isBundle: true,
+    isFeatured: true,
+    isBestSeller: true
   }),
   createProduct({
-    slug: "budget-wedding-planner-bundle",
-    name: "Budget Wedding Planner Bundle",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Planning & Budget",
+    slug: "fillable-wedding-invitation-template",
+    name: "Fillable Wedding Invitation Template",
+    subcategorySlug: "invitations-stationery",
+    badge: "Customer Favorite",
+    price: 12,
+    compareAt: 18,
+    productType: "Editable fillable PDF",
+    summary:
+      "A polished 5x7 wedding invitation customers can personalize directly in their PDF viewer and save in minutes.",
+    highlights: [
+      "5x7 invitation layout",
+      "Real fillable text fields",
+      "Elegant digital stationery offer"
+    ],
+    details: {
+      size: "5 x 7 inches",
+      pages: "1 page",
+      format: "Fillable PDF",
+      editable: "Yes. Customers can type names, date, venue, and event details directly into the file.",
+      printable: "Yes. Suitable for digital delivery or professional printing.",
+      includes: ["Invitation design", "Clickable text fields", "Ready-to-save PDF format"]
+    },
+    isFeatured: true,
+    isBestSeller: true
+  }),
+  createProduct({
+    slug: "fillable-wedding-programme-template",
+    name: "Fillable Wedding Programme Template",
+    subcategorySlug: "invitations-stationery",
+    badge: "New Arrival",
+    price: 11,
+    compareAt: 16,
+    productType: "Editable fillable PDF",
+    summary:
+      "A refined A5 ceremony programme with space for timings, order of service, and custom wedding notes.",
+    highlights: [
+      "A5 programme format",
+      "Ideal for ceremony flow and schedule details",
+      "Easy to personalize for each event"
+    ],
+    details: {
+      size: "A5",
+      pages: "1 page",
+      format: "Fillable PDF",
+      editable: "Yes. Customers can type ceremony timing, order, and names into the document.",
+      printable: "Yes. Designed for home or professional print use.",
+      includes: ["Programme layout", "Fillable sections", "Editable wedding text areas"]
+    }
+  }),
+  createProduct({
+    slug: "fillable-wedding-seating-chart-template",
+    name: "Fillable Wedding Seating Chart Template",
+    subcategorySlug: "signs-day-of-details",
+    badge: "Popular",
+    price: 12,
+    compareAt: 18,
+    productType: "Editable fillable PDF",
+    summary:
+      "A clean seating chart for letter or A4 printing that helps couples organize guests with an elegant display-ready layout.",
+    highlights: [
+      "Letter or A4 layout",
+      "Perfect for day-of signage",
+      "Styled for printable event displays"
+    ],
+    details: {
+      size: "Letter / A4",
+      pages: "1 page",
+      format: "Fillable PDF",
+      editable: "Yes. Guests, table headings, and arrangement details can be typed into the chart.",
+      printable: "Yes. Suitable for poster or standard print output depending on scaling.",
+      includes: ["Seating chart layout", "Guest and table fields", "Display-ready PDF"]
+    },
+    isFeatured: true
+  }),
+  createProduct({
+    slug: "fillable-wedding-menu-card-template",
+    name: "Fillable Wedding Menu Card Template",
+    subcategorySlug: "invitations-stationery",
+    badge: "Reception Add-On",
+    price: 9,
+    compareAt: 14,
+    productType: "Editable fillable PDF",
+    summary:
+      "A slim 4x9 reception menu card with editable meal sections, signature drink details, and a polished table-ready look.",
+    highlights: [
+      "4x9 menu card format",
+      "Great add-on for reception styling",
+      "Fast personalized upsell item"
+    ],
+    details: {
+      size: "4 x 9 inches",
+      pages: "1 page",
+      format: "Fillable PDF",
+      editable: "Yes. Course names, meal details, and drink wording can be updated directly.",
+      printable: "Yes. Sized for elegant place setting or menu display printing.",
+      includes: ["Menu card layout", "Fillable menu sections", "Reception-ready PDF"]
+    }
+  }),
+  createProduct({
+    slug: "editable-wedding-instagram-stories-pack",
+    name: "Editable Wedding Instagram Stories Pack",
+    subcategorySlug: "showers-parties",
+    badge: "Social Add-On",
+    price: 10,
+    compareAt: 15,
+    productType: "5-page editable PDF set",
+    summary:
+      "A coordinated set of wedding story slides for countdowns, announcements, reminders, and event-day social sharing.",
+    highlights: [
+      "5 coordinated story layouts",
+      "Works as a digital upsell from the main bundle",
+      "Useful for wedding-week social content"
+    ],
+    details: {
+      size: "Story-sized digital pages",
+      pages: "5 pages",
+      format: "Fillable PDF set",
+      editable: "Yes. Customers can type event dates, names, prompts, and short copy into each story slide.",
+      printable: "No. Primarily designed for digital sharing.",
+      includes: ["Five story designs", "Editable text areas", "Wedding social content pack"]
+    }
+  }),
+  createProduct({
+    slug: "fillable-wedding-budget-planner",
+    name: "Fillable Wedding Budget Planner",
     subcategorySlug: "planning-budget",
     badge: "Planning Essential",
-    priceLabel: "₹649",
-    productType: "Printable planner bundle",
-    isPurchasable: true,
-    image: "/products/budget-wedding-planner-bundle.svg",
-    summary: "A wedding planning and budget system designed to help customers organize details and spending clearly.",
+    price: 12,
+    compareAt: 18,
+    productType: "Editable fillable PDF",
+    summary:
+      "A full-page wedding budget planner for tracking estimated and actual spending across every major category.",
     highlights: [
-      "Budget tracking and planning pages",
-      "Easy to use throughout the planning process",
-      "A strong companion to wedding stationery bundles"
-    ]
+      "Full-page budget tracker",
+      "Great planner-category anchor product",
+      "Easy wedding planning upsell"
+    ],
+    details: {
+      size: "Full page",
+      pages: "1 page",
+      format: "Fillable PDF",
+      editable: "Yes. Budget lines, categories, and amounts can be typed directly into the planner.",
+      printable: "Yes. Works well for digital planning or printed binder use.",
+      includes: ["Budget planner layout", "Editable spending fields", "Printable organizer page"]
+    },
+    isBestSeller: true
   }),
   createProduct({
-    slug: "wedding-signs-bundle",
-    name: "Wedding Signs Bundle",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Signs & Day-Of Details",
-    subcategorySlug: "signs-day-of-details",
-    badge: "Ceremony Favorite",
-    priceLabel: "₹499",
-    productType: "Printable sign bundle",
-    isPurchasable: true,
-    image: "/products/wedding-signs-bundle.svg",
-    summary: "A cohesive wedding signage pack for ceremonies and receptions that need a clear, polished finish.",
+    slug: "fillable-wedding-favour-tags-and-thank-you-card",
+    name: "Wedding Favour Tags And Thank You Card",
+    subcategorySlug: "invitations-stationery",
+    badge: "Stationery Add-On",
+    price: 9,
+    compareAt: 14,
+    productType: "Editable fillable PDF",
+    summary:
+      "A matching printable set for wedding favour tags and a thank you card, designed as a fast upsell from invitation buyers.",
     highlights: [
-      "Event signage collection",
-      "Strong cross-sell for invitation buyers",
-      "Good fit for related-product merchandising"
-    ]
+      "Letter-size printable set",
+      "Combines favour tag and thank you card in one file",
+      "Strong companion to invitation sales"
+    ],
+    details: {
+      size: "Letter",
+      pages: "1 page set",
+      format: "Fillable PDF",
+      editable: "Yes. Names, short messages, and event wording can be updated inside the file.",
+      printable: "Yes. Designed for cutting and printing after editing.",
+      includes: ["Favour tags", "Thank you card", "Editable stationery fields"]
+    }
   }),
   createProduct({
-    slug: "bridal-shower-games-bundle",
-    name: "Bridal Shower Games Bundle",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Showers & Parties",
+    slug: "fillable-bridal-party-proposal-cards",
+    name: "Bridal Party Proposal Cards",
     subcategorySlug: "showers-parties",
     badge: "Party Favorite",
-    priceLabel: "₹399",
-    productType: "Printable game bundle",
-    isPurchasable: true,
-    image: "/products/bridal-shower-games-bundle.svg",
-    summary: "An easy party printable bundle for hosts who want polished celebration products with less setup.",
-    highlights: [
-      "Party-ready printable product",
-      "Great for category merchandising",
-      "Simple to use for bridal shower hosting"
-    ]
-  }),
-
-  createProduct({
-    slug: "budget-bride-plan-classic-invitation",
-    name: "Budget Bride Botanical Wedding Suite",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Invitations & Stationery",
-    subcategorySlug: "invitations-stationery",
-    badge: "Launch Ready",
-    priceLabel: "₹999",
-    productType: "Wedding stationery suite",
-    isPurchasable: true,
-    image: "/products/added/budget-bride-plan-classic-invitation.png",
-    summary: "A botanical wedding suite with invitation, RSVP, details card, save the date, signage, planning sheets, and celebration extras in one coordinated collection.",
-    highlights: [
-      "12-page coordinated botanical wedding collection",
-      "Includes stationery, signage, planning, and shower extras",
-      "Delivered as a printable PDF suite"
-    ]
-  }),
-  createProduct({
-    slug: "budget-bride-botanical-details-3-page-suite",
-    name: "Budget Bride Botanical Details 3-Page Suite",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Invitations & Stationery",
-    subcategorySlug: "invitations-stationery",
-    badge: "Download Ready",
-    priceLabel: "$8.99",
-    productType: "Wedding details bundle",
-    isPurchasable: true,
-    image: "/products/added/budget-bride-botanical-details-3-page-suite.png",
+    price: 11,
+    compareAt: 16,
+    productType: "5-page editable PDF set",
     summary:
-      "A compact botanical details suite with coordinated inserts for wedding notes, schedule details, and guest information in one printable set.",
+      "A sweet proposal card set for bridesmaid, maid of honor, and bridal party asks with editable names and short messages.",
     highlights: [
-      "3-page botanical details collection",
-      "Built for matching invitation add-ons",
-      "Instant PDF download after checkout"
-    ]
+      "Five proposal card pages",
+      "Great for bridal party moments",
+      "Easy upsell for celebration buyers"
+    ],
+    details: {
+      size: "Card-sized printable set",
+      pages: "5 pages",
+      format: "Fillable PDF set",
+      editable: "Yes. Each card can be personalized with names and short proposal wording.",
+      printable: "Yes. Designed for at-home or professional card printing.",
+      includes: ["Bridal party proposal pages", "Editable names and messages", "Printable keepsake set"]
+    }
   }),
   createProduct({
-    slug: "budget-bride-digital-atlas-suite",
-    name: "Budget Bride Digital Atlas Wedding Suite",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Invitations & Stationery",
-    subcategorySlug: "invitations-stationery",
-    badge: "Signature Suite",
-    priceLabel: "$11.99",
-    productType: "Wedding stationery suite",
-    isPurchasable: true,
-    image: "/products/added/budget-bride-digital-atlas-suite.png",
+    slug: "fillable-welcome-sign-and-bar-menu-pack",
+    name: "Wedding Welcome Sign And Bar Menu Pack",
+    subcategorySlug: "signs-day-of-details",
+    badge: "Day-Of Favorite",
+    price: 12,
+    compareAt: 18,
+    productType: "2-page editable PDF set",
     summary:
-      "A signature Digital Atlas wedding suite with coordinated stationery pages designed for customers who want a polished printable set in one purchase.",
+      "A two-piece reception pack with a welcome sign and matching bar menu, designed for a polished day-of event look.",
     highlights: [
-      "Curated Digital Atlas wedding suite",
-      "Coordinated stationery pages in one PDF",
-      "Ready for printable or digital delivery"
-    ]
+      "Two matching wedding signage pages",
+      "Ideal for ceremony or reception styling",
+      "Great bundle companion item"
+    ],
+    details: {
+      size: "Large sign plus bar menu pages",
+      pages: "2 pages",
+      format: "Fillable PDF set",
+      editable: "Yes. Couple names, welcome copy, and drink list text can be typed into the pack.",
+      printable: "Yes. Ready for print-shop or event signage workflows.",
+      includes: ["Welcome sign", "Bar menu", "Editable event text fields"]
+    }
   }),
   createProduct({
-    slug: "budget-bride-plan-rose-invitation",
-    name: "Budget Bride Rose Wedding Suite",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Invitations & Stationery",
+    slug: "fillable-wedding-rsvp-card",
+    name: "Fillable Wedding RSVP Card",
     subcategorySlug: "invitations-stationery",
-    badge: "Launch Ready",
-    priceLabel: "₹999",
-    productType: "Wedding stationery suite",
-    isPurchasable: true,
-    image: "/products/budget-bride-plan-2.png",
-    summary: "A romantic rose wedding suite with floral stationery, save the date, signage, planning pages, and party extras for a soft elegant celebration look.",
+    badge: "Add-On Favorite",
+    price: 9,
+    compareAt: 14,
+    productType: "Editable fillable PDF",
+    summary:
+      "A clean 6x4 RSVP card template with attendance, guest details, and response wording that customers can type into directly.",
     highlights: [
-      "12-page coordinated rose-themed wedding collection",
-      "Includes invitation, RSVP, details, signs, and planners",
-      "Great for romantic floral wedding styling"
-    ]
-  }),
-  createProduct({
-    slug: "budget-bride-plan-welcome-sign",
-    name: "Budget Bride Burgundy Wedding Suite",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Signs & Day-Of Details",
-    subcategorySlug: "signs-day-of-details",
-    badge: "Launch Ready",
-    priceLabel: "₹999",
-    productType: "Wedding stationery suite",
-    isPurchasable: true,
-    image: "/products/budget-bride-plan-3.png",
-    summary: "A dramatic burgundy wedding suite with dark romantic stationery, welcome signage, planning pages, and celebration printables.",
-    highlights: [
-      "12-page burgundy and gold wedding collection",
-      "Includes signage, stationery, planning, and party extras",
-      "Strong fit for evening or formal wedding themes"
-    ]
-  }),
-  createProduct({
-    slug: "budget-events-and-parties-bundle",
-    name: "Budget Events & Parties Printable Bundle",
-    category: "Events & Parties",
-    categorySlug: "events-parties",
-    subcategory: "Games & Activities",
-    subcategorySlug: "games-activities",
-    badge: "Launch Ready",
-    priceLabel: "₹1199",
-    productType: "Event printable bundle",
-    isPurchasable: true,
-    image: "/products/events-parties-bundle-1.png",
-    summary: "A party printable bundle preview featuring invitations, games, signage, favor tags, menus, planning sheets, and itineraries.",
-    highlights: [
-      "10-page events and parties printable collection",
-      "Includes invites, games, signs, tags, menus, and itineraries",
-      "Great starter bundle for celebrations and party hosts"
-    ]
-  }),
-  createProduct({
-    slug: "budget-business-starter-template-pack",
-    name: "Budget Business Starter Template Pack",
-    category: "Business",
-    categorySlug: "business",
-    subcategory: "Client Documents",
-    subcategorySlug: "client-documents",
-    badge: "Launch Ready",
-    priceLabel: "₹1999",
-    productType: "Business template pack",
-    isPurchasable: true,
-    image: "/products/business-invoice-template-1.png",
-    summary: "A business template pack with invoice, proposal, agreement, welcome guide, brand kit, media kit, content planner, pricing guide, presentation deck, and SOP layouts.",
-    highlights: [
-      "12-page business starter collection",
-      "Includes client docs, marketing assets, and operations templates",
-      "Strong value-priced pack for service businesses"
-    ]
-  }),
-
-  createProduct({
-    slug: "save-the-date-canva-suite",
-    name: "Save The Date Canva Suite",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Invitations & Stationery",
-    subcategorySlug: "invitations-stationery",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Canva template pack",
-    summary: "A modern save-the-date collection for couples who want polished announcement templates before invitations are ready.",
-    highlights: ["Editable Canva files", "Matching styles for multiple event moods", "Designed as an easy add-on to invitation bundles"]
-  }),
-  createProduct({
-    slug: "wedding-timeline-checklist-kit",
-    name: "Wedding Timeline Checklist Kit",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Planning & Budget",
-    subcategorySlug: "planning-budget",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Checklist pack",
-    summary: "A timeline and checklist system that helps couples stay organized from booking to wedding week.",
-    highlights: ["Month-by-month planning flow", "Printable checklist pages", "Strong companion to planner bundles"]
-  }),
-  createProduct({
-    slug: "table-number-card-set",
-    name: "Table Number Card Set",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Signs & Day-Of Details",
-    subcategorySlug: "signs-day-of-details",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Printable card set",
-    summary: "A coordinated set of table number cards for weddings and formal events that need cohesive printed details.",
-    highlights: ["Pairs with wedding signs", "Fast printable setup", "Adds a polished event finish"]
-  }),
-  createProduct({
-    slug: "bachelorette-weekend-itinerary",
-    name: "Bachelorette Weekend Itinerary",
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: "Showers & Parties",
-    subcategorySlug: "showers-parties",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Itinerary template",
-    summary: "A weekend itinerary template pack for bachelorette planners who want the trip details to feel organized and premium.",
-    highlights: ["Editable itinerary pages", "Clean event styling", "Good upsell from shower and wedding party products"]
-  }),
-
-  createProduct({
-    slug: "birthday-party-invitation-pack",
-    name: "Birthday Party Invitation Pack",
-    category: "Events & Parties",
-    categorySlug: "events-parties",
-    subcategory: "Party Invitations",
-    subcategorySlug: "party-invitations",
-    badge: "New Category",
-    priceLabel: "Coming soon",
-    productType: "Invitation template pack",
-    summary: "A bright invitation pack built for birthday events, family celebrations, and polished printable party invites.",
-    highlights: ["Editable invitation layouts", "Multiple celebration styles", "Fits party add-on bundles"]
-  }),
-  createProduct({
-    slug: "baby-shower-games-pack",
-    name: "Baby Shower Games Pack",
-    category: "Events & Parties",
-    categorySlug: "events-parties",
-    subcategory: "Games & Activities",
-    subcategorySlug: "games-activities",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Printable games pack",
-    summary: "A game and activity bundle for baby shower hosts who want a ready-made printable experience.",
-    highlights: ["Fast host setup", "Printable party flow", "Good fit for family event merchandising"]
-  }),
-  createProduct({
-    slug: "party-welcome-sign-template",
-    name: "Party Welcome Sign Template",
-    category: "Events & Parties",
-    categorySlug: "events-parties",
-    subcategory: "Signs & Decor",
-    subcategorySlug: "signs-decor",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Printable sign template",
-    summary: "A welcome sign template for birthday parties, baby showers, and event entrances that need a styled first impression.",
-    highlights: ["Great for matching decor sets", "Simple printable format", "Useful standalone or as part of a party bundle"]
-  }),
-
-  createProduct({
-    slug: "client-welcome-guide-template",
-    name: "Client Welcome Guide Template",
-    category: "Business",
-    categorySlug: "business",
-    subcategory: "Client Documents",
-    subcategorySlug: "client-documents",
-    badge: "Agency Favorite",
-    priceLabel: "Coming soon",
-    productType: "Editable PDF and Canva template",
-    summary: "A client welcome guide template for freelancers and studios who want a more polished onboarding experience.",
-    highlights: ["Premium service positioning", "Editable brand sections", "Strong fit for digital product businesses"]
-  }),
-  createProduct({
-    slug: "service-proposal-template",
-    name: "Service Proposal Template",
-    category: "Business",
-    categorySlug: "business",
-    subcategory: "Client Documents",
-    subcategorySlug: "client-documents",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Proposal template",
-    summary: "A clean, conversion-focused proposal template for consultants, designers, and service providers.",
-    highlights: ["Clear offer structure", "Brand-friendly presentation", "Useful in client workflow bundles"]
-  }),
-  createProduct({
-    slug: "lead-magnet-workbook-template",
-    name: "Lead Magnet Workbook Template",
-    category: "Business",
-    categorySlug: "business",
-    subcategory: "Marketing & Sales",
-    subcategorySlug: "marketing-sales",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Workbook template",
-    summary: "A workbook template for creators and online businesses building list-growth freebies and opt-in offers.",
-    highlights: ["Lead magnet ready", "Editable workbook pages", "Good cross-sell with content products"]
-  }),
-  createProduct({
-    slug: "instagram-launch-template-pack",
-    name: "Instagram Launch Template Pack",
-    category: "Business",
-    categorySlug: "business",
-    subcategory: "Marketing & Sales",
-    subcategorySlug: "marketing-sales",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Social media template pack",
-    summary: "A launch-week template pack for creators and brands planning social media promotions around offers or product drops.",
-    highlights: ["Launch campaign focused", "Multiple post formats", "Fits content and marketing bundles"]
-  }),
-  createProduct({
-    slug: "sop-template-library",
-    name: "SOP Template Library",
-    category: "Business",
-    categorySlug: "business",
-    subcategory: "Operations & Systems",
-    subcategorySlug: "operations-systems",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Operations template library",
-    summary: "A standard operating procedure library for small businesses that want more repeatable systems and cleaner documentation.",
-    highlights: ["Operations-focused templates", "Editable document set", "Strong value for business buyers"]
-  }),
-
-  createProduct({
-    slug: "monthly-budget-spreadsheet",
-    name: "Monthly Budget Spreadsheet",
-    category: "Planners & Productivity",
-    categorySlug: "planners-productivity",
-    subcategory: "Finance & Budgeting",
-    subcategorySlug: "finance-budgeting",
-    badge: "Finance Favorite",
-    priceLabel: "Coming soon",
-    productType: "Spreadsheet template",
-    summary: "A practical spreadsheet for monthly budget tracking, spending reviews, and simple personal finance planning.",
-    highlights: ["Spreadsheet-based planning", "Finance category anchor", "Easy repeat-use product"]
-  }),
-  createProduct({
-    slug: "debt-payoff-tracker",
-    name: "Debt Payoff Tracker",
-    category: "Planners & Productivity",
-    categorySlug: "planners-productivity",
-    subcategory: "Finance & Budgeting",
-    subcategorySlug: "finance-budgeting",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Tracker spreadsheet",
-    summary: "A payoff tracker for customers who want more visible progress and structure while reducing debt.",
-    highlights: ["Goal-oriented finance product", "Clear visual tracking", "Good companion to budget tools"]
-  }),
-  createProduct({
-    slug: "goal-planner-notion-system",
-    name: "Goal Planner Notion System",
-    category: "Planners & Productivity",
-    categorySlug: "planners-productivity",
-    subcategory: "Goal Planning",
-    subcategorySlug: "goal-planning",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Notion template",
-    summary: "A Notion-based goal system for creators and planners who prefer a digital dashboard over printable pages.",
-    highlights: ["Digital-first planning", "Notion audience fit", "Strong productivity product"]
-  }),
-  createProduct({
-    slug: "daily-routine-planner-pack",
-    name: "Daily Routine Planner Pack",
-    category: "Planners & Productivity",
-    categorySlug: "planners-productivity",
-    subcategory: "Goal Planning",
-    subcategorySlug: "goal-planning",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Printable planner pack",
-    summary: "A daily planner pack focused on routines, priorities, and calmer day-to-day execution.",
-    highlights: ["Repeat-use printable", "Pairs well with habit products", "Broad planner appeal"]
-  }),
-  createProduct({
-    slug: "family-command-center-kit",
-    name: "Family Command Center Kit",
-    category: "Planners & Productivity",
-    categorySlug: "planners-productivity",
-    subcategory: "Home & Family",
-    subcategorySlug: "home-family",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Printable home organizer",
-    summary: "A family organization kit with calendars, routines, and household planning pages.",
-    highlights: ["Home planning bundle", "Family workflow support", "Great for printable audiences"]
-  }),
-
-  createProduct({
-    slug: "modern-resume-template-pack",
-    name: "Modern Resume Template Pack",
-    category: "Career & Education",
-    categorySlug: "career-education",
-    subcategory: "Resume & Job Search",
-    subcategorySlug: "resume-job-search",
-    badge: "Career Favorite",
-    priceLabel: "Coming soon",
-    productType: "Resume template pack",
-    summary: "A resume pack designed for modern job seekers who want a cleaner presentation and easy editing.",
-    highlights: ["Career category anchor", "Multiple resume layouts", "Fits job-search bundles"]
-  }),
-  createProduct({
-    slug: "job-application-tracker",
-    name: "Job Application Tracker",
-    category: "Career & Education",
-    categorySlug: "career-education",
-    subcategory: "Resume & Job Search",
-    subcategorySlug: "resume-job-search",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Tracker spreadsheet",
-    summary: "A job-search tracker for applications, interviews, follow-ups, and search progress.",
-    highlights: ["Useful practical tool", "Pairs with resume templates", "Spreadsheet-friendly product"]
-  }),
-  createProduct({
-    slug: "student-study-planner",
-    name: "Student Study Planner",
-    category: "Career & Education",
-    categorySlug: "career-education",
-    subcategory: "Study & School",
-    subcategorySlug: "study-school",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Study planner",
-    summary: "A printable planner built for students who want a clearer structure for assignments, study blocks, and deadlines.",
-    highlights: ["Education category anchor", "Simple printable format", "Broad student appeal"]
-  }),
-  createProduct({
-    slug: "teacher-lesson-planner-bundle",
-    name: "Teacher Lesson Planner Bundle",
-    category: "Career & Education",
-    categorySlug: "career-education",
-    subcategory: "Teacher Resources",
-    subcategorySlug: "teacher-resources",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Lesson planner bundle",
-    summary: "A lesson planning bundle for teachers who want more organized classroom preparation and printable workflows.",
-    highlights: ["Teacher-facing product", "Printable planning system", "Good for education collections"]
-  }),
-
-  createProduct({
-    slug: "pinterest-pin-template-bundle",
-    name: "Pinterest Pin Template Bundle",
-    category: "Social & Content",
-    categorySlug: "social-content",
-    subcategory: "Social Templates",
-    subcategorySlug: "social-templates",
-    badge: "Creator Favorite",
-    priceLabel: "Coming soon",
-    productType: "Canva template bundle",
-    summary: "A pin template bundle for bloggers, creators, and stores that want faster, more consistent Pinterest design.",
-    highlights: ["Fits current marketing audience", "High-volume content use case", "Good lead-in to content products"]
-  }),
-  createProduct({
-    slug: "content-calendar-dashboard",
-    name: "Content Calendar Dashboard",
-    category: "Social & Content",
-    categorySlug: "social-content",
-    subcategory: "Content Calendars",
-    subcategorySlug: "content-calendars",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Notion or spreadsheet system",
-    summary: "A content planning dashboard for creators and businesses managing posts, campaigns, and publishing schedules.",
-    highlights: ["Useful ongoing product", "Good for creator workflows", "Supports repeat engagement"]
-  }),
-  createProduct({
-    slug: "ebook-workbook-template-kit",
-    name: "Ebook Workbook Template Kit",
-    category: "Social & Content",
-    categorySlug: "social-content",
-    subcategory: "Lead Magnets & Workbooks",
-    subcategorySlug: "lead-magnets-workbooks",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Lead magnet template kit",
-    summary: "A workbook and ebook kit for digital businesses creating premium free or paid educational content.",
-    highlights: ["Strong digital product fit", "Good for info-product creators", "Flexible content use"]
-  }),
-
-  createProduct({
-    slug: "wedding-svg-bundle",
-    name: "Wedding SVG Bundle",
-    category: "Creative Assets",
-    categorySlug: "creative-assets",
-    subcategory: "SVG & Cut Files",
-    subcategorySlug: "svg-cut-files",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "SVG bundle",
-    summary: "A cut-file bundle for wedding signs, decor, and creative project use.",
-    highlights: ["Asset-focused category entry", "Good for craft audiences", "Strong bundle potential"]
-  }),
-  createProduct({
-    slug: "brand-mockup-scene-pack",
-    name: "Brand Mockup Scene Pack",
-    category: "Creative Assets",
-    categorySlug: "creative-assets",
-    subcategory: "Mockups & Brand Assets",
-    subcategorySlug: "mockups-brand-assets",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Mockup pack",
-    summary: "A mockup pack for presenting logos, brand assets, and digital products with more polish.",
-    highlights: ["Visual merchandising support", "Useful for designers and shops", "Great for creative catalog depth"]
-  }),
-  createProduct({
-    slug: "procreate-brush-starter-kit",
-    name: "Procreate Brush Starter Kit",
-    category: "Creative Assets",
-    categorySlug: "creative-assets",
-    subcategory: "Presets & Brushes",
-    subcategorySlug: "presets-brushes",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Brush pack",
-    summary: "A starter brush set for illustrators and creators working in Procreate.",
-    highlights: ["Digital asset product", "Creative tool category", "Useful for artist audiences"]
-  }),
-
-  createProduct({
-    slug: "fillable-invoice-pdf",
-    name: "Fillable Invoice PDF",
-    category: "Templates & Documents",
-    categorySlug: "templates-documents",
-    subcategory: "Printable Forms",
-    subcategorySlug: "printable-forms",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Fillable PDF",
-    summary: "A fillable invoice PDF for simple, printable client billing.",
-    highlights: ["Fast-use document template", "Useful standalone or in bundles", "Fits small business buyers"]
-  }),
-  createProduct({
-    slug: "guided-journal-workbook",
-    name: "Guided Journal Workbook",
-    category: "Templates & Documents",
-    categorySlug: "templates-documents",
-    subcategory: "Journals & Workbooks",
-    subcategorySlug: "journals-workbooks",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Workbook",
-    summary: "A guided workbook product for reflection, planning, and personal development routines.",
-    highlights: ["Workbook-style offer", "Strong printable format", "Useful for wellness and planning audiences"]
-  }),
-  createProduct({
-    slug: "editable-checklist-library",
-    name: "Editable Checklist Library",
-    category: "Templates & Documents",
-    categorySlug: "templates-documents",
-    subcategory: "Editable Documents",
-    subcategorySlug: "editable-documents",
-    badge: "Coming Soon",
-    priceLabel: "Coming soon",
-    productType: "Document template library",
-    summary: "A checklist library with editable documents for workflows, planning, and recurring admin tasks.",
-    highlights: ["Broad-use template pack", "Great for business and productivity buyers", "Supports many upsell paths"]
-  }),
-  ...pdfImportedProducts
+      "6x4 RSVP format",
+      "Perfect low-ticket stationery upsell",
+      "Simple for customers to customize"
+    ],
+    details: {
+      size: "6 x 4 inches",
+      pages: "1 page",
+      format: "Fillable PDF",
+      editable: "Yes. Response fields, guest names, and notes can be filled in directly.",
+      printable: "Yes. Designed for digital delivery and easy print production.",
+      includes: ["RSVP card layout", "Editable response fields", "Ready-to-save PDF"]
+    }
+  })
 ];
 
-const hiddenProductSlugs = new Set([
-  "save-the-date-canva-suite",
-  "wedding-timeline-checklist-kit",
-  "table-number-card-set",
-  "bachelorette-weekend-itinerary",
-  "birthday-party-invitation-pack",
-  "baby-shower-games-pack",
-  "party-welcome-sign-template",
-  "client-welcome-guide-template",
-  "service-proposal-template",
-  "lead-magnet-workbook-template",
-  "instagram-launch-template-pack",
-  "sop-template-library",
-  "monthly-budget-spreadsheet",
-  "debt-payoff-tracker",
-  "goal-planner-notion-system",
-  "daily-routine-planner-pack",
-  "family-command-center-kit",
-  "modern-resume-template-pack",
-  "job-application-tracker",
-  "student-study-planner",
-  "teacher-lesson-planner-bundle",
-  "pinterest-pin-template-bundle",
-  "content-calendar-dashboard",
-  "ebook-workbook-template-kit",
-  "wedding-svg-bundle",
-  "brand-mockup-scene-pack",
-  "procreate-brush-starter-kit",
-  "fillable-invoice-pdf",
-  "guided-journal-workbook",
-  "editable-checklist-library"
-]);
-
-const activeFallbackProducts = fallbackProducts.filter((product) => !hiddenProductSlugs.has(product.slug));
-
 export function getAllProducts() {
-  return activeFallbackProducts;
+  return fallbackProducts;
 }
 
 export function getFeaturedProducts() {
-  return activeFallbackProducts.slice(0, 3);
+  return fallbackProducts.filter((product) => product.isFeatured).slice(0, 3);
 }
 
 export function getProductBySlug(slug) {
-  return activeFallbackProducts.find((product) => product.slug === slug);
+  return fallbackProducts.find((product) => product.slug === slug) || null;
 }

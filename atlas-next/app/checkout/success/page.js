@@ -24,8 +24,8 @@ export default async function CheckoutSuccessPage({ searchParams }) {
           <h3>Your order</h3>
           <ul className="feature-list">
             <li>Your payment reference has been recorded.</li>
-            <li>Your account will show completed purchases when available.</li>
-            <li>You can continue browsing the catalog anytime.</li>
+            <li>Your account can be used for future order history and download access.</li>
+            <li>You can continue browsing the wedding collection anytime.</li>
           </ul>
         </article>
         <article className="summary-card">

@@ -1,21 +1,33 @@
+import { CatalogCategoryCard } from "@/components/catalog-category-card";
+import { getCategoryDirectoryWithCounts } from "@/lib/catalog";
+
 export const metadata = {
   title: "Categories | The Digital Atlas",
-  description: "Category browsing is currently unavailable because the site is empty."
+  description: "Browse product categories on The Digital Atlas."
 };
 
-export default function CategoriesPage() {
+export default async function CategoriesPage() {
+  const categories = await getCategoryDirectoryWithCounts();
+  const liveCategories = categories.filter((category) => category.liveCount > 0);
+
   return (
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Categories</p>
-        <h1>No category previews are being shown.</h1>
-        <p>The site has been cleared, so category cards and preview sections are not displayed.</p>
+        <h1>Browse the live storefront by category.</h1>
+        <p>The wedding collection is live now, with the rest of the catalog ready for future expansion.</p>
       </div>
-      <article className="info-card">
-        <p className="eyebrow">Currently Empty</p>
-        <h2>There are no collections to browse right now.</h2>
-        <p>Once future updates are ready, category browsing can be turned back on.</p>
-      </article>
+      <div className="catalog-directory">
+        {liveCategories.map((category) => (
+          <CatalogCategoryCard
+            key={category.slug}
+            category={category}
+            href={`/shop/${category.slug}`}
+            liveCount={category.liveCount}
+            plannedCount={category.plannedCount}
+          />
+        ))}
+      </div>
     </section>
   );
 }

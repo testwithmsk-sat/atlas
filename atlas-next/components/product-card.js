@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
 export function ProductCard({ product }) {
-  const isPlaceholder = product.isPlaceholder === true;
+  const hasCompareAt = product.compareAtPriceLabel && product.compareAtPriceLabel !== product.priceLabel;
 
   return (
     <article className="product-card">
@@ -14,12 +14,11 @@ export function ProductCard({ product }) {
       <p className="product-card-kicker">{product.subcategory || product.category}</p>
       <p>{product.summary}</p>
       <div className="card-meta">
-        <span>{product.priceLabel}</span>
-        {isPlaceholder ? (
-          <span className="card-link-muted">Preview only</span>
-        ) : (
-          <Link href={`/products/${product.slug}`}>View product</Link>
-        )}
+        <div className="price-stack">
+          <span className="price-offer">{product.priceLabel}</span>
+          {hasCompareAt ? <span className="price-original">{product.compareAtPriceLabel}</span> : null}
+        </div>
+        <Link href={`/products/${product.slug}`}>View product</Link>
       </div>
       <div className="card-actions">
         <AddToCartButton product={product} className="button button-secondary product-card-button" />

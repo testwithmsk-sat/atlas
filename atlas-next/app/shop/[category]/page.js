@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ProductCard } from "@/components/product-card";
 import { getCategoryPageData } from "@/lib/catalog";
 import { categoryDirectory } from "@/lib/catalog-taxonomy";
 
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${categoryPage.category.name} | The Digital Atlas`,
-    description: "This section is currently empty."
+    description: `${categoryPage.category.name} products on The Digital Atlas.`
   };
 }
 
@@ -34,22 +35,46 @@ export default async function CategoryPage({ params }) {
       <div className="page-intro category-page-intro">
         <p className="eyebrow">{category.navLabel}</p>
         <h1>{category.name}</h1>
-        <p>This section is currently empty. No previews are being shown here.</p>
+        <p>{category.description}</p>
+        <div className="category-page-meta">
+          <span>{categoryPage.liveCount} live products</span>
+          <span>{category.subcategories.length} subcategories</span>
+        </div>
         <div className="hero-actions">
           <Link className="button button-secondary" href="/shop">
-            Back To Status
+            Back To Shop
           </Link>
-          <Link className="button button-secondary" href="/categories">
-            View Categories Status
+          <Link className="button button-secondary" href="/bundles">
+            View Bundle
           </Link>
         </div>
       </div>
 
-      <article className="info-card empty-state-card">
-        <p className="eyebrow">No Listings</p>
-        <h3>This section has been cleared.</h3>
-        <p>There are no items or preview blocks in this area right now.</p>
-      </article>
+      {categoryPage.groups.length === 0 ? (
+        <article className="info-card empty-state-card">
+          <p className="eyebrow">Coming Soon</p>
+          <h3>No live products are published in this category yet.</h3>
+          <p>This category is part of the wider catalog plan, but the wedding collection is the only live launch right now.</p>
+        </article>
+      ) : (
+        <div className="subcategory-section-list">
+          {categoryPage.groups.map((group) => (
+            <section className="subcategory-section" key={group.subcategory.slug}>
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">{group.subcategory.name}</p>
+                  <h2>{group.products.length} product{group.products.length === 1 ? "" : "s"}</h2>
+                </div>
+              </div>
+              <div className="product-grid">
+                {group.products.map((product) => (
+                  <ProductCard key={product.slug} product={product} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

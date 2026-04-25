@@ -1,4 +1,6 @@
 :root {
+  --font-heading: "Palatino Linotype", "Book Antiqua", "Times New Roman", serif;
+  --font-body: Aptos, "Segoe UI", sans-serif;
   --bg: #f5ecdf;
   --bg-soft: #fff9f2;
   --panel: rgba(255, 251, 245, 0.9);
@@ -94,7 +96,8 @@ img {
 .section-heading,
 .card-meta,
 .footer-links,
-.price-row {
+.price-row,
+.price-stack {
   display: flex;
 }
 
@@ -532,12 +535,6 @@ img {
   border-top: 1px solid var(--line);
 }
 
-.card-meta span:first-child {
-  color: var(--text-strong);
-  font-size: 1rem;
-  font-weight: 700;
-}
-
 .card-actions {
   margin-top: 18px;
 }
@@ -549,6 +546,38 @@ img {
 
 .product-card-button {
   width: 100%;
+}
+
+.price-stack {
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.price-offer {
+  color: var(--text-strong);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.price-original {
+  color: var(--muted);
+  font-size: 0.92rem;
+  text-decoration: line-through;
+}
+
+.sale-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(159, 111, 59, 0.12);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .catalog-directory,
@@ -700,6 +729,8 @@ img {
 
 .price-row {
   margin: 20px 0 8px;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .price-row strong {
