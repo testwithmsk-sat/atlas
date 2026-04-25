@@ -13,9 +13,15 @@ export async function createSupabaseServerClient() {
         return cookieStore.getAll();
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          cookieStore.set(name, value, options);
-        });
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        } catch {
+          // Server Components cannot always write cookies directly.
+          // Supabase can still read the existing session here, while
+          // refresh writes should be handled by proxy/middleware flows.
+        }
       }
     }
   });
