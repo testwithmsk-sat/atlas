@@ -55,21 +55,22 @@ export default async function HomePage({ searchParams }) {
   const bundleCount = bundleProducts.length;
   const liveCategories = categories.filter((category) => category.liveCount > 0);
   const categorySpotlights = liveCategories.slice(0, 4);
+  const featuredSingles = featuredProducts.filter((product) => product.isBundle !== true).slice(0, 3);
 
   return (
     <>
       <section className="hero-section">
         <div className="hero-copy">
-          <p className="eyebrow">Digital Template Catalog</p>
-          <h1>Business, events, wedding, and home-planning templates in one storefront.</h1>
+          <p className="eyebrow">Curated Digital Storefront</p>
+          <h1>Templates that feel polished before your customers even open the file.</h1>
           <p className="hero-text">
-            The storefront now combines editable spreadsheets, printable PDFs, invitations, planning kits, and bundle
-            offers across multiple categories so customers can shop complete systems or affordable single files.
+            The Digital Atlas combines premium-looking planners, editable spreadsheets, printable PDFs, and smart
+            bundle offers so customers can shop by outcome instead of digging through scattered files.
           </p>
           <div className="trust-strip">
             <span>{productCount} individual products</span>
             <span>{bundleCount} bundle offers</span>
-            <span>Business + events + wedding + home</span>
+            <span>Instant digital delivery</span>
           </div>
           <div className="hero-actions">
             <Link className="button button-primary" href="/shop">
@@ -79,23 +80,47 @@ export default async function HomePage({ searchParams }) {
               View Bundles
             </Link>
           </div>
+          <div className="hero-proof-grid">
+            <div className="hero-proof-card">
+              <strong>Professional by default</strong>
+              <span>Refined templates for businesses, events, weddings, and home planning.</span>
+            </div>
+            <div className="hero-proof-card">
+              <strong>Quick to buy, easy to use</strong>
+              <span>Clear pricing, low-friction bundles, and instant access after checkout.</span>
+            </div>
+            <div className="hero-proof-card">
+              <strong>Built to scale</strong>
+              <span>Customers can browse by category, bundle, or individual use case.</span>
+            </div>
+          </div>
         </div>
         <div className="hero-panel">
-          <p className="eyebrow">Bundle Offer</p>
-          <div className="hero-panel-stat">
-            <strong>{bundle ? `${bundle.priceLabel} bundle price` : "$10.00 bundle price"}</strong>
+          <p className="eyebrow">Store Highlights</p>
+          <div className="hero-panel-stat hero-panel-stat--spotlight">
+            <strong>{bundle ? bundle.name : "Signature bundle"}</strong>
             <span>
               {bundle
-                ? `Regular price ${bundle.compareAtPriceLabel}. Customers get the full 11-file bundle in one purchase.`
-                : "Bundle pricing is live for the full wedding collection."}
+                ? `${bundle.priceLabel} now, compared with ${bundle.compareAtPriceLabel}. A polished all-in-one offer for customers who want the full set.`
+                : "Bundle pricing is live with a cleaner premium anchor across the collection."}
             </span>
           </div>
-          <ul className="feature-list">
-            <li>Business bundles with proposal, invoice, onboarding, and branding files.</li>
-            <li>Event and celebration bundles with invitations, planners, and guest tools.</li>
-            <li>Wedding and home-planning templates remain available alongside the new categories.</li>
-            <li>Bundles stay easy to shop while individual files remain affordable add-ons.</li>
-          </ul>
+          <div className="hero-spotlight-list">
+            {featuredSingles.map((product) => (
+              <Link className="hero-spotlight-item" key={product.slug} href={`/products/${product.slug}`}>
+                <div>
+                  <strong>{product.name}</strong>
+                  <span>{product.subcategory || product.category}</span>
+                </div>
+                <b>{product.priceLabel}</b>
+              </Link>
+            ))}
+          </div>
+          <div className="hero-microcopy">
+            <span>Editable files</span>
+            <span>Printable PDFs</span>
+            <span>Planning kits</span>
+          </div>
         </div>
       </section>
 
@@ -103,7 +128,7 @@ export default async function HomePage({ searchParams }) {
         <div className="section-heading">
           <div>
             <p className="eyebrow">Shop By Category</p>
-            <h2>Let customers start where their intent already is.</h2>
+            <h2>Organize the store around what people are actually shopping for.</h2>
           </div>
           <Link className="text-link" href="/categories">
             View all categories
@@ -125,8 +150,8 @@ export default async function HomePage({ searchParams }) {
       <section className="section-block">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Featured</p>
-            <h2>Start with the strongest bundle and template offers.</h2>
+            <p className="eyebrow">Featured Collection</p>
+            <h2>Lead with the strongest offers and the cleanest product presentation.</h2>
           </div>
           <Link className="text-link" href="/best-sellers">
             View all best sellers
@@ -137,6 +162,30 @@ export default async function HomePage({ searchParams }) {
             <ProductCard key={product.slug} product={product} />
           ))}
         </div>
+      </section>
+
+      <section className="section-block storefront-editorial">
+        <article className="catalog-card storefront-editorial-main">
+          <p className="eyebrow">Store Experience</p>
+          <h2>A stronger storefront doesn&apos;t just look good. It makes buying feel easier.</h2>
+          <p>
+            Professional merchandising comes from clarity: fewer competing signals, better product hierarchy, and more
+            confidence around what customers get after they purchase.
+          </p>
+          <div className="catalog-chip-list">
+            <span className="catalog-chip">Confident pricing</span>
+            <span className="catalog-chip">Premium previews</span>
+            <span className="catalog-chip">Faster trust building</span>
+          </div>
+        </article>
+        <article className="info-card storefront-editorial-side">
+          <p className="eyebrow">Conversion Focus</p>
+          <h3>Give bundles a premium role while keeping single products simple to understand.</h3>
+          <p>
+            The strongest stores make it obvious which products are quick wins, which are premium anchors, and why the
+            customer should trust the purchase flow.
+          </p>
+        </article>
       </section>
 
       <section className="section-block editorial-band">
