@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
-import { getBundleProducts, getFeaturedProducts } from "@/lib/catalog";
+import { getAllProducts, getBundleProducts, getFeaturedProducts } from "@/lib/catalog";
 
 export default async function HomePage() {
-  const [featuredProducts, bundleProducts] = await Promise.all([getFeaturedProducts(), getBundleProducts()]);
+  const [featuredProducts, bundleProducts, products] = await Promise.all([
+    getFeaturedProducts(),
+    getBundleProducts(),
+    getAllProducts()
+  ]);
   const bundle = bundleProducts[0] || null;
-  const productCount = 24;
+  const productCount = products.filter((product) => product.isBundle !== true).length;
   const bundleCount = bundleProducts.length;
 
   return (
@@ -16,7 +20,7 @@ export default async function HomePage() {
           <h1>Wedding templates, planning spreadsheets, and printables in one storefront.</h1>
           <p className="hero-text">
             The storefront now combines editable planning spreadsheets, printable wedding PDFs, stationery, signage,
-            and bundle offers so you can sell both low-ticket add-ons and higher-value wedding collections.
+            and bundle offers so you can sell both low-ticket add-ons and budget-friendly wedding collections.
           </p>
           <div className="trust-strip">
             <span>{productCount} individual products</span>
@@ -35,7 +39,7 @@ export default async function HomePage() {
         <div className="hero-panel">
           <p className="eyebrow">Bundle Offer</p>
           <div className="hero-panel-stat">
-            <strong>{bundle ? `${bundle.priceLabel} offer price` : "$59.00 offer price"}</strong>
+            <strong>{bundle ? `${bundle.priceLabel} bundle price` : "$10.00 bundle price"}</strong>
             <span>
               {bundle
                 ? `Regular price ${bundle.compareAtPriceLabel}. Customers get the full 11-file bundle in one purchase.`
@@ -79,10 +83,10 @@ export default async function HomePage() {
         </article>
         <article className="info-card editorial-note">
           <p className="eyebrow">Offer Strategy</p>
-          <h3>Keep the flagship bundle at $59 and use the newer planning and signage products for extra average order value.</h3>
+          <h3>Keep every bundle at $10 and use the individual files as affordable $1 to $5 add-ons.</h3>
           <p>
-            The catalog now spans low-ticket stationery add-ons, mid-ticket planning tools, and multiple bundle offers
-            with clear regular-versus-offer pricing.
+            The catalog now uses low, impulse-friendly pricing across the shop while still keeping bundle pricing easy
+            to understand.
           </p>
         </article>
       </section>
