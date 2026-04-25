@@ -1,9 +1,28 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { CatalogCategoryCard } from "@/components/catalog-category-card";
 import { ProductCard } from "@/components/product-card";
 import { getAllProducts, getBundleProducts, getCategoryDirectoryWithCounts, getFeaturedProducts } from "@/lib/catalog";
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }) {
+  const params = await searchParams;
+  const hasOAuthParams = params?.code || params?.error;
+
+  if (hasOAuthParams) {
+    const callbackParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params || {})) {
+      if (typeof value === "string" && value) {
+        callbackParams.set(key, value);
+      }
+    }
+
+    if (!callbackParams.has("next")) {
+      callbackParams.set("next", "/account");
+    }
+
+    redirect(`/auth/callback?${callbackParams.toString()}`);
+  }
+
   const [featuredProducts, bundleProducts, products, categories] = await Promise.all([
     getFeaturedProducts(),
     getBundleProducts(),
