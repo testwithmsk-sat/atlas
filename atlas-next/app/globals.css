@@ -1095,6 +1095,25 @@ img {
   background: rgba(255, 255, 255, 0.48);
 }
 
+.product-upsell-card {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border: 1px solid rgba(149, 102, 61, 0.18);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 247, 238, 0.9)),
+    var(--panel-soft);
+}
+
+.product-upsell-card h3 {
+  margin: 0 0 10px;
+  color: var(--text-strong);
+}
+
+.compact-price-row {
+  margin: 14px 0 0;
+}
+
 .product-trust-panel strong,
 .checkout-assurance-card strong {
   display: block;
@@ -1288,6 +1307,35 @@ img {
   line-height: 1.6;
 }
 
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.faq-card {
+  padding: 30px;
+}
+
+.faq-list {
+  display: grid;
+  gap: 18px;
+}
+
+.faq-item h3 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: 1.05rem;
+}
+
+.faq-item p {
+  margin: 0;
+}
+
+.mobile-sticky-buy {
+  display: none;
+}
+
 .account-data-grid {
   margin-top: 22px;
   display: grid;
@@ -1364,7 +1412,8 @@ img {
   .editorial-band,
   .storefront-editorial,
   .shop-overview-grid,
-  .hero-proof-grid {
+  .hero-proof-grid,
+  .faq-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1475,5 +1524,43 @@ img {
 
   .cart-item {
     grid-template-columns: 1fr;
+  }
+
+  .mobile-sticky-buy {
+    position: sticky;
+    bottom: 12px;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 24px;
+    padding: 14px 16px;
+    border: 1px solid rgba(149, 102, 61, 0.16);
+    border-radius: 22px;
+    background: rgba(255, 251, 245, 0.96);
+    box-shadow: 0 16px 36px rgba(51, 33, 18, 0.14);
+    backdrop-filter: blur(12px);
+  }
+
+  .mobile-sticky-buy strong,
+  .mobile-sticky-buy span {
+    display: block;
+  }
+
+  .mobile-sticky-buy strong {
+    color: var(--text-strong);
+    font-size: 1.1rem;
+  }
+
+  .mobile-sticky-buy span {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+
+  .product-sticky-button {
+    width: auto;
+    min-width: 160px;
   }
 }

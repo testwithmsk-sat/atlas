@@ -33,6 +33,12 @@ export default async function ProductPage({ params }) {
 
   const hasCompareAt = product.compareAtPriceLabel && product.compareAtPriceLabel !== product.priceLabel;
   const relatedProducts = await getRelatedProducts(product, 3);
+  const allProducts = await getAllProducts();
+  const bundleUpsell =
+    !product.isBundle &&
+    allProducts.find(
+      (candidate) => candidate.isBundle === true && candidate.categorySlug === product.categorySlug && candidate.slug !== product.slug
+    );
   const formatBadges = [
     product.details?.format,
     product.isBundle ? `${product.bundleContents.length || product.details?.includes?.length || 0} files` : null,
@@ -79,6 +85,28 @@ export default async function ProductPage({ params }) {
               </Link>
             </div>
 
+            {bundleUpsell ? (
+              <div className="product-upsell-card">
+                <p className="eyebrow">Frequently Bought Together</p>
+                <h3>{bundleUpsell.name}</h3>
+                <p>
+                  Prefer a more complete set? This product also fits naturally inside the bundle, giving shoppers a
+                  stronger all-in-one offer.
+                </p>
+                <div className="price-row compact-price-row">
+                  <div className="price-stack">
+                    <strong>{bundleUpsell.priceLabel}</strong>
+                    {bundleUpsell.compareAtPriceLabel ? (
+                      <span className="price-original">{bundleUpsell.compareAtPriceLabel}</span>
+                    ) : null}
+                  </div>
+                  <Link className="text-link" href={`/products/${bundleUpsell.slug}`}>
+                    View bundle
+                  </Link>
+                </div>
+              </div>
+            ) : null}
+
             <div className="product-trust-panel">
               <div>
                 <strong>Instant delivery</strong>
@@ -103,6 +131,14 @@ export default async function ProductPage({ params }) {
                 <li key={highlight}>{highlight}</li>
               ))}
             </ul>
+
+            <div className="mobile-sticky-buy">
+              <div>
+                <strong>{product.priceLabel}</strong>
+                <span>{product.isBundle ? "Complete bundle" : "Instant digital file"}</span>
+              </div>
+              <AddToCartButton product={product} className="button button-primary product-sticky-button" />
+            </div>
           </article>
         </div>
 
@@ -149,6 +185,18 @@ export default async function ProductPage({ params }) {
               <li>Sign in to keep orders and download access connected to your account.</li>
               <li>Bundle purchases unlock each included source file individually in the download library.</li>
             </ul>
+          </article>
+
+          <article className="product-detail-card">
+            <p className="eyebrow">Need Help?</p>
+            <ul className="feature-list compact-detail-list">
+              <li>Visit the FAQ page for download, compatibility, and delivery answers.</li>
+              <li>Check the format, file count, and included items before purchase.</li>
+              <li>Digital products are delivered instantly once payment is confirmed.</li>
+            </ul>
+            <Link className="text-link" href="/faq">
+              Read the FAQ
+            </Link>
           </article>
 
           <article className="product-detail-card">
