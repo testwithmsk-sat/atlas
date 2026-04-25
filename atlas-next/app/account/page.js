@@ -28,9 +28,19 @@ export default async function AccountPage({ searchParams }) {
   const email = sessionResult?.data?.user?.email || "";
   const params = await searchParams;
   const checkoutState = params?.checkout || "";
+  const authState = params?.auth || "";
   const [orders, downloads] = email
     ? await Promise.all([getOrdersForCustomer(email), getDownloadLibrary(email)])
     : [[], []];
+
+  let authMessage = "";
+  if (authState === "unavailable") {
+    authMessage = "Google sign-in is not available yet.";
+  } else if (authState === "error" || authState === "google-error") {
+    authMessage = "Google sign-in could not be started. Please try again.";
+  } else if (authState) {
+    authMessage = "Google sign-in was cancelled or needs more setup in Supabase.";
+  }
 
   return (
     <section className="section-block">
@@ -41,6 +51,7 @@ export default async function AccountPage({ searchParams }) {
         {checkoutState === "success" ? (
           <p className="status-note">Your order was completed successfully.</p>
         ) : null}
+        {authMessage ? <p className="status-note">{authMessage}</p> : null}
       </div>
 
       <div className="split-panel">

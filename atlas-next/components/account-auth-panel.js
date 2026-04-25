@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { signInAction, signOutAction, signUpAction } from "@/app/account/actions";
+import { signInAction, signInWithGoogleAction, signOutAction, signUpAction } from "@/app/account/actions";
 
 const initialState = { message: "" };
 
@@ -44,6 +44,18 @@ export function AccountAuthPanel({ email, hasSupabase }) {
             Sign In
           </button>
         </form>
+        {hasSupabase ? (
+          <>
+            <div className="auth-divider">
+              <span>or</span>
+            </div>
+            <form action={signInWithGoogleAction}>
+              <button className="button button-google" type="submit">
+                Continue With Google
+              </button>
+            </form>
+          </>
+        ) : null}
         <p className="status-note">
           {hasSupabase
             ? signInState.message || "Sign in to access your account, orders, and future downloads."

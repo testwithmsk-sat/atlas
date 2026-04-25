@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { hasSupabaseConfig } from "@/lib/env";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
@@ -27,6 +29,15 @@ function getFriendlyAuthMessage(error, fallbackMessage) {
   }
 
   return fallbackMessage || error.message || "Something went wrong. Please try again.";
+}
+
+async function getRequestOrigin() {
+  const headerStore = await headers();
+  const forwardedHost = headerStore.get("x-forwarded-host");
+  const host = forwardedHost || headerStore.get("host");
+  const protocol = headerStore.get("x-forwarded-proto") || (host?.includes("localhost") ? "http" : "https");
+
+  return host ? `${protocol}://${host}` : null;
 }
 
 export async function signInAction(_prevState, formData) {
@@ -70,6 +81,37 @@ export async function signUpAction(_prevState, formData) {
   }
 
   return { message: "Account created. Check your email for any confirmation steps." };
+}
+
+export async function signInWithGoogleAction() {
+  if (!hasSupabaseConfig) {
+    redirect("/account?auth=unavailable");
+  }
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    redirect("/account?auth=error");
+  }
+
+  const origin = (await getRequestOrigin()) || "http://localhost:3000";
+  const redirectTo = `${origin}/auth/callback?next=/account`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo,
+      queryParams: {
+        access_type: "offline",
+        prompt: "select_account"
+      }
+    }
+  });
+
+  if (error || !data?.url) {
+    redirect("/account?auth=google-error");
+  }
+
+  redirect(data.url);
 }
 
 export async function signOutAction() {
