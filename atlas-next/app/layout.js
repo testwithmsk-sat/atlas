@@ -39,6 +39,9 @@ export const metadata = {
     description:
       "Shop premium digital templates, planners, business documents, event kits, wedding printables, and bundle offers from The Digital Atlas."
   },
+  verification: {
+    google: "DYhZFvndEMpeNcDI8Hfh3Trx4iL0XXDPJIyBEuc2moc"
+  },
   robots: {
     index: true,
     follow: true
