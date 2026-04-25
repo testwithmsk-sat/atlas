@@ -30,98 +30,68 @@ const CATEGORY_PAGE_DATA = {
   wedding: {
     label: "Wedding",
     eyebrow: "Wedding Collection",
-    title: "Elegant wedding printables, planners, and celebration details.",
+    title: "Wedding collection updates are coming soon.",
     description:
-      "Browse the live wedding products from The Digital Atlas in one place, from invitation suites to planning bundles and signage collections.",
-    note: "Live wedding products are grouped here so customers can browse this collection without going back to the full shop.",
-    products: [
-      {
-        badge: "Best Seller",
-        title: "Wedding Invitation Template Bundle",
-        text: "A refined printable invitation suite for couples who want an elegant look without paying for custom stationery design.",
-        meta: "Printable template set",
-        price: "$7.50+"
-      },
-      {
-        badge: "Planning Essential",
-        title: "Budget Wedding Planner Bundle",
-        text: "A practical planner bundle for couples who want a more organized wedding while keeping spending visible and manageable.",
-        meta: "Printable planner bundle",
-        price: "$7.50+"
-      },
-      {
-        badge: "Ceremony Favorite",
-        title: "Wedding Signs Bundle",
-        text: "A coordinated signage set for couples who want their ceremony and reception details to feel intentional and visually cohesive.",
-        meta: "Printable sign collection",
-        price: "$5.99+"
-      }
-    ]
+      "This category is ready for the next wedding product export, but no wedding items are live right now.",
+    note: "New wedding products will appear here after the next export.",
+    products: []
   },
   "events-parties": {
     label: "Events & Parties",
     eyebrow: "Events & Parties",
-    title: "Party-ready printables and event bundles for polished celebrations.",
+    title: "Event and party collection updates are coming soon.",
     description:
-      "This category holds live event and celebration products for hosts who want printable bundles that are fast to use and easy to love.",
-    note: "Right now this category has one live product, with room to grow as more celebration bundles are added.",
-    products: [
-      {
-        badge: "Party Favorite",
-        title: "Bridal Shower Games Bundle",
-        text: "A ready-made printable party pack for hosts who want bridal shower activities that feel polished, fun, and easy to run.",
-        meta: "Printable games bundle",
-        price: "$5.70+"
-      }
-    ]
+      "This category is prepared for future event and celebration exports, but no live products are published here yet.",
+    note: "New event and party products will appear here after the next export.",
+    products: []
   },
   business: {
     label: "Business",
     eyebrow: "Business Templates",
-    title: "Business products will live here as the category expands.",
+    title: "Business collection updates will appear here.",
     description:
-      "Use this page for client-facing templates, operations documents, and polished business downloads when they are ready to launch.",
-    note: "No live business products are published yet."
+      "Use this page for client-facing templates, operations documents, and polished business downloads when the next catalog export is ready.",
+    note: "No live business products are published right now."
   },
   "planners-productivity": {
     label: "Planners & Productivity",
     eyebrow: "Planning Tools",
-    title: "Planner and productivity products will be grouped here.",
+    title: "Planner and productivity updates will be grouped here.",
     description:
-      "This category is reserved for organization tools, planning systems, and digital resources that help customers manage everyday life.",
-    note: "No live planner or productivity products are published yet."
+      "This category is reserved for organization tools, planning systems, and digital resources once the next export is published.",
+    note: "No live planner or productivity products are published right now."
   },
   "career-education": {
     label: "Career & Education",
     eyebrow: "Career & Education",
-    title: "Career and education resources will appear in this category.",
+    title: "Career and education updates will appear in this category.",
     description:
-      "Use this space for job-search tools, resume kits, study resources, and education-focused templates when those products are ready.",
-    note: "No live career or education products are published yet."
+      "Use this space for job-search tools, resume kits, study resources, and education-focused templates when the next export is ready.",
+    note: "No live career or education products are published right now."
   },
   "social-content": {
     label: "Social & Content",
     eyebrow: "Social & Content",
-    title: "Content and creator products will live here.",
+    title: "Content and creator updates will live here.",
     description:
-      "This category is for social templates, content planning resources, and creator-focused digital products as they are launched.",
-    note: "No live social or content products are published yet."
+      "This category is for social templates, content planning resources, and creator-focused digital products when they are launched.",
+    note: "No live social or content products are published right now."
   },
   "creative-assets": {
     label: "Creative Assets",
     eyebrow: "Creative Assets",
-    title: "Creative asset packs will appear in this category.",
+    title: "Creative asset updates will appear in this category.",
     description:
-      "This page is reserved for mockups, graphics, brushes, SVGs, and other asset-based digital products when they are added to the catalog.",
-    note: "No live creative asset products are published yet."
+      "This page is reserved for mockups, graphics, brushes, SVGs, and other asset-based digital products when they are added in a future export.",
+    note: "No live creative asset products are published right now."
   },
   "templates-documents": {
     label: "Templates & Documents",
     eyebrow: "Templates & Documents",
-    title: "Document-style templates and editable resources will live here.",
+    title: "Document-style template updates will live here.",
     description:
-      "Use this page for fillable PDFs, editable checklists, journals, and document bundles as those products are prepared for launch.",
-    note: "No live templates or document products are published yet."
+      "Use this page for fillable PDFs, editable checklists, journals, and document bundles when the next export is prepared.",
+    note: "No live templates or document products are published right now."
   }
 };
 const PRIMARY_NAV_LINKS = [
@@ -140,7 +110,7 @@ const PRIMARY_NAV_LINKS = [
     ]
   },
   { href: "bundles.html", label: "Bundles" },
-  { href: "shop.html#shop", label: "Best Sellers" },
+  { href: "shop.html", label: "Collections" },
   { href: "free-resources.html", label: "Freebies" },
   { href: "contact.html", label: "Support" }
 ];
