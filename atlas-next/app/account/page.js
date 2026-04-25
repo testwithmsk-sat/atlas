@@ -25,13 +25,7 @@ function formatOrderAmount(amount, currency) {
 export default async function AccountPage({ searchParams }) {
   const supabase = await createSupabaseServerClient();
   const sessionResult = supabase ? await supabase.auth.getUser() : null;
-  const user = sessionResult?.data?.user || null;
-  const email = user?.email || "";
-  const profileName = user?.user_metadata?.full_name || user?.user_metadata?.name || "";
-  const avatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
-  const providerLabel = user?.app_metadata?.provider
-    ? String(user.app_metadata.provider).replace(/^\w/, (char) => char.toUpperCase())
-    : "";
+  const email = sessionResult?.data?.user?.email || "";
   const params = await searchParams;
   const checkoutState = params?.checkout || "";
   const authState = params?.auth || "";
@@ -61,13 +55,7 @@ export default async function AccountPage({ searchParams }) {
       </div>
 
       <div className="split-panel">
-        <AccountAuthPanel
-          email={email}
-          hasSupabase={hasSupabaseConfig}
-          profileName={profileName}
-          avatarUrl={avatarUrl}
-          providerLabel={providerLabel}
-        />
+        <AccountAuthPanel email={email} hasSupabase={hasSupabaseConfig} />
         <article className="info-card">
           <h3>Account readiness</h3>
           <p>This account area is ready for order history, download access, and returning purchases.</p>
