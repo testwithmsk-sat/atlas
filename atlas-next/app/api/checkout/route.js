@@ -6,15 +6,19 @@ import { env, hasRazorpayConfig } from "@/lib/env";
 
 export async function POST(request) {
   try {
-    const { items = [] } = await request.json();
+    const payload = await request.json().catch(() => ({}));
+    const items = Array.isArray(payload?.items) ? payload.items : [];
 
-    if (!Array.isArray(items) || items.length === 0) {
+    if (items.length === 0) {
       return NextResponse.json({ error: "Your cart is empty." }, { status: 400 });
     }
 
     if (!hasRazorpayConfig) {
       return NextResponse.json(
-        { error: "Razorpay is not configured yet. Add Razorpay API keys to enable real checkout." },
+        {
+          error:
+            "Razorpay is not configured yet. Add NEXT_PUBLIC_RAZORPAY_KEY_ID, RAZORPAY_KEY_ID, and RAZORPAY_KEY_SECRET to enable checkout."
+        },
         { status: 503 }
       );
     }
@@ -52,9 +56,14 @@ export async function POST(request) {
       amount,
       receipt,
       notes: {
-        source: "the-digital-atlas"
+        source: "the-digital-atlas",
+        item_count: String(validLineItems.length)
       }
     });
+
+    if (!razorpayOrder?.id) {
+      return NextResponse.json({ error: "Razorpay did not return a valid order id." }, { status: 502 });
+    }
 
     const pendingOrder = await createPendingCheckoutOrder({
       gatewayOrderId: razorpayOrder.id,
@@ -68,12 +77,12 @@ export async function POST(request) {
     }
 
     return NextResponse.json({
-      key: env.razorpayKeyId,
+      key: env.razorpayPublicKeyId,
       orderId: razorpayOrder.id,
       amount: razorpayOrder.amount,
       currency: razorpayOrder.currency,
       name: "The Digital Atlas",
-      description: "Digital product order"
+      description: `${validLineItems.length} digital item${validLineItems.length === 1 ? "" : "s"}`
     });
   } catch (error) {
     return NextResponse.json(

@@ -27,8 +27,8 @@ export default async function CheckoutPage({ searchParams }) {
           </ul>
           {!hasRazorpayConfig ? (
             <p className="status-note">
-              Razorpay checkout is not configured in this app yet. Add `NEXT_PUBLIC_RAZORPAY_KEY_ID` and
-              `RAZORPAY_KEY_SECRET` to `.env.local`, then restart the dev server.
+              Razorpay checkout is not configured in this app yet. Add `NEXT_PUBLIC_RAZORPAY_KEY_ID`,
+              `RAZORPAY_KEY_ID`, and `RAZORPAY_KEY_SECRET` to `.env.local`, then restart the dev server.
             </p>
           ) : null}
         </article>

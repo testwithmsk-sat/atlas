@@ -9,11 +9,13 @@ export async function POST(request) {
       return NextResponse.json({ error: "Razorpay is not configured yet." }, { status: 503 });
     }
 
-    const {
-      razorpay_order_id: orderId,
-      razorpay_payment_id: paymentId,
-      razorpay_signature: signature
-    } = await request.json();
+    const payload = await request.json().catch(() => ({}));
+    const paymentResult =
+      payload?.paymentResult && typeof payload.paymentResult === "object" ? payload.paymentResult : payload;
+    const orderId = paymentResult?.razorpay_order_id || paymentResult?.order_id || payload?.orderId || "";
+    const paymentId = paymentResult?.razorpay_payment_id || paymentResult?.payment_id || payload?.paymentId || "";
+    const signature =
+      paymentResult?.razorpay_signature || paymentResult?.signature || payload?.razorpaySignature || "";
 
     if (!orderId || !paymentId || !signature) {
       return NextResponse.json({ error: "Missing Razorpay payment details." }, { status: 400 });
@@ -30,6 +32,18 @@ export async function POST(request) {
     }
 
     const payment = await fetchRazorpayPayment(paymentId);
+    if (!payment?.id) {
+      return NextResponse.json({ error: "Razorpay payment details could not be loaded." }, { status: 502 });
+    }
+
+    if (payment.order_id && payment.order_id !== orderId) {
+      return NextResponse.json({ error: "Razorpay payment does not match the current order." }, { status: 400 });
+    }
+
+    if (payment.status === "failed") {
+      return NextResponse.json({ error: "Razorpay reported a failed payment." }, { status: 400 });
+    }
+
     const finalizeResult = await finalizeCheckoutOrder({
       gatewayOrderId: orderId,
       customerEmail: payment.email || "",
