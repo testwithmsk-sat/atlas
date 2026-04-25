@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart-provider";
 
 function loadRazorpayScript() {
@@ -12,6 +12,11 @@ function loadRazorpayScript() {
 
     const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
     if (existing) {
+      if (window.Razorpay) {
+        resolve(window.Razorpay);
+        return;
+      }
+
       existing.addEventListener("load", () => resolve(window.Razorpay), { once: true });
       existing.addEventListener("error", () => reject(new Error("Failed to load Razorpay.")), { once: true });
       return;
@@ -30,6 +35,27 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
   const { items } = useCart();
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [scriptReady, setScriptReady] = useState(Boolean(typeof window !== "undefined" && window.Razorpay));
+
+  useEffect(() => {
+    if (!hasRazorpayConfig) return;
+
+    let isMounted = true;
+
+    loadRazorpayScript()
+      .then((Razorpay) => {
+        if (!isMounted) return;
+        setScriptReady(typeof Razorpay === "function");
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setScriptReady(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [hasRazorpayConfig]);
 
   const handleCheckout = async () => {
     if (!hasRazorpayConfig) {
@@ -62,6 +88,10 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
       }
 
       const Razorpay = await loadRazorpayScript();
+      if (typeof Razorpay !== "function") {
+        throw new Error("Razorpay checkout did not load. Disable any ad blocker and refresh the page.");
+      }
+
       const razorpay = new Razorpay({
         key: payload.key,
         amount: payload.amount,
@@ -96,8 +126,8 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
       });
 
       razorpay.open();
-    } catch {
-      setStatus("Something went wrong while starting Razorpay checkout.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Something went wrong while starting Razorpay checkout.");
     } finally {
       setLoading(false);
     }
@@ -112,7 +142,13 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
         disabled={loading || !hasRazorpayConfig}
         aria-disabled={loading || !hasRazorpayConfig}
       >
-        {loading ? "Starting Checkout..." : hasRazorpayConfig ? "Pay With Razorpay" : "Razorpay Not Configured"}
+        {loading
+          ? "Starting Checkout..."
+          : hasRazorpayConfig
+            ? scriptReady
+              ? "Pay With Razorpay"
+              : "Loading Razorpay..."
+            : "Razorpay Not Configured"}
       </button>
       {status ? (
         <p className="status-note">{status}</p>
