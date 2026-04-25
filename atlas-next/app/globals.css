@@ -1198,6 +1198,32 @@ img {
   line-height: 1.75;
 }
 
+.account-profile {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.account-profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(173, 126, 70, 0.18);
+  box-shadow: 0 12px 28px rgba(36, 26, 20, 0.12);
+}
+
+.account-profile h3,
+.account-profile p {
+  margin: 0;
+}
+
+.account-profile p + p {
+  margin-top: 4px;
+}
+
 .footer-links {
   flex-wrap: wrap;
   gap: 18px;

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { hasSupabaseConfig } from "@/lib/env";
+import { env, hasSupabaseConfig } from "@/lib/env";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 function getFriendlyAuthMessage(error, fallbackMessage) {
@@ -93,7 +93,7 @@ export async function signInWithGoogleAction() {
     redirect("/account?auth=error");
   }
 
-  const origin = (await getRequestOrigin()) || "http://localhost:3000";
+  const origin = (await getRequestOrigin()) || env.siteUrl;
   const redirectTo = `${origin}/auth/callback?next=/account`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({

@@ -5,7 +5,7 @@ import { signInAction, signInWithGoogleAction, signOutAction, signUpAction } fro
 
 const initialState = { message: "" };
 
-export function AccountAuthPanel({ email, hasSupabase }) {
+export function AccountAuthPanel({ email, hasSupabase, profileName = "", avatarUrl = "", providerLabel = "" }) {
   const [signInState, signInFormAction] = useActionState(signInAction, initialState);
   const [signUpState, signUpFormAction] = useActionState(signUpAction, initialState);
   const [signOutState, signOutFormAction] = useActionState(signOutAction, initialState);
@@ -14,8 +14,14 @@ export function AccountAuthPanel({ email, hasSupabase }) {
     return (
       <article className="info-card">
         <p className="eyebrow">Signed In</p>
-        <h3>{email}</h3>
-        <p>Your account is ready for order history, future downloads, and returning purchases.</p>
+        <div className="account-profile">
+          {avatarUrl ? <img className="account-profile-avatar" src={avatarUrl} alt={profileName || email} /> : null}
+          <div>
+            <h3>{profileName || email}</h3>
+            {profileName && profileName !== email ? <p>{email}</p> : null}
+            <p>{providerLabel ? `Signed in with ${providerLabel}` : "Your account is ready for order history and downloads."}</p>
+          </div>
+        </div>
         <form action={signOutFormAction}>
           <button className="button button-primary" type="submit">
             Sign Out
