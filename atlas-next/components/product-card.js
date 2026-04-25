@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { ProductPreviewMockup } from "@/components/product-preview-mockup";
 
 export function ProductCard({ product }) {
   const hasCompareAt = product.compareAtPriceLabel && product.compareAtPriceLabel !== product.priceLabel;
@@ -9,7 +10,7 @@ export function ProductCard({ product }) {
   return (
     <article className="product-card">
       <div className="product-card-image">
-        <img src={product.image} alt={product.name} />
+        <ProductPreviewMockup product={product} />
       </div>
       <div className="product-card-topline">
         <span className="sale-pill">{product.badge}</span>

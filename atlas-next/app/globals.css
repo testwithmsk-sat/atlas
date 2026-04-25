@@ -787,27 +787,12 @@ img {
   text-transform: uppercase;
 }
 
-.product-card-image,
-.product-visual-card {
-  overflow: hidden;
-  border-radius: 22px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(244, 233, 219, 0.72));
-}
-
 .product-card-image {
   margin-bottom: 20px;
   border: 1px solid rgba(255, 255, 255, 0.76);
-}
-
-.product-card-image img {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  transition: transform 240ms ease;
-}
-
-.product-card:hover .product-card-image img {
-  transform: scale(1.03);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(244, 233, 219, 0.72));
+  overflow: hidden;
 }
 
 .card-meta {
@@ -1069,12 +1054,9 @@ img {
 
 .product-visual-card {
   padding: 18px;
-}
-
-.product-visual-card img {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  border-radius: 18px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(244, 233, 219, 0.72));
 }
 
 .product-meta-chips {
@@ -1085,6 +1067,168 @@ img {
   display: grid;
   gap: 14px;
   margin-top: 22px;
+}
+
+.product-mockup {
+  position: relative;
+}
+
+.product-mockup-scene {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  padding: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), transparent 24%),
+    linear-gradient(180deg, #f7ecdf 0%, #f0dfcd 100%);
+}
+
+.product-mockup-shadow,
+.product-mockup-layer,
+.product-mockup-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+}
+
+.product-mockup-shadow {
+  top: 12%;
+  left: 14%;
+  right: 14%;
+  bottom: 10%;
+  border-radius: 28px;
+  background: rgba(61, 39, 20, 0.14);
+  filter: blur(24px);
+}
+
+.product-mockup-layer {
+  top: 12%;
+  left: 14%;
+  right: 14%;
+  bottom: 10%;
+}
+
+.product-mockup-layer--back {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+.product-mockup-layer--mid {
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.product-mockup-frame {
+  top: 9%;
+  left: 12%;
+  right: 12%;
+  bottom: 8%;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  border: 1px solid rgba(122, 84, 48, 0.12);
+  background: rgba(255, 252, 248, 0.96);
+  box-shadow: 0 20px 42px rgba(61, 39, 20, 0.12);
+}
+
+.product-mockup-frame img {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 260ms ease;
+}
+
+.product-card:hover .product-mockup-frame img,
+.product-visual-card:hover .product-mockup-frame img {
+  transform: scale(1.03);
+}
+
+.product-mockup--paper .product-mockup-layer--back {
+  transform: rotate(-7deg) translate(-10px, 4px);
+}
+
+.product-mockup--paper .product-mockup-layer--mid {
+  transform: rotate(-3deg) translate(-4px, 2px);
+}
+
+.product-mockup--paper .product-mockup-frame {
+  transform: rotate(1deg);
+}
+
+.product-mockup--tablet .product-mockup-scene {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.9), transparent 22%),
+    linear-gradient(180deg, #ede6df 0%, #d8cec4 100%);
+}
+
+.product-mockup--tablet .product-mockup-layer--back,
+.product-mockup--tablet .product-mockup-layer--mid {
+  display: none;
+}
+
+.product-mockup--tablet .product-mockup-frame {
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 8%;
+  padding: 14px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, #1f2226, #343842);
+  box-shadow: 0 26px 56px rgba(22, 24, 29, 0.26);
+}
+
+.product-mockup--tablet .product-mockup-frame::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 18%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateX(-50%);
+}
+
+.product-mockup--tablet .product-mockup-frame img {
+  border-radius: 20px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.product-mockup--stack .product-mockup-layer--back {
+  transform: rotate(-10deg) translate(-12px, 8px);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.product-mockup--stack .product-mockup-layer--mid {
+  transform: rotate(6deg) translate(10px, -6px);
+  background: rgba(255, 248, 241, 0.72);
+}
+
+.product-mockup--stack .product-mockup-frame {
+  top: 11%;
+  left: 14%;
+  right: 14%;
+  bottom: 9%;
+  border-radius: 28px;
+}
+
+.product-mockup--stack .product-mockup-frame img {
+  object-fit: contain;
+  background: linear-gradient(180deg, #fffdf8, #f8efe4);
+}
+
+.product-mockup--hero .product-mockup-scene {
+  min-height: 560px;
+  aspect-ratio: auto;
+  padding: 34px;
+}
+
+.product-mockup--hero .product-mockup-frame {
+  top: 7%;
+  left: 10%;
+  right: 10%;
+  bottom: 6%;
 }
 
 .product-trust-panel div,

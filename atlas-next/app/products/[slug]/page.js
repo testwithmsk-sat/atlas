@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { ProductCard } from "@/components/product-card";
+import { ProductPreviewMockup } from "@/components/product-preview-mockup";
 import { getAllProducts, getProductBySlug, getRelatedProducts } from "@/lib/catalog";
 
 export async function generateStaticParams() {
@@ -51,7 +52,7 @@ export default async function ProductPage({ params }) {
       <section className="section-block">
         <div className="product-layout">
           <article className="product-visual-card">
-            <img src={product.image} alt={product.name} />
+            <ProductPreviewMockup product={product} className="product-mockup--hero" priority="hero" />
           </article>
 
           <article className="product-summary">
