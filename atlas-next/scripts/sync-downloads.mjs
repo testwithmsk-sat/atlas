@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
+import { additionalDownloadManifest } from "../lib/download-manifest.js";
 
 const root = process.cwd();
 const env = loadEnvFile(path.join(root, ".env.local"));
@@ -21,7 +22,7 @@ const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE
   auth: { persistSession: false, autoRefreshToken: false }
 });
 
-const manifest = [
+const baseManifest = [
   {
     slug: "wedding-invitation-template-bundle",
     name: "Wedding Invitation Template Bundle",
@@ -168,67 +169,143 @@ const manifest = [
   }
 ];
 
+const manifest = [
+  ...baseManifest.map((item) => ({
+    ...item,
+    categorySlug: item.category === "Wedding" ? "wedding" : null,
+    subcategory: null,
+    subcategorySlug: null,
+    productType: item.category === "Wedding" ? "Digital download" : "Digital download",
+    isPurchasable: true,
+    files: [
+      {
+        localPath: item.localPath,
+        storagePath: `${item.folder}/${item.fileName}`,
+        fileType: item.fileType,
+        contentType: item.contentType
+      }
+    ]
+  })),
+  ...additionalDownloadManifest
+];
+
 await ensureBucket(bucketName);
 
 for (const item of manifest) {
-  const storagePath = `${item.folder}/${item.fileName}`;
-  const localPath = item.localPath;
-
-  if (!fs.existsSync(localPath)) {
-    throw new Error(`Missing local deliverable: ${localPath}`);
+  const missingLocalFiles = item.files.filter((file) => !fs.existsSync(file.localPath));
+  if (missingLocalFiles.length > 0) {
+    console.warn(
+      `Skipping ${item.slug} because ${missingLocalFiles.length} local file(s) are missing: ${missingLocalFiles
+        .map((file) => file.localPath)
+        .join(", ")}`
+    );
+    continue;
   }
 
-  const productUpsert = await supabase.from("products").upsert(
-    {
-      slug: item.slug,
-      name: item.name,
-      category: item.category,
-      badge: item.badge,
-      price_label: item.priceLabel,
-      status: item.status,
-      summary: item.summary,
-      image: item.image,
-      highlights: item.highlights,
-      is_active: true
-    },
-    { onConflict: "slug" }
-  );
+  await upsertProduct(item);
 
-  if (productUpsert.error) {
-    throw new Error(`product upsert failed for ${item.slug}: ${productUpsert.error.message}`);
+  const desiredStoragePaths = new Set(item.files.map((file) => file.storagePath));
+  const existingFilesResult = await supabase
+    .from("download_files")
+    .select("id, storage_path")
+    .eq("product_slug", item.slug);
+
+  if (existingFilesResult.error) {
+    throw new Error(`download_files lookup failed for ${item.slug}: ${existingFilesResult.error.message}`);
   }
 
-  const fileBuffer = fs.readFileSync(localPath);
-  const uploadResult = await supabase.storage.from(bucketName).upload(storagePath, fileBuffer, {
-    upsert: true,
-    contentType: item.contentType
-  });
+  const staleFileIds = (existingFilesResult.data || [])
+    .filter((file) => file.storage_path && !desiredStoragePaths.has(file.storage_path))
+    .map((file) => file.id);
 
-  if (uploadResult.error) {
-    throw new Error(`Upload failed for ${storagePath}: ${uploadResult.error.message}`);
+  if (staleFileIds.length > 0) {
+    const deleteResult = await supabase.from("download_files").delete().in("id", staleFileIds);
+    if (deleteResult.error) {
+      throw new Error(`download_files cleanup failed for ${item.slug}: ${deleteResult.error.message}`);
+    }
   }
 
-  const upsertResult = await supabase.from("download_files").upsert(
-    {
-      product_slug: item.slug,
-      file_name: item.fileName,
-      file_url: null,
-      storage_bucket: bucketName,
-      storage_path: storagePath,
-      file_type: item.fileType,
-      access_mode: "signed",
-      sort_order: 0,
-      is_active: true
-    },
-    { onConflict: "product_slug,storage_bucket,storage_path" }
-  );
+  for (const [index, file] of item.files.entries()) {
+    const fileBuffer = fs.readFileSync(file.localPath);
+    const uploadResult = await supabase.storage.from(bucketName).upload(file.storagePath, fileBuffer, {
+      upsert: true,
+      contentType: file.contentType
+    });
 
-  if (upsertResult.error) {
-    throw new Error(`download_files upsert failed for ${item.slug}: ${upsertResult.error.message}`);
+    if (uploadResult.error) {
+      throw new Error(`Upload failed for ${file.storagePath}: ${uploadResult.error.message}`);
+    }
+
+    const upsertResult = await supabase.from("download_files").upsert(
+      {
+        product_slug: item.slug,
+        file_name: path.basename(file.storagePath),
+        file_url: null,
+        storage_bucket: bucketName,
+        storage_path: file.storagePath,
+        file_type: file.fileType,
+        access_mode: "signed",
+        sort_order: index,
+        is_active: true
+      },
+      { onConflict: "product_slug,storage_bucket,storage_path" }
+    );
+
+    if (upsertResult.error) {
+      throw new Error(`download_files upsert failed for ${item.slug}: ${upsertResult.error.message}`);
+    }
   }
 }
 
-console.log(`Synced ${manifest.length} download packages to bucket "${bucketName}".`);
+const totalFiles = manifest.reduce((sum, item) => sum + item.files.length, 0);
+console.log(`Synced ${manifest.length} products and ${totalFiles} files to bucket "${bucketName}".`);
+
+async function upsertProduct(item) {
+  const fullPayload = buildProductPayload(item, true);
+  const productUpsert = await supabase.from("products").upsert(fullPayload, { onConflict: "slug" });
+
+  if (!productUpsert.error) {
+    return;
+  }
+
+  const missingColumnError = String(productUpsert.error.message || "");
+  if (!/Could not find .* column/i.test(missingColumnError)) {
+    throw new Error(`product upsert failed for ${item.slug}: ${productUpsert.error.message}`);
+  }
+
+  const fallbackUpsert = await supabase.from("products").upsert(buildProductPayload(item, false), {
+    onConflict: "slug"
+  });
+
+  if (fallbackUpsert.error) {
+    throw new Error(`product upsert failed for ${item.slug}: ${fallbackUpsert.error.message}`);
+  }
+}
+
+function buildProductPayload(item, includeExtendedColumns) {
+  const payload = {
+    slug: item.slug,
+    name: item.name,
+    category: item.category,
+    badge: item.badge,
+    price_label: item.priceLabel,
+    status: item.status,
+    summary: item.summary,
+    image: item.image,
+    highlights: item.highlights,
+    is_active: true
+  };
+
+  if (includeExtendedColumns) {
+    payload.category_slug = item.categorySlug;
+    payload.subcategory = item.subcategory;
+    payload.subcategory_slug = item.subcategorySlug;
+    payload.product_type = item.productType || "Digital download";
+    payload.is_purchasable = item.isPurchasable !== false;
+  }
+
+  return payload;
+}
 
 function loadEnvFile(filePath) {
   const values = { ...process.env };

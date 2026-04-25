@@ -1,10 +1,26 @@
 import { AccountAuthPanel } from "@/components/account-auth-panel";
 import { hasSupabaseConfig } from "@/lib/env";
+import { getDownloadLibrary, getOrdersForCustomer } from "@/lib/orders";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export const metadata = {
   title: "Account | The Digital Atlas"
 };
+
+function formatOrderAmount(amount, currency) {
+  const normalizedAmount = Number(amount || 0);
+  const normalizedCurrency = String(currency || "INR").toUpperCase();
+
+  try {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: normalizedCurrency,
+      maximumFractionDigits: 2
+    }).format(normalizedAmount);
+  } catch {
+    return `${normalizedCurrency} ${normalizedAmount.toFixed(2)}`;
+  }
+}
 
 export default async function AccountPage({ searchParams }) {
   const supabase = await createSupabaseServerClient();
@@ -12,6 +28,9 @@ export default async function AccountPage({ searchParams }) {
   const email = sessionResult?.data?.user?.email || "";
   const params = await searchParams;
   const checkoutState = params?.checkout || "";
+  const [orders, downloads] = email
+    ? await Promise.all([getOrdersForCustomer(email), getDownloadLibrary(email)])
+    : [[], []];
 
   return (
     <section className="section-block">
@@ -28,14 +47,68 @@ export default async function AccountPage({ searchParams }) {
         <AccountAuthPanel email={email} hasSupabase={hasSupabaseConfig} />
         <article className="info-card">
           <h3>Account readiness</h3>
-          <p>This account area is ready for order history, download access, and future customer library features.</p>
+          <p>This account area is ready for order history, download access, and returning purchases.</p>
           <ul className="feature-list">
-            <li>Customers can sign in to manage future purchases.</li>
-            <li>Download access can be connected through the existing Supabase workflow.</li>
-            <li>The storefront now points buyers into live wedding products and bundle offers.</li>
+            <li>Customers can sign in to manage purchases and access files again later.</li>
+            <li>Bundle purchases now unlock the real source files attached to each product.</li>
+            <li>Business, events, wedding, and planning files can all be delivered from the same library.</li>
           </ul>
         </article>
       </div>
+
+      {email ? (
+        <div className="account-data-grid">
+          <article className="info-card">
+            <p className="eyebrow">Download Library</p>
+            <h3>{downloads.length ? `${downloads.length} file${downloads.length === 1 ? "" : "s"} ready` : "No downloads yet"}</h3>
+            <p>
+              {downloads.length
+                ? "Your purchased files stay available here with signed download links."
+                : "Complete a checkout while signed in and your purchased files will appear here."}
+            </p>
+            {downloads.length ? (
+              <div className="account-list">
+                {downloads.map((download) => (
+                  <div className="account-entry" key={`${download.orderId}-${download.productSlug}-${download.fileName}`}>
+                    <div>
+                      <strong>{download.productName}</strong>
+                      <p>{download.fileName}</p>
+                      <p>{download.purchasedAt ? `Granted ${new Date(download.purchasedAt).toLocaleDateString("en-IN")}` : "Ready to download"}</p>
+                    </div>
+                    <a className="text-link" href={download.fileUrl} target="_blank" rel="noreferrer">
+                      Download
+                    </a>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </article>
+
+          <article className="info-card">
+            <p className="eyebrow">Order History</p>
+            <h3>{orders.length ? `${orders.length} order${orders.length === 1 ? "" : "s"} found` : "No orders yet"}</h3>
+            <p>
+              {orders.length
+                ? "Your completed and pending checkout records appear here."
+                : "Once you place an order, its payment status and amount will show in this account."}
+            </p>
+            {orders.length ? (
+              <div className="account-list">
+                {orders.map((order) => (
+                  <div className="account-entry" key={order.id}>
+                    <div>
+                      <strong>{formatOrderAmount(order.amount_total, order.currency)}</strong>
+                      <p>{order.payment_status || order.status || "pending"}</p>
+                      <p>{order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN") : "Recent order"}</p>
+                    </div>
+                    <span className="eyebrow">{order.order_items?.length || 0} items</span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </article>
+        </div>
+      ) : null}
     </section>
   );
 }

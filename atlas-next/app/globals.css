@@ -1044,6 +1044,9 @@ img {
 
 .account-data-grid {
   margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .account-list {
@@ -1107,6 +1110,7 @@ img {
   .blueprint-grid,
   .split-panel,
   .checkout-grid,
+  .account-data-grid,
   .product-layout,
   .cart-layout,
   .editorial-band {

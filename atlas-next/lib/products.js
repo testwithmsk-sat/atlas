@@ -1,4 +1,5 @@
 import { normalizePriceLabel } from "@/lib/currency";
+import { categoryDirectory } from "@/lib/catalog-taxonomy";
 
 const weddingSubcategories = {
   "invitations-stationery": "Invitations & Stationery",
@@ -14,6 +15,29 @@ const weddingImages = {
   "showers-parties": "/products/bridal-shower-games-bundle.svg"
 };
 
+const categoryMap = new Map(categoryDirectory.map((category) => [category.slug, category]));
+const subcategoryMap = new Map(
+  categoryDirectory.flatMap((category) => category.subcategories.map((subcategory) => [subcategory.slug, subcategory.name]))
+);
+const categoryImages = {
+  wedding: weddingImages,
+  business: {
+    "client-documents": "/products/business-invoice-template-1.png",
+    "marketing-sales": "/products/business-invoice-template-1.png",
+    "operations-systems": "/products/business-invoice-template-1.png"
+  },
+  "events-parties": {
+    "party-invitations": "/products/events-parties-bundle-1.png",
+    "games-activities": "/products/events-parties-bundle-1.png",
+    "signs-decor": "/products/events-parties-bundle-1.png"
+  },
+  "planners-productivity": {
+    "finance-budgeting": "/products/budget-bride-plan-1.png",
+    "goal-planning": "/products/budget-bride-plan-2.png",
+    "home-family": "/products/budget-bride-plan-3.png"
+  }
+};
+
 function getStorefrontPrice(price, isBundle) {
   if (isBundle) return 10;
 
@@ -27,6 +51,7 @@ function getStorefrontPrice(price, isBundle) {
 function createProduct({
   slug,
   name,
+  categorySlug = "wedding",
   subcategorySlug,
   badge,
   price,
@@ -42,13 +67,19 @@ function createProduct({
   isBestSeller = false
 }) {
   const storefrontPrice = getStorefrontPrice(price, isBundle);
+  const category = categoryMap.get(categorySlug);
+  const categoryImageMap = categoryImages[categorySlug];
+  const fallbackImage =
+    typeof categoryImageMap === "string"
+      ? categoryImageMap
+      : categoryImageMap?.[subcategorySlug] || weddingImages[subcategorySlug] || weddingImages["invitations-stationery"];
 
   return {
     slug,
     name,
-    category: "Wedding",
-    categorySlug: "wedding",
-    subcategory: weddingSubcategories[subcategorySlug],
+    category: category?.name || "Wedding",
+    categorySlug,
+    subcategory: subcategoryMap.get(subcategorySlug) || weddingSubcategories[subcategorySlug] || "",
     subcategorySlug,
     badge,
     priceLabel: normalizePriceLabel(storefrontPrice),
@@ -56,7 +87,7 @@ function createProduct({
     status: "Digital download",
     productType,
     summary,
-    image: image || weddingImages[subcategorySlug] || weddingImages["invitations-stationery"],
+    image: image || fallbackImage,
     highlights,
     isPurchasable: true,
     isBundle,
@@ -67,7 +98,7 @@ function createProduct({
   };
 }
 
-export const fallbackProducts = [
+const weddingProducts = [
   createProduct({
     slug: "editable-wedding-pdf-template-bundle",
     name: "Editable Wedding PDF Template Bundle",
@@ -1407,6 +1438,762 @@ export const fallbackProducts = [
     }
   })
 ];
+
+function getProductFormatDetails(format) {
+  if (format === "XLSX") {
+    return {
+      productType: "Editable spreadsheet template",
+      formatLabel: "Excel spreadsheet",
+      editable:
+        "Yes. Customers can update cells, tabs, formulas, and planning rows directly in Excel or compatible spreadsheet apps.",
+      printable:
+        "Best used digitally for planning, but worksheets can also be exported or printed when needed.",
+      highlights: ["Spreadsheet-based workflow", "Editable workbook format", "Useful for repeat planning and tracking"]
+    };
+  }
+
+  return {
+    productType: "Printable PDF template",
+    formatLabel: "PDF",
+    editable:
+      "Yes. Delivered as a digital PDF template that customers can customize, annotate, or print for their workflow.",
+    printable: "Yes. Suitable for digital delivery, home printing, or professional print use when needed.",
+    highlights: ["Easy digital download", "PDF-based printable format", "Flexible for home or client-facing use"]
+  };
+}
+
+function createDigitalFileProduct({
+  slug,
+  name,
+  categorySlug,
+  subcategorySlug,
+  format,
+  badge,
+  useCase,
+  price,
+  compareAt,
+  image,
+  isFeatured = false,
+  isBestSeller = false
+}) {
+  const formatDetails = getProductFormatDetails(format);
+
+  return createProduct({
+    slug,
+    name,
+    categorySlug,
+    subcategorySlug,
+    badge,
+    price,
+    compareAt,
+    productType: formatDetails.productType,
+    summary: `A ${name.toLowerCase()} built for ${useCase}.`,
+    highlights: [...formatDetails.highlights, `Ideal for ${categoryMap.get(categorySlug)?.name?.toLowerCase() || "digital"} products`],
+    image,
+    details: {
+      size: "Digital file",
+      pages: "1 file",
+      format: formatDetails.formatLabel,
+      editable: formatDetails.editable,
+      printable: formatDetails.printable,
+      includes: [name, `${formatDetails.formatLabel} download`, "Instant access digital file"]
+    },
+    isFeatured,
+    isBestSeller
+  });
+}
+
+function createDigitalBundleProduct({
+  slug,
+  name,
+  categorySlug,
+  subcategorySlug,
+  badge,
+  price,
+  compareAt,
+  image,
+  summary,
+  highlights,
+  items
+}) {
+  const fileTypes = [...new Set(items.map((item) => item.format))];
+  const includesGuide = items.some((item) => item.name.toLowerCase().includes("guide"));
+
+  return createProduct({
+    slug,
+    name,
+    categorySlug,
+    subcategorySlug,
+    badge,
+    price,
+    compareAt,
+    productType: `${items.length}-file digital bundle`,
+    summary,
+    highlights,
+    image,
+    details: {
+      size: "Multi-file digital bundle",
+      pages: `${items.length} files`,
+      format: fileTypes.join(" + "),
+      editable:
+        fileTypes.includes("XLSX")
+          ? "Yes. The bundle mixes printable PDFs with editable spreadsheets for planning, tracking, and client-ready delivery."
+          : "Yes. The bundle is designed as a multi-file digital pack for easy editing, planning, and printable use.",
+      printable:
+        "Yes. Files can be used digitally, and the printable PDFs are ready for home or professional printing where appropriate.",
+      includes: items.map((item) => item.name)
+    },
+    bundleContents: items.map((item) => item.name),
+    isBundle: true,
+    isFeatured: includesGuide,
+    isBestSeller: true
+  });
+}
+
+const businessCoreItems = [
+  {
+    slug: "business-templates-guide",
+    name: "Business Templates Guide",
+    subcategorySlug: "operations-systems",
+    format: "PDF",
+    badge: "Guide",
+    useCase: "helping buyers use the full business document collection with confidence",
+    price: 8,
+    compareAt: 12
+  },
+  {
+    slug: "business-proposal-template",
+    name: "Business Proposal Template",
+    subcategorySlug: "client-documents",
+    format: "PDF",
+    badge: "Client Essential",
+    useCase: "pitching services, retainers, and custom business offers",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "business-invoice-template",
+    name: "Business Invoice Template",
+    subcategorySlug: "client-documents",
+    format: "PDF",
+    badge: "Popular",
+    useCase: "sending polished invoices and keeping billing client-ready",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "business-pitch-deck-template",
+    name: "Business Pitch Deck Template",
+    subcategorySlug: "marketing-sales",
+    format: "PDF",
+    badge: "Sales Deck",
+    useCase: "presentations, partnership pitches, and business storytelling",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "media-kit-template",
+    name: "Media Kit Template",
+    subcategorySlug: "marketing-sales",
+    format: "PDF",
+    badge: "Brand Asset",
+    useCase: "sponsorship inquiries, collaborations, and branded media outreach",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "meeting-agenda-template",
+    name: "Meeting Agenda Template",
+    subcategorySlug: "operations-systems",
+    format: "PDF",
+    badge: "Ops Tool",
+    useCase: "client meetings, internal planning, and organized agendas",
+    price: 9,
+    compareAt: 14
+  },
+  {
+    slug: "project-status-report-template",
+    name: "Project Status Report Template",
+    subcategorySlug: "operations-systems",
+    format: "PDF",
+    badge: "Reporting",
+    useCase: "weekly updates, stakeholder reporting, and client communication",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "client-onboarding-template",
+    name: "Client Onboarding Template",
+    subcategorySlug: "client-documents",
+    format: "PDF",
+    badge: "Best Seller",
+    useCase: "welcoming new clients with a polished onboarding workflow",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "service-agreement-template",
+    name: "Service Agreement Template",
+    subcategorySlug: "client-documents",
+    format: "PDF",
+    badge: "Client Essential",
+    useCase: "formalizing service terms and setting clear project expectations",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "brand-guidelines-template",
+    name: "Brand Guidelines Template",
+    subcategorySlug: "marketing-sales",
+    format: "PDF",
+    badge: "Brand Asset",
+    useCase: "sharing visual identity rules and presentation standards",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "event-registration-template",
+    name: "Event Registration Template",
+    subcategorySlug: "operations-systems",
+    format: "PDF",
+    badge: "Organizer",
+    useCase: "registrations, attendee capture, and workshop sign-up workflows",
+    price: 10,
+    compareAt: 15
+  }
+];
+
+const businessGrowthItems = [
+  {
+    slug: "invoice-quote-template",
+    name: "Invoice & Quote Template",
+    subcategorySlug: "client-documents",
+    format: "XLSX",
+    badge: "Client Essential",
+    useCase: "quoting services and generating clean invoice documents from one sheet",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "monthly-pl-tracker",
+    name: "Monthly P&L Tracker",
+    subcategorySlug: "operations-systems",
+    format: "XLSX",
+    badge: "Finance Tool",
+    useCase: "monitoring monthly business performance and profit visibility",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "ninety-day-action-plan",
+    name: "90-Day Action Plan",
+    subcategorySlug: "operations-systems",
+    format: "XLSX",
+    badge: "Planning Tool",
+    useCase: "mapping quarterly priorities, milestones, and execution tasks",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "client-onboarding-kit",
+    name: "Client Onboarding Kit",
+    subcategorySlug: "client-documents",
+    format: "PDF",
+    badge: "Client Essential",
+    useCase: "streamlining welcome packs, expectations, and onboarding steps",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "social-media-branding-guide",
+    name: "Social Media Branding Guide",
+    subcategorySlug: "marketing-sales",
+    format: "PDF",
+    badge: "Brand Asset",
+    useCase: "keeping content output aligned with a consistent online brand presence",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "business-startup-checklist",
+    name: "Business Startup Checklist",
+    subcategorySlug: "operations-systems",
+    format: "PDF",
+    badge: "Checklist",
+    useCase: "launching a new business with the right setup steps and systems in place",
+    price: 10,
+    compareAt: 15
+  }
+];
+
+const interiorDesignItems = [
+  {
+    slug: "room-design-templates",
+    name: "Room Design Templates",
+    subcategorySlug: "home-family",
+    format: "PDF",
+    badge: "Design Pack",
+    useCase: "planning room concepts, ideas, and layout direction for home projects",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "color-palette-creator",
+    name: "Color Palette Creator",
+    subcategorySlug: "home-family",
+    format: "XLSX",
+    badge: "Planner Tool",
+    useCase: "testing palette combinations and organizing color decisions",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "furniture-layout-planner",
+    name: "Furniture Layout Planner",
+    subcategorySlug: "home-family",
+    format: "XLSX",
+    badge: "Layout Tool",
+    useCase: "mapping furniture placement and room flow before buying or moving pieces",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "budget-cost-tracker",
+    name: "Budget Cost Tracker",
+    subcategorySlug: "finance-budgeting",
+    format: "XLSX",
+    badge: "Budget Tool",
+    useCase: "tracking renovation, decor, and project spending with clarity",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "mood-board-guide",
+    name: "Mood Board Guide",
+    subcategorySlug: "home-family",
+    format: "PDF",
+    badge: "Creative Guide",
+    useCase: "building clear design direction for interiors and decor projects",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "diy-project-checklist",
+    name: "DIY Project Checklist",
+    subcategorySlug: "home-family",
+    format: "PDF",
+    badge: "Checklist",
+    useCase: "organizing home DIY tasks, supplies, and completion steps",
+    price: 9,
+    compareAt: 14
+  },
+  {
+    slug: "paint-material-selector",
+    name: "Paint & Material Selector",
+    subcategorySlug: "home-family",
+    format: "XLSX",
+    badge: "Selection Tool",
+    useCase: "comparing finishes, paint options, and material decisions during design planning",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "interior-design-checklist",
+    name: "Interior Design Checklist",
+    subcategorySlug: "home-family",
+    format: "PDF",
+    badge: "Bonus Checklist",
+    useCase: "keeping design projects moving with a structured room-by-room checklist",
+    price: 9,
+    compareAt: 14
+  }
+];
+
+const eventPlanningItems = [
+  {
+    slug: "event-customer-guide",
+    name: "Event Customer Guide",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Guide",
+    useCase: "helping buyers use the event planning collection with less setup friction",
+    price: 8,
+    compareAt: 12
+  },
+  {
+    slug: "party-invitation-template",
+    name: "Party Invitation Template",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Invitation",
+    useCase: "sending stylish event invites for private celebrations and gatherings",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "event-planning-checklist",
+    name: "Event Planning Checklist",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Checklist",
+    useCase: "tracking event tasks from kickoff through the final setup window",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "guest-list-rsvp-tracker",
+    name: "Guest List & RSVP Tracker",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Planning Tool",
+    useCase: "managing guest counts, RSVP responses, and attendance visibility",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "event-budget-planner",
+    name: "Event Budget Planner",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Budget Tool",
+    useCase: "budgeting vendor, decor, food, and venue costs for events",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "party-run-sheet",
+    name: "Party Run Sheet",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Run Of Show",
+    useCase: "coordinating timings, hosts, and key event-day moments",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "vendor-supplier-contacts",
+    name: "Vendor & Supplier Contacts",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Ops Tool",
+    useCase: "organizing vendor details and event supplier communication",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "seating-plan-table-assignments",
+    name: "Seating Plan & Table Assignments",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Guest Flow",
+    useCase: "mapping seating arrangements and table organization for events",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "food-drinks-planner",
+    name: "Food & Drinks Planner",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Menu Planner",
+    useCase: "planning menus, drinks, and event catering details",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "activities-games-planner",
+    name: "Activities & Games Planner",
+    subcategorySlug: "games-activities",
+    format: "PDF",
+    badge: "Activities",
+    useCase: "structuring games, activities, and engagement moments for guests",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "post-event-wrap-up-report",
+    name: "Post-Event Wrap-Up Report",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Review Tool",
+    useCase: "capturing results, notes, and lessons after an event is complete",
+    price: 10,
+    compareAt: 15
+  }
+];
+
+const celebrationPlannerItems = [
+  {
+    slug: "baby-shower-checklist-template",
+    name: "Baby Shower Checklist",
+    subcategorySlug: "games-activities",
+    format: "PDF",
+    badge: "Checklist",
+    useCase: "planning baby showers with a clear prep checklist and milestone view",
+    price: 9,
+    compareAt: 14
+  },
+  {
+    slug: "baby-shower-games-pack",
+    name: "Baby Shower Games",
+    subcategorySlug: "games-activities",
+    format: "PDF",
+    badge: "Party Favorite",
+    useCase: "adding playful activities to baby shower celebrations",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "baby-shower-invitation-template",
+    name: "Baby Shower Invitation",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Invitation",
+    useCase: "inviting guests to baby shower events with a polished printable invitation",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "birthday-invitation-template",
+    name: "Birthday Invitation",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Invitation",
+    useCase: "birthday celebrations that need a fast, stylish invitation template",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "birthday-party-checklist",
+    name: "Birthday Party Checklist",
+    subcategorySlug: "games-activities",
+    format: "PDF",
+    badge: "Checklist",
+    useCase: "staying on top of birthday planning tasks and supply prep",
+    price: 9,
+    compareAt: 14
+  },
+  {
+    slug: "birthday-thank-you-card-template",
+    name: "Birthday Thank You Card",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Stationery",
+    useCase: "sending a polished thank-you follow-up after a birthday event",
+    price: 9,
+    compareAt: 14
+  },
+  {
+    slug: "bridal-shower-games-pack",
+    name: "Bridal Shower Games",
+    subcategorySlug: "games-activities",
+    format: "PDF",
+    badge: "Party Favorite",
+    useCase: "bridal shower activities and guest engagement moments",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "bridal-shower-invitation-template",
+    name: "Bridal Shower Invitation",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Invitation",
+    useCase: "bridal shower hosting with a refined digital invitation template",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "corporate-event-invitation-template",
+    name: "Corporate Event Invitation",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Event Invite",
+    useCase: "business and branded events that need clean invitation design",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "corporate-event-planner",
+    name: "Corporate Event Planner",
+    subcategorySlug: "signs-decor",
+    format: "PDF",
+    badge: "Planner",
+    useCase: "structuring corporate events, schedules, and key event deliverables",
+    price: 11,
+    compareAt: 16
+  },
+  {
+    slug: "events-master-planner",
+    name: "Events Master Planner",
+    subcategorySlug: "signs-decor",
+    format: "XLSX",
+    badge: "Master Planner",
+    useCase: "tracking multiple event workflows, budgets, and planning timelines from one workbook",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "farewell-party-invitation-template",
+    name: "Farewell Party Invitation",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Invitation",
+    useCase: "farewell celebrations that need an easy printable invitation",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "graduation-party-invitation-template",
+    name: "Graduation Party Invitation",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Invitation",
+    useCase: "graduation celebrations and announcement-style party invites",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "housewarming-invitation-template",
+    name: "Housewarming Invitation",
+    subcategorySlug: "party-invitations",
+    format: "PDF",
+    badge: "Invitation",
+    useCase: "housewarming events and casual welcome-home celebrations",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "kids-party-activity-sheet",
+    name: "Kids Party Activity Sheet",
+    subcategorySlug: "games-activities",
+    format: "PDF",
+    badge: "Activities",
+    useCase: "keeping younger guests engaged during parties and celebrations",
+    price: 9,
+    compareAt: 14
+  }
+];
+
+const generatedCatalogProducts = [
+  createDigitalBundleProduct({
+    slug: "complete-business-templates-bundle",
+    name: "Complete Business Templates Bundle",
+    categorySlug: "business",
+    subcategorySlug: "client-documents",
+    badge: "Business Bundle",
+    price: 79,
+    compareAt: 129,
+    summary:
+      "A complete business document bundle with proposal, invoice, onboarding, brand, and operations templates packaged as one polished digital offer.",
+    highlights: [
+      "11 business files in one organized bundle",
+      "Mix of client-facing, marketing, and operations templates",
+      "Strong anchor offer for the business category"
+    ],
+    items: businessCoreItems
+  }),
+  ...businessCoreItems.map((item) =>
+    createDigitalFileProduct({
+      ...item,
+      categorySlug: "business"
+    })
+  ),
+  createDigitalBundleProduct({
+    slug: "business-growth-toolkit-bundle",
+    name: "Business Growth Toolkit Bundle",
+    categorySlug: "business",
+    subcategorySlug: "operations-systems",
+    badge: "Growth Bundle",
+    price: 49,
+    compareAt: 79,
+    summary:
+      "A practical business toolkit bundle combining quote sheets, finance tracking, action planning, onboarding, branding, and startup systems.",
+    highlights: [
+      "Blends spreadsheets with printable business guides",
+      "Useful for freelancers, service brands, and small studios",
+      "Low-ticket business upsell that still feels complete"
+    ],
+    items: businessGrowthItems
+  }),
+  ...businessGrowthItems.map((item) =>
+    createDigitalFileProduct({
+      ...item,
+      categorySlug: "business"
+    })
+  ),
+  createDigitalBundleProduct({
+    slug: "interior-design-planner-bundle",
+    name: "Interior Design Planner Bundle",
+    categorySlug: "planners-productivity",
+    subcategorySlug: "home-family",
+    badge: "Home Bundle",
+    price: 59,
+    compareAt: 99,
+    summary:
+      "A home and interior planning bundle with room templates, cost trackers, material selectors, and design guides for organized decor projects.",
+    highlights: [
+      "Supports room planning, decor direction, and budgeting",
+      "Mix of spreadsheets and printable design guides",
+      "Great fit for home planning shoppers"
+    ],
+    items: interiorDesignItems
+  }),
+  ...interiorDesignItems.map((item) =>
+    createDigitalFileProduct({
+      ...item,
+      categorySlug: "planners-productivity"
+    })
+  ),
+  createDigitalBundleProduct({
+    slug: "event-planning-bundle",
+    name: "Event Planning Bundle",
+    categorySlug: "events-parties",
+    subcategorySlug: "signs-decor",
+    badge: "Event Bundle",
+    price: 69,
+    compareAt: 109,
+    summary:
+      "A complete event planning bundle with invitations, guest tracking, budgeting, seating, vendors, food, activities, and wrap-up reporting in one pack.",
+    highlights: [
+      "11 event planning files with a customer guide included",
+      "Structured for hosts, planners, and celebration organizers",
+      "Pairs nicely with the party invitation category"
+    ],
+    items: eventPlanningItems
+  }),
+  ...eventPlanningItems.map((item) =>
+    createDigitalFileProduct({
+      ...item,
+      categorySlug: "events-parties"
+    })
+  ),
+  createDigitalBundleProduct({
+    slug: "celebration-party-planner-bundle",
+    name: "Celebration Party Planner Bundle",
+    categorySlug: "events-parties",
+    subcategorySlug: "party-invitations",
+    badge: "Celebration Bundle",
+    price: 79,
+    compareAt: 129,
+    summary:
+      "A large celebrations bundle covering baby showers, birthdays, bridal showers, corporate events, invitations, games, and party planning tools.",
+    highlights: [
+      "Covers multiple celebration types in one digital bundle",
+      "Mixes invitations, planning sheets, and activity templates",
+      "Useful flagship bundle for the events category"
+    ],
+    items: celebrationPlannerItems
+  }),
+  ...celebrationPlannerItems.map((item) =>
+    createDigitalFileProduct({
+      ...item,
+      categorySlug: "events-parties"
+    })
+  )
+];
+
+export const fallbackProducts = [...weddingProducts, ...generatedCatalogProducts];
 
 export function getAllProducts() {
   return fallbackProducts;
