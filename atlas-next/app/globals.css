@@ -66,6 +66,14 @@ img {
     rgba(255, 251, 245, 0.94);
   backdrop-filter: blur(18px);
   box-shadow: 0 22px 56px rgba(61, 39, 20, 0.12);
+  transition: transform 220ms ease, opacity 220ms ease, box-shadow 220ms ease;
+  will-change: transform;
+}
+
+.site-header.is-hidden {
+  transform: translateY(calc(-100% - 24px));
+  opacity: 0;
+  pointer-events: none;
 }
 
 .site-header-top,
