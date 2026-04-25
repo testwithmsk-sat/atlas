@@ -2,10 +2,36 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { parseNumericAmount } from "@/lib/currency";
+import { fallbackProducts } from "@/lib/products";
 
 const CART_STORAGE_KEY = "tda-next-cart";
 
 const CartContext = createContext(null);
+const validProductMap = new Map(fallbackProducts.map((product) => [product.slug, product]));
+
+function sanitizeCartItems(items) {
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .map((item) => {
+      if (!item?.slug) return null;
+
+      const product = validProductMap.get(item.slug);
+      if (!product || product.isPurchasable === false) return null;
+
+      return {
+        slug: product.slug,
+        name: product.name,
+        image: product.image,
+        priceLabel: product.priceLabel,
+        priceValue: parseNumericAmount(product.priceLabel),
+        status: product.status,
+        isPurchasable: product.isPurchasable !== false,
+        quantity: Math.max(1, Number(item.quantity || 1))
+      };
+    })
+    .filter(Boolean);
+}
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
@@ -15,7 +41,7 @@ export function CartProvider({ children }) {
     try {
       const saved = window.localStorage.getItem(CART_STORAGE_KEY);
       if (saved) {
-        setItems(JSON.parse(saved));
+        setItems(sanitizeCartItems(JSON.parse(saved)));
       }
     } catch {
       setItems([]);
@@ -32,9 +58,10 @@ export function CartProvider({ children }) {
   const value = useMemo(() => {
     const addItem = (product) => {
       setItems((current) => {
-        const existing = current.find((item) => item.slug === product.slug);
+        const normalizedCurrent = sanitizeCartItems(current);
+        const existing = normalizedCurrent.find((item) => item.slug === product.slug);
         if (existing) {
-          return current.map((item) =>
+          return normalizedCurrent.map((item) =>
             item.slug === product.slug
               ? { ...item, quantity: item.quantity + 1 }
               : item
@@ -42,7 +69,7 @@ export function CartProvider({ children }) {
         }
 
         return [
-          ...current,
+          ...normalizedCurrent,
           {
             slug: product.slug,
             name: product.name,
