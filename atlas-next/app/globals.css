@@ -67,7 +67,13 @@ img {
     rgba(255, 251, 245, 0.94);
   backdrop-filter: blur(18px);
   box-shadow: 0 22px 56px rgba(61, 39, 20, 0.12);
-  transition: box-shadow 220ms ease;
+  transition: padding 180ms ease, box-shadow 220ms ease, background 180ms ease;
+}
+
+.site-header.is-condensed {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  box-shadow: 0 14px 34px rgba(61, 39, 20, 0.1);
 }
 
 .site-header-top {
@@ -129,6 +135,9 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.16em;
   line-height: 1.5;
+  transition: opacity 160ms ease, max-height 160ms ease, margin 160ms ease;
+  max-height: 3rem;
+  overflow: hidden;
 }
 
 .header-utility-row,
@@ -274,6 +283,8 @@ img {
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 248, 241, 0.74));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transition: opacity 160ms ease, transform 160ms ease, max-width 160ms ease;
+  max-width: 100%;
 }
 
 .site-search-field,
@@ -337,6 +348,47 @@ img {
 .site-search-button {
   min-height: 42px;
   min-width: 98px;
+}
+
+.site-header.is-condensed .brand-kicker {
+  font-size: 0.62rem;
+}
+
+.site-header.is-condensed .brand-title {
+  font-size: clamp(1.3rem, 1.6vw, 1.7rem);
+}
+
+.site-header.is-condensed .brand-monogram {
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0 10px;
+  font-size: 0.66rem;
+}
+
+.site-header.is-condensed .brand-subtitle {
+  opacity: 0;
+  max-height: 0;
+  margin: 0;
+}
+
+.site-header.is-condensed .site-search-form {
+  opacity: 0.82;
+  transform: scale(0.96);
+}
+
+.site-header.is-condensed .primary-nav a {
+  min-height: 34px;
+  padding: 7px 12px;
+}
+
+.site-header.is-condensed .nav-pill {
+  min-height: 38px;
+  padding: 8px 14px;
+}
+
+.site-header.is-condensed .button {
+  min-height: 42px;
+  padding: 10px 16px;
 }
 
 .nav-pill,

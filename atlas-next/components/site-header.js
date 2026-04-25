@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/components/cart-provider";
@@ -22,9 +23,23 @@ function isPrimaryLinkActive(pathname, href) {
 export function SiteHeader() {
   const { itemCount } = useCart();
   const pathname = usePathname();
+  const [isCondensed, setIsCondensed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsCondensed(window.scrollY > 72);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <header className="site-header">
+    <header className={`site-header${isCondensed ? " is-condensed" : ""}`}>
       <div className="site-header-top">
         <Link className="brand-mark" href="/">
           <span className="brand-kicker">Curated Digital Atelier</span>
