@@ -56,25 +56,18 @@ img {
 
 .site-header {
   position: sticky;
-  top: 18px;
-  z-index: 10;
-  margin: 18px 0 32px;
+  top: 0;
+  z-index: 30;
+  margin: 0 0 32px;
   padding: 18px 22px;
   border: 1px solid rgba(255, 255, 255, 0.76);
-  border-radius: 34px;
+  border-radius: 0 0 34px 34px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 248, 240, 0.86)),
     rgba(255, 251, 245, 0.94);
   backdrop-filter: blur(18px);
   box-shadow: 0 22px 56px rgba(61, 39, 20, 0.12);
-  transition: transform 220ms ease, opacity 220ms ease, box-shadow 220ms ease;
-  will-change: transform;
-}
-
-.site-header.is-hidden {
-  transform: translateY(calc(-100% - 24px));
-  opacity: 0;
-  pointer-events: none;
+  transition: box-shadow 220ms ease;
 }
 
 .site-header-top {

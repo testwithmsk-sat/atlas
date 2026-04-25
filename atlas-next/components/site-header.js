@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/components/cart-provider";
@@ -23,35 +22,9 @@ function isPrimaryLinkActive(pathname, href) {
 export function SiteHeader() {
   const { itemCount } = useCart();
   const pathname = usePathname();
-  const [isHidden, setIsHidden] = useState(false);
-  const lastScrollYRef = useRef(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const isNearTop = currentScrollY < 96;
-      const isScrollingDown = currentScrollY > lastScrollYRef.current;
-      const hasPassedThreshold = currentScrollY > 160;
-
-      if (isNearTop || !hasPassedThreshold || !isScrollingDown) {
-        setIsHidden(false);
-      } else {
-        setIsHidden(true);
-      }
-
-      lastScrollYRef.current = currentScrollY;
-    };
-
-    lastScrollYRef.current = window.scrollY;
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   return (
-    <header className={`site-header${isHidden ? " is-hidden" : ""}`}>
+    <header className="site-header">
       <div className="site-header-top">
         <Link className="brand-mark" href="/">
           <span className="brand-kicker">Curated Digital Atelier</span>
