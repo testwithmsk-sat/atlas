@@ -64,6 +64,23 @@ export function SiteHeader() {
           <span className="brand-subtitle">Wedding templates, planners, and printables</span>
         </Link>
 
+        <nav className="primary-nav" aria-label="Primary">
+          {primaryLinks.map((link) => {
+            const isActive = isPrimaryLinkActive(pathname, link.href);
+
+            return (
+              <Link
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                className={isActive ? "is-active" : undefined}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
+
         <div className="header-utility-row">
           <div className="header-tools">
             <form className="site-search-form" action="/shop" role="search">
@@ -93,27 +110,6 @@ export function SiteHeader() {
             </Link>
           </div>
         </div>
-      </div>
-
-      <div className="site-header-divider" aria-hidden="true"></div>
-
-      <div className="site-header-bottom">
-        <nav className="primary-nav" aria-label="Primary">
-          {primaryLinks.map((link) => {
-            const isActive = isPrimaryLinkActive(pathname, link.href);
-
-            return (
-              <Link
-                key={`${link.href}-${link.label}`}
-                href={link.href}
-                className={isActive ? "is-active" : undefined}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
       </div>
     </header>
   );
