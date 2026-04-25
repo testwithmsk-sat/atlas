@@ -67,3 +67,36 @@ export async function getCategoryPageData(categorySlug) {
     plannedCount: 0
   };
 }
+
+export function normalizeSearchQuery(query) {
+  return typeof query === "string" ? query.trim().toLowerCase() : "";
+}
+
+function getSearchableProductText(product) {
+  const detailIncludes = Array.isArray(product.details?.includes) ? product.details.includes.join(" ") : "";
+  const bundleContents = Array.isArray(product.bundleContents) ? product.bundleContents.join(" ") : "";
+  const highlights = Array.isArray(product.highlights) ? product.highlights.join(" ") : "";
+
+  return [
+    product.name,
+    product.summary,
+    product.badge,
+    product.productType,
+    product.category,
+    product.subcategory,
+    product.status,
+    highlights,
+    detailIncludes,
+    bundleContents
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+export function searchProducts(products, query) {
+  const normalizedQuery = normalizeSearchQuery(query);
+  if (!normalizedQuery) return products;
+
+  return products.filter((product) => getSearchableProductText(product).includes(normalizedQuery));
+}

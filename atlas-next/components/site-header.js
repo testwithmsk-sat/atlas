@@ -30,6 +30,21 @@ export function SiteHeader() {
       </nav>
 
       <div className="header-actions">
+        <form className="site-search-form" action="/shop" role="search">
+          <label className="site-search-field">
+            <span className="site-search-label">Search products</span>
+            <input
+              className="site-search-input"
+              type="search"
+              name="q"
+              placeholder="Search products"
+              autoComplete="off"
+            />
+          </label>
+          <button className="button button-secondary site-search-button" type="submit">
+            Search
+          </button>
+        </form>
         <Link className="nav-pill nav-pill--cart" href="/cart">
           Cart
           <span>{itemCount}</span>

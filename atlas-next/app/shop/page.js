@@ -1,13 +1,19 @@
+import { CatalogSearchForm } from "@/components/catalog-search-form";
 import { ProductCard } from "@/components/product-card";
-import { getAllProducts, getBundleProducts } from "@/lib/catalog";
+import { getAllProducts, searchProducts } from "@/lib/catalog";
 
 export const metadata = {
   title: "Shop | The Digital Atlas"
 };
 
-export default async function ShopPage() {
-  const [products, bundleProducts] = await Promise.all([getAllProducts(), getBundleProducts()]);
-  const individualProducts = products.filter((product) => product.isBundle !== true);
+export default async function ShopPage({ searchParams }) {
+  const resolvedSearchParams = await searchParams;
+  const searchQuery = typeof resolvedSearchParams?.q === "string" ? resolvedSearchParams.q.trim() : "";
+  const products = await getAllProducts();
+  const filteredProducts = searchProducts(products, searchQuery);
+  const bundleProducts = filteredProducts.filter((product) => product.isBundle === true);
+  const individualProducts = filteredProducts.filter((product) => product.isBundle !== true);
+  const hasResults = filteredProducts.length > 0;
 
   return (
     <>
@@ -19,6 +25,12 @@ export default async function ShopPage() {
             Shop multiple bundle offers or sell the collection one file at a time across planning, stationery, signs,
             and party extras.
           </p>
+          <CatalogSearchForm
+            action="/shop"
+            query={searchQuery}
+            totalCount={products.length}
+            resultCount={filteredProducts.length}
+          />
         </div>
       </section>
 
@@ -27,7 +39,7 @@ export default async function ShopPage() {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Bundle Deals</p>
-              <h2>The premium offers on the site.</h2>
+              <h2>{searchQuery ? "Matching bundle deals." : "The premium offers on the site."}</h2>
             </div>
           </div>
           <div className="product-grid">
@@ -38,19 +50,33 @@ export default async function ShopPage() {
         </section>
       ) : null}
 
-      <section className="section-block">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Individual Templates</p>
-            <h2>Sell the collection one piece at a time too.</h2>
+      {!searchQuery || individualProducts.length > 0 ? (
+        <section className="section-block">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Individual Templates</p>
+              <h2>{searchQuery ? "Matching individual products." : "Sell the collection one piece at a time too."}</h2>
+            </div>
           </div>
-        </div>
-        <div className="product-grid">
-          {individualProducts.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
-        </div>
-      </section>
+          {individualProducts.length > 0 ? (
+            <div className="product-grid">
+              {individualProducts.map((product) => (
+                <ProductCard key={product.slug} product={product} />
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
+      {!hasResults ? (
+        <section className="section-block">
+          <article className="info-card empty-state-card">
+            <p className="eyebrow">No Matches</p>
+            <h3>No products matched "{searchQuery}".</h3>
+            <p>Try a broader keyword like invitation, planner, bundle, RSVP, budget, or sign.</p>
+          </article>
+        </section>
+      ) : null}
     </>
   );
 }
