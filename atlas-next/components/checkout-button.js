@@ -31,6 +31,28 @@ function loadRazorpayScript() {
   });
 }
 
+async function readJsonResponse(response) {
+  const rawText = await response.text();
+
+  if (!rawText) {
+    return {
+      ok: response.ok,
+      status: response.status,
+      data: null
+    };
+  }
+
+  try {
+    return {
+      ok: response.ok,
+      status: response.status,
+      data: JSON.parse(rawText)
+    };
+  } catch {
+    throw new Error("Checkout returned an invalid response. Refresh the page and try again.");
+  }
+}
+
 export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) }) {
   const { items } = useCart();
   const [status, setStatus] = useState("");
@@ -80,10 +102,15 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
         body: JSON.stringify({ items })
       });
 
-      const payload = await response.json();
+      const { ok, data: payload } = await readJsonResponse(response);
 
-      if (!response.ok) {
-        setStatus(payload.error || "Checkout is not ready yet.");
+      if (!ok) {
+        setStatus(payload?.error || "Checkout is not ready yet.");
+        return;
+      }
+
+      if (!payload?.orderId || !payload?.key) {
+        setStatus("Checkout service returned an empty response. Refresh the page and try again.");
         return;
       }
 
@@ -106,9 +133,14 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
             body: JSON.stringify(paymentResult)
           });
 
-          const verifyPayload = await verifyResponse.json();
-          if (!verifyResponse.ok) {
-            setStatus(verifyPayload.error || "Payment verification failed.");
+          const { ok: verifyOk, data: verifyPayload } = await readJsonResponse(verifyResponse);
+          if (!verifyOk) {
+            setStatus(verifyPayload?.error || "Payment verification failed.");
+            return;
+          }
+
+          if (!verifyPayload?.redirectUrl) {
+            setStatus("Payment was processed, but the confirmation response was empty.");
             return;
           }
 
