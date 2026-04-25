@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getProductsBySlugs, parsePriceLabel } from "@/lib/catalog";
+import { convertUsdToInr } from "@/lib/currency";
 import { createPendingCheckoutOrder } from "@/lib/orders";
 import { createRazorpayOrder } from "@/lib/razorpay";
 import { env, hasRazorpayConfig } from "@/lib/env";
@@ -25,19 +26,21 @@ export async function POST(request) {
 
     const catalogProducts = await getProductsBySlugs(items.map((item) => item.slug));
     const productMap = new Map(catalogProducts.map((product) => [product.slug, product]));
+    const checkoutCurrency = String(env.razorpayCurrency || "INR").toUpperCase();
 
     const lineItems = items.map((item) => {
       const product = productMap.get(item.slug);
       if (!product || product.isPurchasable === false) return null;
 
-      const unitAmount = Math.round(parsePriceLabel(product.priceLabel) * 100);
-      if (unitAmount <= 0) return null;
+      const storefrontUnitAmount = parsePriceLabel(product.priceLabel);
+      const checkoutUnitAmount = checkoutCurrency === "INR" ? convertUsdToInr(storefrontUnitAmount) : storefrontUnitAmount;
+      if (checkoutUnitAmount <= 0) return null;
 
       return {
         product_slug: product.slug,
         product_name: product.name,
         quantity: Math.max(1, Number(item.quantity || 1)),
-        unit_amount: unitAmount / 100
+        unit_amount: checkoutUnitAmount
       };
     });
 
@@ -69,7 +72,7 @@ export async function POST(request) {
       gatewayOrderId: razorpayOrder.id,
       items: validLineItems,
       amountTotal: amount / 100,
-      currency: env.razorpayCurrency
+      currency: checkoutCurrency
     });
 
     if (!pendingOrder.ok) {

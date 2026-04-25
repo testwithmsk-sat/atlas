@@ -3,12 +3,18 @@ export function parseNumericAmount(value) {
   return Number.isFinite(amount) ? amount : 0;
 }
 
-const INR_PER_USD = 93;
+export const INR_PER_USD = 93;
 
 export function formatUsdAmount(value) {
   const amount = Number(value || 0);
   const normalized = Number.isFinite(amount) ? amount : 0;
   return `$${normalized.toFixed(2)}`;
+}
+
+export function convertUsdToInr(value) {
+  const usdAmount = Number(value || 0);
+  const normalized = Number.isFinite(usdAmount) ? usdAmount : 0;
+  return Number((normalized * INR_PER_USD).toFixed(2));
 }
 
 export function normalizePriceLabel(label) {
