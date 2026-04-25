@@ -25,7 +25,7 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="site-header-main">
+      <div className="site-header-top">
         <Link className="brand-mark" href="/">
           <span className="brand-kicker">Curated Digital Atelier</span>
           <span className="brand-title-row">
@@ -37,29 +37,8 @@ export function SiteHeader() {
           <span className="brand-subtitle">Wedding templates, planners, and printables</span>
         </Link>
 
-        <div className="header-nav-group">
-          <span className="header-group-label">Browse</span>
-          <nav className="primary-nav" aria-label="Primary">
-            {primaryLinks.map((link) => {
-              const isActive = isPrimaryLinkActive(pathname, link.href);
-
-              return (
-                <Link
-                  key={`${link.href}-${link.label}`}
-                  href={link.href}
-                  className={isActive ? "is-active" : undefined}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
-        <div className="header-actions">
+        <div className="header-utility-row">
           <div className="header-tools">
-            <span className="header-group-label">Search</span>
             <form className="site-search-form" action="/shop" role="search">
               <label className="site-search-field">
                 <span className="site-search-label">Search products</span>
@@ -67,7 +46,7 @@ export function SiteHeader() {
                   className="site-search-input"
                   type="search"
                   name="q"
-                  placeholder="Search invitations, planners, bundles..."
+                  placeholder="Search products"
                   autoComplete="off"
                 />
               </label>
@@ -87,6 +66,27 @@ export function SiteHeader() {
             </Link>
           </div>
         </div>
+      </div>
+
+      <div className="site-header-divider" aria-hidden="true"></div>
+
+      <div className="site-header-bottom">
+        <nav className="primary-nav" aria-label="Primary">
+          {primaryLinks.map((link) => {
+            const isActive = isPrimaryLinkActive(pathname, link.href);
+
+            return (
+              <Link
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                className={isActive ? "is-active" : undefined}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
     </header>
   );
