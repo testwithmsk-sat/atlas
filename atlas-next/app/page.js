@@ -3,24 +3,45 @@ import { redirect } from "next/navigation";
 import { CatalogCategoryCard } from "@/components/catalog-category-card";
 import { ProductCard } from "@/components/product-card";
 import { getAllProducts, getBundleProducts, getCategoryDirectoryWithCounts, getFeaturedProducts } from "@/lib/catalog";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export default async function HomePage({ searchParams }) {
   const params = await searchParams;
-  const hasOAuthParams = params?.code || params?.error;
+  const code = params?.code;
+  const error = params?.error;
+  const errorDescription = params?.error_description;
+  const next = params?.next || "/account";
 
-  if (hasOAuthParams) {
+  if (error) {
+    const authMessage = encodeURIComponent(errorDescription || "google-error");
+    redirect(`${next}?auth=${authMessage}`);
+  }
+
+  if (code) {
+    const supabase = await createSupabaseServerClient();
+
+    if (!supabase) {
+      redirect(`${next}?auth=unavailable`);
+    }
+
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    if (exchangeError) {
+      const authMessage = encodeURIComponent(exchangeError.message || "google-error");
+      redirect(`${next}?auth=${authMessage}`);
+    }
+
     const callbackParams = new URLSearchParams();
     for (const [key, value] of Object.entries(params || {})) {
-      if (typeof value === "string" && value) {
+      if (key !== "code" && typeof value === "string" && value) {
         callbackParams.set(key, value);
       }
     }
 
-    if (!callbackParams.has("next")) {
-      callbackParams.set("next", "/account");
+    if (callbackParams.toString()) {
+      redirect(`${next}?${callbackParams.toString()}`);
     }
 
-    redirect(`/auth/callback?${callbackParams.toString()}`);
+    redirect(next);
   }
 
   const [featuredProducts, bundleProducts, products, categories] = await Promise.all([
