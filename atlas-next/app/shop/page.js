@@ -1,33 +1,20 @@
-import { CatalogCategoryCard } from "@/components/catalog-category-card";
-import { getCategoryDirectoryWithCounts } from "@/lib/catalog";
-
 export const metadata = {
-  title: "Shop | The Digital Atlas"
+  title: "Store Status | The Digital Atlas"
 };
 
-export default async function ShopPage() {
-  const categories = await getCategoryDirectoryWithCounts();
-
+export default function ShopPage() {
   return (
     <section className="section-block">
       <div className="page-intro">
-        <p className="eyebrow">Catalog</p>
-        <h1>Open a category page, then browse products inside that collection.</h1>
-        <p>
-          Start with the category directory and open the collection that matches what you want to buy.
-        </p>
+        <p className="eyebrow">Store Status</p>
+        <h1>No products are currently published.</h1>
+        <p>The shop is intentionally empty right now. Category previews and product listings have been removed.</p>
       </div>
-      <section className="catalog-directory">
-        {categories.map((category) => (
-          <CatalogCategoryCard
-            key={category.slug}
-            category={category}
-            href={`/shop/${category.slug}`}
-            liveCount={category.liveCount}
-            plannedCount={category.plannedCount}
-          />
-        ))}
-      </section>
+      <article className="info-card">
+        <p className="eyebrow">Catalog Cleared</p>
+        <h2>This page no longer shows categories or products.</h2>
+        <p>New items can be added later, but nothing is being previewed or sold here now.</p>
+      </article>
     </section>
   );
 }

@@ -38,25 +38,7 @@ function compareProductsForListing(left, right) {
 }
 
 export async function getAllProducts() {
-  const client = getSupabaseAdmin();
-  if (!client) return fallbackProducts;
-
-  const { data, error } = await client
-    .from("products")
-    .select("slug, name, category, category_slug, subcategory, subcategory_slug, badge, price_label, status, product_type, summary, image, highlights, is_purchasable")
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
-
-  if (error || !data?.length) {
-    return [...fallbackProducts].sort(compareProductsForListing);
-  }
-
-  const productMap = new Map(fallbackProducts.map((product) => [product.slug, product]));
-  data.map(normalizeProduct).forEach((product) => {
-    productMap.set(product.slug, product);
-  });
-
-  return Array.from(productMap.values()).sort(compareProductsForListing);
+  return [];
 }
 
 export async function getFeaturedProducts() {
@@ -128,18 +110,11 @@ function createPlaceholderProduct(entry, categorySlug, liveProducts) {
 }
 
 export async function getCategoryDirectoryWithCounts() {
-  const products = await getAllProducts();
-
   return categoryDirectory.map((category) => {
-    const liveCount = products.filter((product) => product.categorySlug === category.slug).length;
-    const plannedCount = starterCatalogPlan.filter(
-      (entry) => entry.categorySlug === category.slug && !products.some((product) => product.slug === entry.slug)
-    ).length;
-
     return {
       ...category,
-      liveCount,
-      plannedCount
+      liveCount: 0,
+      plannedCount: 0
     };
   });
 }
@@ -148,67 +123,10 @@ export async function getCategoryPageData(categorySlug) {
   const category = getCategoryBySlug(categorySlug);
   if (!category) return null;
 
-  const liveProducts = await getProductsByCategorySlug(categorySlug);
-  const liveSlugSet = new Set(liveProducts.map((product) => product.slug));
-  const placeholderProducts = starterCatalogPlan
-    .filter((entry) => entry.categorySlug === categorySlug && !liveSlugSet.has(entry.slug))
-    .map((entry) => createPlaceholderProduct(entry, categorySlug, liveProducts));
-
-  const subcategoryMap = new Map(
-    category.subcategories.map((subcategory) => [
-      subcategory.slug,
-      {
-        ...subcategory,
-        items: [],
-        liveCount: 0,
-        plannedCount: 0
-      }
-    ])
-  );
-
-  const ensureSubcategoryGroup = (slug, name) => {
-    if (!subcategoryMap.has(slug)) {
-      subcategoryMap.set(slug, {
-        slug,
-        name,
-        items: [],
-        liveCount: 0,
-        plannedCount: 0
-      });
-    }
-
-    return subcategoryMap.get(slug);
-  };
-
-  liveProducts.forEach((product) => {
-    const group = ensureSubcategoryGroup(product.subcategorySlug || "other", product.subcategory || "Other");
-    group.items.push(product);
-    group.liveCount += 1;
-  });
-
-  placeholderProducts.forEach((product) => {
-    const group = ensureSubcategoryGroup(product.subcategorySlug || "other", product.subcategory || "Other");
-    group.items.push(product);
-    group.plannedCount += 1;
-  });
-
-  const groups = Array.from(subcategoryMap.values())
-    .filter((group) => group.items.length > 0)
-    .map((group) => ({
-      ...group,
-      items: group.items.sort((left, right) => {
-        if (left.isPlaceholder !== right.isPlaceholder) {
-          return left.isPlaceholder ? 1 : -1;
-        }
-
-        return compareProductsForListing(left, right);
-      })
-    }));
-
   return {
     category,
-    groups,
-    liveCount: liveProducts.length,
-    plannedCount: placeholderProducts.length
+    groups: [],
+    liveCount: 0,
+    plannedCount: 0
   };
 }

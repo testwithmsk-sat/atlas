@@ -15,7 +15,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
       <article className="info-card">
         <p className="eyebrow">Signed In</p>
         <h3>{email}</h3>
-        <p>Your orders, downloads, and account details are available here.</p>
+        <p>Your account is available, but storefront purchasing features are currently paused.</p>
         <form action={signOutFormAction}>
           <button className="button button-primary" type="submit">
             Sign Out
@@ -46,7 +46,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
         </form>
         <p className="status-note">
           {hasSupabase
-            ? signInState.message || "Sign in to view your orders and purchased downloads."
+            ? signInState.message || "Sign in to access your account while the storefront is empty."
             : "Sign in will be available soon."}
         </p>
       </article>
@@ -69,7 +69,7 @@ export function AccountAuthPanel({ email, hasSupabase }) {
         </form>
         <p className="status-note">
           {hasSupabase
-            ? signUpState.message || "Create an account to keep track of your purchases."
+            ? signUpState.message || "Create an account for future access when the storefront is active again."
             : "Account creation will be available soon."}
         </p>
       </article>

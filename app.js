@@ -95,27 +95,13 @@ const CATEGORY_PAGE_DATA = {
   }
 };
 const PRIMARY_NAV_LINKS = [
-  {
-    href: "shop.html",
-    label: "Shop",
-    submenu: [
-      { href: "category.html?category=wedding", label: "Wedding" },
-      { href: "category.html?category=events-parties", label: "Events & Parties" },
-      { href: "category.html?category=business", label: "Business" },
-      { href: "category.html?category=planners-productivity", label: "Planners & Productivity" },
-      { href: "category.html?category=career-education", label: "Career & Education" },
-      { href: "category.html?category=social-content", label: "Social & Content" },
-      { href: "category.html?category=creative-assets", label: "Creative Assets" },
-      { href: "category.html?category=templates-documents", label: "Templates & Documents" }
-    ]
-  },
+  { href: "shop.html", label: "Store Status" },
   { href: "bundles.html", label: "Bundles" },
-  { href: "shop.html", label: "Collections" },
   { href: "free-resources.html", label: "Freebies" },
   { href: "contact.html", label: "Support" }
 ];
 const NAV_TOOL_LINKS = [
-  { href: "shop.html", label: "Search" },
+  { href: "shop.html", label: "Status" },
   { href: "login.html", label: "Account" }
 ];
 const EXPORTABLE_PAGES = [
@@ -261,8 +247,8 @@ const syncStoreHeader = () => {
     (link) => `<a class="nav-link-pill" href="${link.href}">${link.label}</a>`
   ).join("");
 
-  navCta.href = "shop.html";
-  navCta.textContent = "View Catalog";
+  navCta.href = "contact.html";
+  navCta.textContent = "Support";
 };
 
 syncStoreHeader();
@@ -346,9 +332,7 @@ const renderCategoryPage = () => {
   if (breadcrumbNode) breadcrumbNode.textContent = categoryData.label;
 
   if (sideListNode) {
-    sideListNode.innerHTML = Object.entries(CATEGORY_PAGE_DATA)
-      .map(([slug, item]) => `<li><a href="category.html?category=${slug}">${item.label}</a></li>`)
-      .join("");
+    sideListNode.innerHTML = "<li>Category links are hidden while the storefront is empty.</li>";
   }
 
   if (!productGridNode) return;
@@ -357,12 +341,12 @@ const renderCategoryPage = () => {
   if (products.length === 0) {
     productGridNode.innerHTML = `
       <article class="product-card product-card--empty">
-        <span class="product-tag">Coming Soon</span>
-        <h3>No live products yet</h3>
-        <p>This category page is ready, but products have not been published here yet.</p>
+        <span class="product-tag">Empty</span>
+        <h3>No products are displayed</h3>
+        <p>This category is intentionally empty right now.</p>
         <div class="meta-row">
-          <span>Category prepared</span>
-          <strong>Launch later</strong>
+          <span>Store status</span>
+          <strong>Cleared</strong>
         </div>
       </article>
     `;

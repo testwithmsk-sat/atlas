@@ -1,27 +1,21 @@
-import { ProductCard } from "@/components/product-card";
-import { getBestSellerProducts } from "@/lib/catalog";
-
 export const metadata = {
   title: "Best Sellers | The Digital Atlas",
-  description: "Browse best-selling digital products from The Digital Atlas."
+  description: "No best sellers are currently published on The Digital Atlas."
 };
 
-export default async function BestSellersPage() {
-  const products = await getBestSellerProducts();
-
+export default function BestSellersPage() {
   return (
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Best Sellers</p>
-        <h1>Top products customers shop first.</h1>
-        <p>Start with some of the most popular purchasable products currently featured in the storefront.</p>
+        <h1>No best sellers are available.</h1>
+        <p>This page no longer displays any featured or top-performing products.</p>
       </div>
-
-      <div className="product-grid">
-        {products.map((product) => (
-          <ProductCard key={product.slug} product={product} />
-        ))}
-      </div>
+      <article className="info-card">
+        <p className="eyebrow">Currently Empty</p>
+        <h2>There are no products to highlight right now.</h2>
+        <p>The storefront has been cleared so this page stays empty until a future launch.</p>
+      </article>
     </section>
   );
 }

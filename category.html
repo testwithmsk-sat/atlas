@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Category | The Digital Atlas</title>
-  <meta name="description" content="Check the current catalog status for a specific Digital Atlas category.">
+  <title>Category Status | The Digital Atlas</title>
+  <meta name="description" content="This category is currently empty.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="category">
@@ -15,54 +15,47 @@
       </a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav id="site-nav" class="nav">
-        <a href="shop.html">Shop</a>
+        <a href="index.html">Home</a>
+        <a href="shop.html">Store Status</a>
         <a href="bundles.html">Bundles</a>
         <a href="free-resources.html">Freebies</a>
         <a href="faq.html">FAQ</a>
       </nav>
-      <a class="nav-cta" href="shop.html">View Catalog</a>
+      <a class="nav-cta" href="shop.html">View Status</a>
     </header>
 
     <main class="shop-page">
       <section class="page-hero" data-section="hero">
-        <p class="eyebrow" data-category-eyebrow>Category</p>
-        <h1 data-category-title>Category updates</h1>
-        <p class="hero-text" data-category-text>This category is ready for the next export.</p>
-        <p class="breadcrumbs">Shop / <span data-category-breadcrumb>Category</span></p>
+        <p class="eyebrow" data-category-eyebrow>Category Status</p>
+        <h1 data-category-title>This category is currently empty.</h1>
+        <p class="hero-text" data-category-text>No products, previews, or collection listings are shown here.</p>
+        <p class="breadcrumbs">Store / <span data-category-breadcrumb>Category</span></p>
       </section>
 
-      <section class="shop-layout" data-section="catalog">
-        <aside class="shop-sidebar">
+      <section class="section" data-section="status">
+        <article class="lead-card">
+          <div>
+            <p class="eyebrow">No Listings</p>
+            <h2>Nothing is published in this category.</h2>
+            <p data-category-note>This section has been cleared and is waiting for future updates.</p>
+          </div>
           <div class="sidebar-card">
-            <p class="panel-label">Browse Categories</p>
-            <h2>Collections</h2>
+            <p class="panel-label">Status</p>
             <ul class="detail-list" data-category-links></ul>
           </div>
-          <div class="sidebar-card">
-            <p class="panel-label">Category Note</p>
-            <p data-category-note>Updates for this category will appear here.</p>
-          </div>
-        </aside>
-
-        <div class="shop-main">
-          <div class="shop-toolbar">
-            <p>Catalog status for this category</p>
-            <p>New products will appear here after export</p>
-          </div>
-          <div class="product-grid shop-grid" data-category-products></div>
-        </div>
+        </article>
       </section>
     </main>
 
     <footer class="footer">
       <div>
         <h2>The Digital Atlas</h2>
-        <p>Premium templates, printables, spreadsheets, and planners for modern customers.</p>
+        <p>The storefront is currently empty and ready for future updates.</p>
       </div>
       <div class="footer-links">
         <a href="index.html">Home</a>
-        <a href="shop.html">Shop</a>
-        <a href="free-resources.html">Freebies</a>
+        <a href="shop.html">Store Status</a>
+        <a href="contact.html">Contact</a>
         <a href="faq.html">FAQ</a>
       </div>
     </footer>

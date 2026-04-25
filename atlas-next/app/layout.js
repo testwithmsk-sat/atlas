@@ -20,7 +20,7 @@ const bodyFont = Manrope({
 
 export const metadata = {
   title: "The Digital Atlas",
-  description: "Shop digital templates, printable products, and creative bundles from The Digital Atlas."
+  description: "The Digital Atlas storefront is currently empty and ready for future updates."
 };
 
 export default function RootLayout({ children }) {

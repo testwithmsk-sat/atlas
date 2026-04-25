@@ -1,27 +1,21 @@
-import { ProductCard } from "@/components/product-card";
-import { getBundleProducts } from "@/lib/catalog";
-
 export const metadata = {
   title: "Bundles | The Digital Atlas",
-  description: "Shop curated digital bundles from The Digital Atlas."
+  description: "No bundles are currently published on The Digital Atlas."
 };
 
-export default async function BundlesPage() {
-  const bundles = await getBundleProducts();
-
+export default function BundlesPage() {
   return (
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Bundles</p>
-        <h1>Curated bundles for faster shopping.</h1>
-        <p>Explore grouped offers and multi-item collections designed for weddings, events, and business needs.</p>
+        <h1>No bundles are live right now.</h1>
+        <p>This page has been cleared and no bundle previews are being shown.</p>
       </div>
-
-      <div className="product-grid">
-        {bundles.map((product) => (
-          <ProductCard key={product.slug} product={product} />
-        ))}
-      </div>
+      <article className="info-card">
+        <p className="eyebrow">Empty State</p>
+        <h2>Bundle listings have been removed.</h2>
+        <p>There is nothing to browse here until new products are published again.</p>
+      </article>
     </section>
   );
 }
