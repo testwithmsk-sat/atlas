@@ -3,9 +3,46 @@ import { CartProvider } from "@/components/cart-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thedigitalatlas.vercel.app";
+
 export const metadata = {
-  title: "The Digital Atlas",
-  description: "Editable wedding PDF templates, bundle offers, and digital stationery from The Digital Atlas."
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "The Digital Atlas | Digital Templates, Planners, Bundles, and Printables",
+    template: "%s | The Digital Atlas"
+  },
+  description:
+    "Shop premium digital templates, planners, business documents, event kits, wedding printables, and bundle offers from The Digital Atlas.",
+  keywords: [
+    "digital templates",
+    "printable planners",
+    "wedding templates",
+    "business templates",
+    "event printables",
+    "digital downloads"
+  ],
+  alternates: {
+    canonical: "/"
+  },
+  openGraph: {
+    title: "The Digital Atlas | Digital Templates, Planners, Bundles, and Printables",
+    description:
+      "Shop premium digital templates, planners, business documents, event kits, wedding printables, and bundle offers from The Digital Atlas.",
+    url: siteUrl,
+    siteName: "The Digital Atlas",
+    locale: "en_US",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Digital Atlas | Digital Templates, Planners, Bundles, and Printables",
+    description:
+      "Shop premium digital templates, planners, business documents, event kits, wedding printables, and bundle offers from The Digital Atlas."
+  },
+  robots: {
+    index: true,
+    follow: true
+  }
 };
 
 export default function RootLayout({ children }) {
