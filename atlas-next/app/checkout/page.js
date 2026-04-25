@@ -1,4 +1,5 @@
 import { CheckoutSummary } from "@/components/checkout-summary";
+import { hasRazorpayConfig } from "@/lib/env";
 
 export default async function CheckoutPage({ searchParams }) {
   const params = await searchParams;
@@ -24,8 +25,14 @@ export default async function CheckoutPage({ searchParams }) {
             <li>Products are digital only and ship as editable PDFs.</li>
             <li>Your cart stays saved if you cancel checkout.</li>
           </ul>
+          {!hasRazorpayConfig ? (
+            <p className="status-note">
+              Razorpay checkout is not configured in this app yet. Add `NEXT_PUBLIC_RAZORPAY_KEY_ID` and
+              `RAZORPAY_KEY_SECRET` to `.env.local`, then restart the dev server.
+            </p>
+          ) : null}
         </article>
-        <CheckoutSummary />
+        <CheckoutSummary hasRazorpayConfig={hasRazorpayConfig} />
       </div>
     </section>
   );

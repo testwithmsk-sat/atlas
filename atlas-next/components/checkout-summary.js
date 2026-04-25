@@ -5,7 +5,7 @@ import { CheckoutButton } from "@/components/checkout-button";
 import { useCart } from "@/components/cart-provider";
 import { formatUsdAmount } from "@/lib/currency";
 
-export function CheckoutSummary() {
+export function CheckoutSummary({ hasRazorpayConfig = false }) {
   const { items, itemCount, subtotal } = useCart();
 
   if (items.length === 0) {
@@ -42,7 +42,12 @@ export function CheckoutSummary() {
         </div>
       </div>
       <p>Use Razorpay to complete payment for the current offer prices shown across the wedding collection.</p>
-      <CheckoutButton />
+      {!hasRazorpayConfig ? (
+        <p className="status-note">
+          Checkout is currently disabled because Razorpay keys are missing from this environment.
+        </p>
+      ) : null}
+      <CheckoutButton hasRazorpayConfig={hasRazorpayConfig} />
     </article>
   );
 }

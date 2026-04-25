@@ -26,12 +26,19 @@ function loadRazorpayScript() {
   });
 }
 
-export function CheckoutButton() {
+export function CheckoutButton({ hasRazorpayConfig = false }) {
   const { items } = useCart();
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
+    if (!hasRazorpayConfig) {
+      setStatus(
+        "Razorpay checkout is disabled. Add NEXT_PUBLIC_RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to .env.local, then restart the dev server."
+      );
+      return;
+    }
+
     if (items.length === 0) {
       setStatus("Add products to the cart first.");
       return;
@@ -98,10 +105,22 @@ export function CheckoutButton() {
 
   return (
     <div className="checkout-launch">
-      <button className="button button-primary" type="button" onClick={handleCheckout} disabled={loading}>
-        {loading ? "Starting Checkout..." : "Pay With Razorpay"}
+      <button
+        className="button button-primary"
+        type="button"
+        onClick={handleCheckout}
+        disabled={loading || !hasRazorpayConfig}
+        aria-disabled={loading || !hasRazorpayConfig}
+      >
+        {loading ? "Starting Checkout..." : hasRazorpayConfig ? "Pay With Razorpay" : "Razorpay Not Configured"}
       </button>
-      {status ? <p className="status-note">{status}</p> : null}
+      {status ? (
+        <p className="status-note">{status}</p>
+      ) : !hasRazorpayConfig ? (
+        <p className="status-note">
+          Add `NEXT_PUBLIC_RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` to `.env.local` to enable checkout.
+        </p>
+      ) : null}
     </div>
   );
 }

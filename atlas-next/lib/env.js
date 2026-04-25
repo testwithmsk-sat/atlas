@@ -4,9 +4,9 @@ export const env = {
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   supabaseDownloadsBucket: process.env.SUPABASE_DOWNLOADS_BUCKET || "product-downloads",
   supabaseSignedUrlExpiresIn: Number(process.env.SUPABASE_SIGNED_URL_EXPIRES_IN || 900),
-  razorpayKeyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+  razorpayKeyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || "",
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || "",
-  razorpayCurrency: process.env.RAZORPAY_CURRENCY || "USD",
+  razorpayCurrency: process.env.RAZORPAY_CURRENCY || "INR",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 };
 
