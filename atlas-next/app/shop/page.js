@@ -19,11 +19,11 @@ export default async function ShopPage({ searchParams }) {
     <>
       <section className="section-block">
         <div className="page-intro">
-          <p className="eyebrow">Wedding Shop</p>
-          <h1>Wedding templates, spreadsheets, and printables in one storefront.</h1>
+          <p className="eyebrow">Shop</p>
+          <h1>Digital templates, spreadsheets, and printables across every live category.</h1>
           <p>
-            Shop multiple bundle offers or sell the collection one file at a time across planning, stationery, signs,
-            and party extras.
+            Browse bundles and single files across business, events, wedding, and planning so customers can either buy
+            complete systems or quick add-ons.
           </p>
           <CatalogSearchForm
             action="/shop"

@@ -15,7 +15,7 @@ export default async function CategoriesPage() {
       <div className="page-intro">
         <p className="eyebrow">Categories</p>
         <h1>Browse the live storefront by category.</h1>
-        <p>The wedding collection is live now, with the rest of the catalog ready for future expansion.</p>
+        <p>Use the live categories to jump straight into business, events, wedding, and planning products.</p>
       </div>
       <div className="catalog-directory">
         {liveCategories.map((category) => (

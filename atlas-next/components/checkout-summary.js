@@ -7,6 +7,7 @@ import { formatUsdAmount } from "@/lib/currency";
 
 export function CheckoutSummary({ hasRazorpayConfig = false }) {
   const { items, itemCount, subtotal } = useCart();
+  const bundleCount = items.filter((item) => item.isBundle === true).length;
 
   if (items.length === 0) {
     return (
@@ -40,8 +41,17 @@ export function CheckoutSummary({ hasRazorpayConfig = false }) {
           <span>Offer pricing</span>
           <strong>Applied</strong>
         </div>
+        <div>
+          <span>Bundles in cart</span>
+          <strong>{bundleCount}</strong>
+        </div>
       </div>
-      <p>Use Razorpay to complete payment for the current offer prices shown across the wedding collection.</p>
+      <p>Use Razorpay to complete payment for the current offer prices shown across the storefront.</p>
+      <div className="checkout-microcopy">
+        <span>Secure Razorpay payment</span>
+        <span>Instant digital delivery</span>
+        <span>Account library access</span>
+      </div>
       {!hasRazorpayConfig ? (
         <p className="status-note">
           Checkout is currently disabled because Razorpay keys are missing from this environment.

@@ -1,16 +1,20 @@
 import Link from "next/link";
+import { CatalogCategoryCard } from "@/components/catalog-category-card";
 import { ProductCard } from "@/components/product-card";
-import { getAllProducts, getBundleProducts, getFeaturedProducts } from "@/lib/catalog";
+import { getAllProducts, getBundleProducts, getCategoryDirectoryWithCounts, getFeaturedProducts } from "@/lib/catalog";
 
 export default async function HomePage() {
-  const [featuredProducts, bundleProducts, products] = await Promise.all([
+  const [featuredProducts, bundleProducts, products, categories] = await Promise.all([
     getFeaturedProducts(),
     getBundleProducts(),
-    getAllProducts()
+    getAllProducts(),
+    getCategoryDirectoryWithCounts()
   ]);
   const bundle = bundleProducts[0] || null;
   const productCount = products.filter((product) => product.isBundle !== true).length;
   const bundleCount = bundleProducts.length;
+  const liveCategories = categories.filter((category) => category.liveCount > 0);
+  const categorySpotlights = liveCategories.slice(0, 4);
 
   return (
     <>
@@ -58,6 +62,29 @@ export default async function HomePage() {
       <section className="section-block">
         <div className="section-heading">
           <div>
+            <p className="eyebrow">Shop By Category</p>
+            <h2>Let customers start where their intent already is.</h2>
+          </div>
+          <Link className="text-link" href="/categories">
+            View all categories
+          </Link>
+        </div>
+        <div className="catalog-directory category-spotlight-grid">
+          {categorySpotlights.map((category) => (
+            <CatalogCategoryCard
+              key={category.slug}
+              category={category}
+              href={`/shop/${category.slug}`}
+              liveCount={category.liveCount}
+              plannedCount={category.plannedCount}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="section-block">
+        <div className="section-heading">
+          <div>
             <p className="eyebrow">Featured</p>
             <h2>Start with the strongest bundle and template offers.</h2>
           </div>
@@ -87,6 +114,26 @@ export default async function HomePage() {
           <p>
             The catalog now uses low, impulse-friendly pricing across the shop while still keeping bundle pricing easy
             to understand no matter which category a customer starts in.
+          </p>
+        </article>
+      </section>
+
+      <section className="section-block trust-band">
+        <article className="info-card">
+          <p className="eyebrow">Why It Converts</p>
+          <h3>Every category now has a clearer path from browse to bundle to checkout.</h3>
+          <ul className="feature-list">
+            <li>Category-led browsing helps buyers find the right use case faster.</li>
+            <li>Bundles act as premium anchors while single files stay easy add-ons.</li>
+            <li>Instant digital delivery and saved carts reduce checkout hesitation.</li>
+          </ul>
+        </article>
+        <article className="info-card editorial-note">
+          <p className="eyebrow">Best Next Step</p>
+          <h3>Keep evolving the strongest categories with more previews, reviews, and product education.</h3>
+          <p>
+            The storefront is now structured well enough to scale. The next gains will come from stronger product
+            storytelling and trust-building details on individual listings.
           </p>
         </article>
       </section>

@@ -37,6 +37,27 @@ export async function getBestSellerProducts() {
   return fallbackProducts.filter((product) => product.isBestSeller === true || product.isBundle === true);
 }
 
+export async function getRelatedProducts(product, limit = 3) {
+  if (!product) return [];
+
+  const exactSubcategoryMatches = fallbackProducts.filter(
+    (candidate) => candidate.slug !== product.slug && candidate.subcategorySlug === product.subcategorySlug
+  );
+
+  if (exactSubcategoryMatches.length >= limit) {
+    return exactSubcategoryMatches.slice(0, limit);
+  }
+
+  const categoryMatches = fallbackProducts.filter(
+    (candidate) =>
+      candidate.slug !== product.slug &&
+      candidate.categorySlug === product.categorySlug &&
+      !exactSubcategoryMatches.some((match) => match.slug === candidate.slug)
+  );
+
+  return [...exactSubcategoryMatches, ...categoryMatches].slice(0, limit);
+}
+
 export async function getCategoryDirectoryWithCounts() {
   return categoryDirectory.map((category) => {
     const liveCount = fallbackProducts.filter((product) => product.categorySlug === category.slug).length;

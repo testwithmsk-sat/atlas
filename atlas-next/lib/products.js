@@ -48,6 +48,10 @@ function getStorefrontPrice(price, isBundle) {
   return 1;
 }
 
+function getGeneratedPreviewImage(slug) {
+  return `/products/generated/${slug}.png`;
+}
+
 function createProduct({
   slug,
   name,
@@ -1489,7 +1493,7 @@ function createDigitalFileProduct({
     productType: formatDetails.productType,
     summary: `A ${name.toLowerCase()} built for ${useCase}.`,
     highlights: [...formatDetails.highlights, `Ideal for ${categoryMap.get(categorySlug)?.name?.toLowerCase() || "digital"} products`],
-    image,
+    image: image || getGeneratedPreviewImage(slug),
     details: {
       size: "Digital file",
       pages: "1 file",
@@ -1530,7 +1534,7 @@ function createDigitalBundleProduct({
     productType: `${items.length}-file digital bundle`,
     summary,
     highlights,
-    image,
+    image: image || getGeneratedPreviewImage(slug),
     details: {
       size: "Multi-file digital bundle",
       pages: `${items.length} files`,

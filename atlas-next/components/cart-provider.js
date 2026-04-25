@@ -26,6 +26,7 @@ function sanitizeCartItems(items) {
         priceLabel: product.priceLabel,
         priceValue: parseNumericAmount(product.priceLabel),
         status: product.status,
+        isBundle: product.isBundle === true,
         isPurchasable: product.isPurchasable !== false,
         quantity: Math.max(1, Number(item.quantity || 1))
       };
@@ -77,6 +78,7 @@ export function CartProvider({ children }) {
             priceLabel: product.priceLabel,
             priceValue: parseNumericAmount(product.priceLabel),
             status: product.status,
+            isBundle: product.isBundle === true,
             isPurchasable: product.isPurchasable !== false,
             quantity: 1
           }
