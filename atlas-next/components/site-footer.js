@@ -5,7 +5,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div>
         <h2>The Digital Atlas</h2>
-        <p>Editable wedding PDFs, bundle offers, and premium digital templates designed for easy customer personalization.</p>
+        <p>Wedding spreadsheets, printable PDFs, signage, and bundle offers designed for a premium digital planning shop.</p>
       </div>
       <div className="footer-links">
         <Link href="/">Home</Link>

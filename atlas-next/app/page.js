@@ -5,21 +5,23 @@ import { getBundleProducts, getFeaturedProducts } from "@/lib/catalog";
 export default async function HomePage() {
   const [featuredProducts, bundleProducts] = await Promise.all([getFeaturedProducts(), getBundleProducts()]);
   const bundle = bundleProducts[0] || null;
+  const productCount = 24;
+  const bundleCount = bundleProducts.length;
 
   return (
     <>
       <section className="hero-section">
         <div className="hero-copy">
           <p className="eyebrow">Wedding Collection</p>
-          <h1>Editable wedding templates your customers can type into instantly.</h1>
+          <h1>Wedding templates, planning spreadsheets, and printables in one storefront.</h1>
           <p className="hero-text">
-            The storefront is now focused on one premium offer: 10 individual fillable PDF wedding templates plus a
-            bundle deal with the customer guide included free.
+            The storefront now combines editable planning spreadsheets, printable wedding PDFs, stationery, signage,
+            and bundle offers so you can sell both low-ticket add-ons and higher-value wedding collections.
           </p>
           <div className="trust-strip">
-            <span>10 editable PDFs</span>
-            <span>1 bundle offer</span>
-            <span>Real fillable fields</span>
+            <span>{productCount} individual products</span>
+            <span>{bundleCount} bundle offers</span>
+            <span>Planning + stationery + signage</span>
           </div>
           <div className="hero-actions">
             <Link className="button button-primary" href="/shop">
@@ -41,10 +43,10 @@ export default async function HomePage() {
             </span>
           </div>
           <ul className="feature-list">
-            <li>Invitation, programme, RSVP, signs, and planner templates.</li>
+            <li>Invitation, RSVP, menu, sign, and thank you card products.</li>
+            <li>Budget spreadsheets, vendor tools, checklists, and timeline planning.</li>
             <li>Offer pricing is shown across the storefront.</li>
-            <li>Bundle includes the customer instruction guide.</li>
-            <li>Designed for Adobe Reader and PDF viewer editing.</li>
+            <li>Bundles support both premium planning and printable upsells.</li>
           </ul>
         </div>
       </section>
@@ -69,18 +71,18 @@ export default async function HomePage() {
       <section className="section-block editorial-band">
         <article className="info-card editorial-lead">
           <p className="eyebrow">How It Works</p>
-          <h3>Customers open the PDF, click the fields, type their details, and save.</h3>
+          <h3>Customers can choose between planning spreadsheets, printable PDFs, and bundled wedding resources.</h3>
           <p>
-            The collection is positioned as low-support digital stationery. The bundle product calls out the included
-            guide so buyers know exactly how to edit their files.
+            The catalog now supports more than stationery alone, which gives you room to sell planning tools, day-of
+            signage, and wedding printables from the same storefront.
           </p>
         </article>
         <article className="info-card editorial-note">
           <p className="eyebrow">Offer Strategy</p>
-          <h3>Sell the full bundle at $59 and use the individual templates for easy upsells.</h3>
+          <h3>Keep the flagship bundle at $59 and use the newer planning and signage products for extra average order value.</h3>
           <p>
-            The individual listings are priced from $9 to $12, while the bundle shows the strongest savings against
-            its regular price.
+            The catalog now spans low-ticket stationery add-ons, mid-ticket planning tools, and multiple bundle offers
+            with clear regular-versus-offer pricing.
           </p>
         </article>
       </section>

@@ -7,7 +7,6 @@ export const metadata = {
 
 export default async function ShopPage() {
   const [products, bundleProducts] = await Promise.all([getAllProducts(), getBundleProducts()]);
-  const bundle = bundleProducts[0] || null;
   const individualProducts = products.filter((product) => product.isBundle !== true);
 
   return (
@@ -15,24 +14,26 @@ export default async function ShopPage() {
       <section className="section-block">
         <div className="page-intro">
           <p className="eyebrow">Wedding Shop</p>
-          <h1>All editable wedding PDFs in one storefront.</h1>
+          <h1>Wedding templates, spreadsheets, and printables in one storefront.</h1>
           <p>
-            Shop the full bundle or purchase individual templates for invitations, signage, planning, and bridal party
-            extras.
+            Shop multiple bundle offers or sell the collection one file at a time across planning, stationery, signs,
+            and party extras.
           </p>
         </div>
       </section>
 
-      {bundle ? (
+      {bundleProducts.length > 0 ? (
         <section className="section-block">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Bundle Deal</p>
-              <h2>The highest-value wedding offer on the site.</h2>
+              <p className="eyebrow">Bundle Deals</p>
+              <h2>The premium offers on the site.</h2>
             </div>
           </div>
           <div className="product-grid">
-            <ProductCard product={bundle} />
+            {bundleProducts.map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
           </div>
         </section>
       ) : null}

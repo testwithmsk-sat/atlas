@@ -14,7 +14,7 @@ export default async function BestSellersPage() {
       <div className="page-intro">
         <p className="eyebrow">Best Sellers</p>
         <h1>The strongest wedding offers on the storefront.</h1>
-        <p>These are the hero products to feature for bundle conversions, invitation sales, and planning add-ons.</p>
+        <p>These are the hero products to feature for bundle conversions, planning sales, and day-of add-ons.</p>
       </div>
       <div className="product-grid">
         {products.map((product) => (

@@ -18,7 +18,7 @@ export function SiteHeader() {
     <header className="site-header">
       <Link className="brand-mark" href="/">
         <span className="brand-title">The Digital Atlas</span>
-        <span className="brand-subtitle">Editable wedding PDF templates</span>
+        <span className="brand-subtitle">Wedding templates, planners, and printables</span>
       </Link>
 
       <nav className="primary-nav" aria-label="Primary">

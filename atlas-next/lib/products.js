@@ -351,6 +351,418 @@ export const fallbackProducts = [
       printable: "Yes. Designed for digital delivery and easy print production.",
       includes: ["RSVP card layout", "Editable response fields", "Ready-to-save PDF"]
     }
+  }),
+  createProduct({
+    slug: "wedding-planning-bundle-spreadsheet",
+    name: "Wedding Planning Bundle Spreadsheet",
+    subcategorySlug: "planning-budget",
+    badge: "Planning Bundle",
+    price: 29,
+    compareAt: 44,
+    productType: "Wedding planning spreadsheet bundle",
+    summary:
+      "A practical wedding planning spreadsheet bundle for tracking budget, vendors, checklist progress, and timeline details in one structured planning system.",
+    highlights: [
+      "Built for Excel-based wedding planning",
+      "Combines budget, vendor, checklist, and timeline workflows",
+      "High-value planning offer for organized couples"
+    ],
+    details: {
+      size: "Multi-sheet digital planning file",
+      pages: "Bundle workbook plus companion planning resources",
+      format: "Excel spreadsheet bundle",
+      editable: "Yes. Customers can update rows, dates, categories, and planning details directly in Excel.",
+      printable: "Partly. Best used digitally, with printable sections where needed.",
+      includes: [
+        "Wedding budget tracking",
+        "Vendor tracker workflow",
+        "Checklist planning structure",
+        "Wedding day timeline support"
+      ]
+    },
+    bundleContents: [
+      "Wedding Planning Bundle workbook",
+      "Wedding Budget Spreadsheet",
+      "Vendor Tracker",
+      "Wedding Checklist PDF",
+      "Wedding Day Timeline PDF",
+      "Wedding Planning Checklist PDF"
+    ],
+    isBundle: true,
+    isBestSeller: true
+  }),
+  createProduct({
+    slug: "wedding-vendor-finance-bundle",
+    name: "Wedding Vendor Finance Bundle",
+    subcategorySlug: "planning-budget",
+    badge: "Finance Bundle",
+    price: 24,
+    compareAt: 39,
+    productType: "Wedding vendor and finance spreadsheet bundle",
+    summary:
+      "A focused spreadsheet bundle for managing wedding vendors, payments, budget visibility, and financial planning in one place.",
+    highlights: [
+      "Vendor and finance tracking in one bundle",
+      "Strong planning upsell from printable products",
+      "Useful for budget-conscious wedding buyers"
+    ],
+    details: {
+      size: "Digital spreadsheet bundle",
+      pages: "Workbook with finance and vendor planning sheets",
+      format: "Excel spreadsheet bundle",
+      editable: "Yes. Built for Excel editing and repeated updates during the planning process.",
+      printable: "Primarily intended for digital planning.",
+      includes: [
+        "Vendor finance bundle workbook",
+        "Wedding Budget Spreadsheet",
+        "Vendor Tracker",
+        "Planning support sheets"
+      ]
+    },
+    bundleContents: [
+      "Wedding Vendor Finance Bundle workbook",
+      "Wedding Budget Spreadsheet",
+      "Vendor Tracker",
+      "Budget planning workflow",
+      "Vendor payment tracking"
+    ],
+    isBundle: true
+  }),
+  createProduct({
+    slug: "wedding-budget-spreadsheet",
+    name: "Wedding Budget Spreadsheet",
+    subcategorySlug: "planning-budget",
+    badge: "Planning Favorite",
+    price: 12,
+    compareAt: 18,
+    productType: "Editable Excel spreadsheet",
+    summary:
+      "An editable wedding budget spreadsheet for tracking estimated costs, actual spending, and category-by-category financial visibility.",
+    highlights: [
+      "Excel-based budget planner",
+      "Great companion to vendor tracking",
+      "Useful standalone planning product"
+    ],
+    details: {
+      size: "Single spreadsheet file",
+      pages: "Workbook",
+      format: "Excel spreadsheet",
+      editable: "Yes. Customers can update every category, amount, and note directly in Excel.",
+      printable: "Primarily designed for digital planning, with optional printing if desired.",
+      includes: ["Budget categories", "Estimate and actual tracking", "Wedding finance planner"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-vendor-tracker",
+    name: "Wedding Vendor Tracker",
+    subcategorySlug: "planning-budget",
+    badge: "Planner Tool",
+    price: 12,
+    compareAt: 18,
+    productType: "Editable Excel spreadsheet",
+    summary:
+      "A vendor tracker spreadsheet for organizing contacts, bookings, payment stages, and key wedding supplier details in one sheet.",
+    highlights: [
+      "Keeps vendor details organized",
+      "Pairs naturally with the budget spreadsheet",
+      "Helpful for planning workflows and coordination"
+    ],
+    details: {
+      size: "Single spreadsheet file",
+      pages: "Workbook",
+      format: "Excel spreadsheet",
+      editable: "Yes. Vendor names, payments, contact details, and notes can be updated in Excel.",
+      printable: "Best used digitally, though printable if needed.",
+      includes: ["Vendor list", "Contact tracking", "Payment and booking fields"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-checklist-pdf",
+    name: "Wedding Checklist PDF",
+    subcategorySlug: "planning-budget",
+    badge: "Planning Add-On",
+    price: 9,
+    compareAt: 14,
+    productType: "Printable PDF checklist",
+    summary:
+      "A practical wedding planning checklist PDF for keeping key tasks visible from booking through final event prep.",
+    highlights: [
+      "Simple printable planning workflow",
+      "Low-ticket planner add-on",
+      "Good companion to spreadsheet bundles"
+    ],
+    details: {
+      size: "Printable planning page",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF checklist; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Designed for print and handwritten planning use.",
+      includes: ["Planning checklist", "Task tracking layout", "Wedding prep workflow"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-day-timeline-pdf",
+    name: "Wedding Day Timeline PDF",
+    subcategorySlug: "planning-budget",
+    badge: "Day-Of Planner",
+    price: 9,
+    compareAt: 14,
+    productType: "Printable PDF planner",
+    summary:
+      "A wedding day timeline PDF for mapping the ceremony schedule, vendor arrival flow, and event-day timing with clarity.",
+    highlights: [
+      "Great for ceremony-day coordination",
+      "Supports planners, couples, and coordinators",
+      "Strong planning-category add-on"
+    ],
+    details: {
+      size: "Printable timeline page",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF planner; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Designed for quick print reference on the wedding day.",
+      includes: ["Timeline structure", "Schedule planning", "Event-day coordination page"]
+    }
+  }),
+  createProduct({
+    slug: "classic-wedding-invitation-template-pdf",
+    name: "Classic Wedding Invitation Template PDF",
+    subcategorySlug: "invitations-stationery",
+    badge: "Classic Stationery",
+    price: 12,
+    compareAt: 18,
+    productType: "Printable invitation PDF",
+    summary:
+      "A classic wedding invitation template PDF for couples who want a clean printable invitation alongside the more editable invitation offers.",
+    highlights: [
+      "Formal invitation layout",
+      "Clear alternative to the fillable invitation product",
+      "Good stationery-category anchor"
+    ],
+    details: {
+      size: "Invitation-sized PDF",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF invitation template; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Designed for digital delivery or print production.",
+      includes: ["Invitation layout", "Wedding stationery design", "Printable PDF format"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-planning-checklist-pdf",
+    name: "Wedding Planning Checklist PDF",
+    subcategorySlug: "planning-budget",
+    badge: "Checklist Favorite",
+    price: 9,
+    compareAt: 14,
+    productType: "Printable PDF checklist",
+    summary:
+      "A wedding planning checklist PDF with a simple structure for milestones, reminders, and wedding prep priorities.",
+    highlights: [
+      "Clean planning checklist format",
+      "Works as a lightweight planning printable",
+      "Good upsell from spreadsheet products"
+    ],
+    details: {
+      size: "Printable checklist page",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF checklist; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Best suited for print and handwritten planning.",
+      includes: ["Checklist layout", "Milestone tracking", "Wedding planning printable"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-bar-menu-sign-pdf",
+    name: "Wedding Bar Menu Sign PDF",
+    subcategorySlug: "signs-day-of-details",
+    badge: "Reception Sign",
+    price: 10,
+    compareAt: 15,
+    productType: "Printable sign PDF",
+    summary:
+      "A printable bar menu sign for weddings and receptions that want a polished drinks display without custom design work.",
+    highlights: [
+      "Ideal for reception bar styling",
+      "Fast day-of signage upsell",
+      "Works well with welcome sign products"
+    ],
+    details: {
+      size: "Sign PDF",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF sign template; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Designed for print-shop or framed sign use.",
+      includes: ["Bar menu sign", "Reception sign layout", "Printable event detail"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-hashtag-sign-pdf",
+    name: "Wedding Hashtag Sign PDF",
+    subcategorySlug: "signs-day-of-details",
+    badge: "Social Sign",
+    price: 10,
+    compareAt: 15,
+    productType: "Printable sign PDF",
+    summary:
+      "A wedding hashtag sign PDF for couples who want a simple, stylish social-sharing prompt at their reception or photo area.",
+    highlights: [
+      "Useful social-sharing sign",
+      "Small but effective signage add-on",
+      "Fits photo booth and reception bundles"
+    ],
+    details: {
+      size: "Sign PDF",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF sign template; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Ready for display printing.",
+      includes: ["Hashtag sign", "Printable social prompt", "Reception signage page"]
+    }
+  }),
+  createProduct({
+    slug: "classic-wedding-menu-card-pdf",
+    name: "Classic Wedding Menu Card PDF",
+    subcategorySlug: "invitations-stationery",
+    badge: "Reception Card",
+    price: 9,
+    compareAt: 14,
+    productType: "Printable stationery PDF",
+    summary:
+      "A classic menu card PDF for reception tables, ideal for couples who want a printable menu option alongside the editable menu offer.",
+    highlights: [
+      "Reception table stationery",
+      "Alternative to the editable menu card",
+      "Easy low-ticket add-on"
+    ],
+    details: {
+      size: "Menu card PDF",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF menu card; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Intended for table place settings and reception styling.",
+      includes: ["Menu card layout", "Printable stationery design", "Reception add-on"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-photo-booth-props-pdf",
+    name: "Wedding Photo Booth Props PDF",
+    subcategorySlug: "showers-parties",
+    badge: "Party Printable",
+    price: 11,
+    compareAt: 16,
+    productType: "Printable party PDF",
+    summary:
+      "A fun wedding photo booth props PDF for receptions, showers, and party stations that need an easy interactive extra.",
+    highlights: [
+      "Great for receptions and bridal events",
+      "Adds a playful party element",
+      "Pairs well with hashtag signs and games"
+    ],
+    details: {
+      size: "Printable prop sheets",
+      pages: "1 PDF set",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF party printable and typically used as-is.",
+      printable: "Yes. Designed for print, cut, and event use.",
+      includes: ["Photo booth prop sheet", "Reception activity printable", "Party extra"]
+    }
+  }),
+  createProduct({
+    slug: "classic-wedding-rsvp-card-pdf",
+    name: "Classic Wedding RSVP Card PDF",
+    subcategorySlug: "invitations-stationery",
+    badge: "Stationery Core",
+    price: 9,
+    compareAt: 14,
+    productType: "Printable stationery PDF",
+    summary:
+      "A classic RSVP card PDF for response collection, offered as a printable stationery option alongside the fillable RSVP version.",
+    highlights: [
+      "Classic RSVP stationery layout",
+      "Low-ticket invitation-suite add-on",
+      "Useful alternative to the fillable RSVP card"
+    ],
+    details: {
+      size: "RSVP card PDF",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF RSVP template; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Built for digital delivery and print use.",
+      includes: ["RSVP card design", "Printable response card", "Invitation suite add-on"]
+    }
+  }),
+  createProduct({
+    slug: "wedding-table-number-cards-pdf",
+    name: "Wedding Table Number Cards PDF",
+    subcategorySlug: "signs-day-of-details",
+    badge: "Reception Favorite",
+    price: 11,
+    compareAt: 16,
+    productType: "Printable card set PDF",
+    summary:
+      "A printable set of wedding table number cards for couples who want cohesive reception tables without extra design work.",
+    highlights: [
+      "Useful for reception table styling",
+      "Pairs with seating charts and signs",
+      "Strong day-of add-on product"
+    ],
+    details: {
+      size: "Card set PDF",
+      pages: "Multi-card PDF set",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF card set; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Designed for cutting or tabletop display.",
+      includes: ["Table number cards", "Reception table printable", "Day-of styling set"]
+    }
+  }),
+  createProduct({
+    slug: "classic-thank-you-card-pdf",
+    name: "Classic Thank You Card PDF",
+    subcategorySlug: "invitations-stationery",
+    badge: "Post-Wedding Add-On",
+    price: 9,
+    compareAt: 14,
+    productType: "Printable stationery PDF",
+    summary:
+      "A printable thank you card PDF for post-wedding notes, offered as a classic stationery option for the wedding suite.",
+    highlights: [
+      "Simple post-wedding stationery product",
+      "Easy add-on from invitation buyers",
+      "Pairs well with RSVP and invitation products"
+    ],
+    details: {
+      size: "Card PDF",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF thank you card; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Suitable for digital delivery and card printing.",
+      includes: ["Thank you card", "Printable stationery layout", "Wedding note design"]
+    }
+  }),
+  createProduct({
+    slug: "welcome-sign-pdf",
+    name: "Welcome Sign PDF",
+    subcategorySlug: "signs-day-of-details",
+    badge: "Day-Of Classic",
+    price: 12,
+    compareAt: 18,
+    productType: "Printable sign PDF",
+    summary:
+      "A printable welcome sign PDF for ceremony or reception entrances, designed to give the event a polished first impression.",
+    highlights: [
+      "Strong standalone sign product",
+      "Works for entrance displays and receptions",
+      "Natural companion to bar menu and table number products"
+    ],
+    details: {
+      size: "Sign PDF",
+      pages: "1 PDF",
+      format: "Printable PDF",
+      editable: "Delivered as a PDF sign template; customization depends on the customer's PDF editing workflow.",
+      printable: "Yes. Ready for signage printing and display.",
+      includes: ["Welcome sign", "Entrance display printable", "Wedding signage page"]
+    }
   })
 ];
 

@@ -12,11 +12,11 @@ export default async function BundlesPage() {
   return (
     <section className="section-block">
       <div className="page-intro">
-        <p className="eyebrow">Bundle Offer</p>
-        <h1>One wedding bundle, priced to convert.</h1>
+        <p className="eyebrow">Bundle Offers</p>
+        <h1>Wedding bundles priced for higher-value conversions.</h1>
         <p>
-          The main bundle packages the full editable wedding collection into a single premium offer with the guide
-          included free.
+          The bundle lineup now includes the flagship editable PDF collection plus planning-focused spreadsheet bundles
+          for budget and vendor workflows.
         </p>
       </div>
       <div className="product-grid">
