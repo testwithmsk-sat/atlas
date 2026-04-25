@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 const primaryLinks = [
-  { href: "/shop", label: "Store Status" },
+  { href: "/shop", label: "Status" },
   { href: "/categories", label: "Categories" },
   { href: "/account", label: "Account" }
 ];
@@ -13,7 +13,7 @@ export function SiteHeader() {
     <header className="site-header">
       <Link className="brand-mark" href="/">
         <span className="brand-title">The Digital Atlas</span>
-        <span className="brand-subtitle">Storefront currently empty</span>
+        <span className="brand-subtitle">Website currently empty</span>
       </Link>
 
       <nav className="primary-nav" aria-label="Primary">

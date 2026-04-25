@@ -1,20 +1,20 @@
 export const metadata = {
-  title: "Bundles | The Digital Atlas",
-  description: "No bundles are currently published on The Digital Atlas."
+  title: "Status | The Digital Atlas",
+  description: "No grouped sections are currently shown on The Digital Atlas."
 };
 
 export default function BundlesPage() {
   return (
     <section className="section-block">
       <div className="page-intro">
-        <p className="eyebrow">Bundles</p>
-        <h1>No bundles are live right now.</h1>
-        <p>This page has been cleared and no bundle previews are being shown.</p>
+        <p className="eyebrow">Status</p>
+        <h1>This page is currently empty.</h1>
+        <p>This page has been cleared and no preview sections are being shown.</p>
       </div>
       <article className="info-card">
         <p className="eyebrow">Empty State</p>
-        <h2>Bundle listings have been removed.</h2>
-        <p>There is nothing to browse here until new products are published again.</p>
+        <h2>Grouped sections have been removed.</h2>
+        <p>There is nothing to browse here until future updates are published again.</p>
       </article>
     </section>
   );

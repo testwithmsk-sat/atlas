@@ -28,80 +28,81 @@ const AI_STATE_KEY = "tda-ai-helper-state";
 const AI_EDITOR_ENABLED_KEY = "tda-ai-helper-enabled";
 const CATEGORY_PAGE_DATA = {
   wedding: {
-    label: "Wedding",
-    eyebrow: "Wedding Collection",
-    title: "Wedding collection updates are coming soon.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "This category is ready for the next wedding product export, but no wedding items are live right now.",
-    note: "New wedding products will appear here after the next export.",
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared.",
     products: []
   },
   "events-parties": {
-    label: "Events & Parties",
-    eyebrow: "Events & Parties",
-    title: "Event and party collection updates are coming soon.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "This category is prepared for future event and celebration exports, but no live products are published here yet.",
-    note: "New event and party products will appear here after the next export.",
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared.",
     products: []
   },
   business: {
-    label: "Business",
-    eyebrow: "Business Templates",
-    title: "Business collection updates will appear here.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "Use this page for client-facing templates, operations documents, and polished business downloads when the next catalog export is ready.",
-    note: "No live business products are published right now."
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared."
   },
   "planners-productivity": {
-    label: "Planners & Productivity",
-    eyebrow: "Planning Tools",
-    title: "Planner and productivity updates will be grouped here.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "This category is reserved for organization tools, planning systems, and digital resources once the next export is published.",
-    note: "No live planner or productivity products are published right now."
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared."
   },
   "career-education": {
-    label: "Career & Education",
-    eyebrow: "Career & Education",
-    title: "Career and education updates will appear in this category.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "Use this space for job-search tools, resume kits, study resources, and education-focused templates when the next export is ready.",
-    note: "No live career or education products are published right now."
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared."
   },
   "social-content": {
-    label: "Social & Content",
-    eyebrow: "Social & Content",
-    title: "Content and creator updates will live here.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "This category is for social templates, content planning resources, and creator-focused digital products when they are launched.",
-    note: "No live social or content products are published right now."
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared."
   },
   "creative-assets": {
-    label: "Creative Assets",
-    eyebrow: "Creative Assets",
-    title: "Creative asset updates will appear in this category.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "This page is reserved for mockups, graphics, brushes, SVGs, and other asset-based digital products when they are added in a future export.",
-    note: "No live creative asset products are published right now."
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared."
   },
   "templates-documents": {
-    label: "Templates & Documents",
-    eyebrow: "Templates & Documents",
-    title: "Document-style template updates will live here.",
+    label: "Section",
+    eyebrow: "Section Status",
+    title: "This section is currently empty.",
     description:
-      "Use this page for fillable PDFs, editable checklists, journals, and document bundles when the next export is prepared.",
-    note: "No live templates or document products are published right now."
+      "Nothing is being shown here right now.",
+    note: "This section has been cleared."
   }
 };
 const PRIMARY_NAV_LINKS = [
-  { href: "shop.html", label: "Store Status" },
-  { href: "bundles.html", label: "Bundles" },
-  { href: "free-resources.html", label: "Freebies" },
+  { href: "index.html", label: "Home" },
+  { href: "about.html", label: "About" },
+  { href: "free-resources.html", label: "Resources" },
+  { href: "faq.html", label: "FAQ" },
   { href: "contact.html", label: "Support" }
 ];
 const NAV_TOOL_LINKS = [
-  { href: "shop.html", label: "Status" },
+  { href: "contact.html", label: "Help" },
   { href: "login.html", label: "Account" }
 ];
 const EXPORTABLE_PAGES = [
@@ -342,10 +343,10 @@ const renderCategoryPage = () => {
     productGridNode.innerHTML = `
       <article class="product-card product-card--empty">
         <span class="product-tag">Empty</span>
-        <h3>No products are displayed</h3>
+        <h3>Nothing is displayed</h3>
         <p>This category is intentionally empty right now.</p>
         <div class="meta-row">
-          <span>Store status</span>
+          <span>Site status</span>
           <strong>Cleared</strong>
         </div>
       </article>
@@ -1099,9 +1100,9 @@ const runAiCommand = (rawPrompt) => {
 const SUPPORT_BOT_STORAGE_KEY = "tda-support-chat-state";
 const pageLabels = {
   home: "homepage",
-  shop: "shop",
-  bundles: "bundles page",
-  freebies: "free resources page",
+  shop: "status page",
+  bundles: "status page",
+  freebies: "resources page",
   faq: "FAQ page",
   contact: "contact page",
   about: "about page",
@@ -1110,15 +1111,14 @@ const pageLabels = {
 };
 
 const supportSuggestions = [
-  "How are files delivered?",
-  "What bundle should I start with?",
-  "Do you offer custom services?",
-  "How do I contact support?"
+  "How do I contact support?",
+  "What pages are active?",
+  "Can the site change later?",
+  "How do I access my account?"
 ];
 
 const supportBotLinks = {
-  shop: "shop.html",
-  bundles: "bundles.html",
+  home: "index.html",
   freebies: "free-resources.html",
   faq: "faq.html",
   contact: "contact.html",
@@ -1167,10 +1167,10 @@ const ensureFooterSupport = () => {
     footer.innerHTML = `
       <div>
         <h2>The Digital Atlas</h2>
-        <p>Premium templates, printables, spreadsheets, and planners for modern customers.</p>
+        <p>The website is currently empty and ready for future updates.</p>
       </div>
       <div class="footer-links">
-        <a href="shop.html">Shop</a>
+        <a href="index.html">Home</a>
         <a href="faq.html">FAQ</a>
         <a href="contact.html">Contact</a>
         <a href="refund-policy.html">Refunds</a>
@@ -1199,7 +1199,7 @@ const ensureFooterSupport = () => {
   if (footerIntro && !footerIntro.querySelector(".site-badge-row")) {
     const badgeRow = document.createElement("div");
     badgeRow.className = "site-badge-row";
-    ["Instant downloads", "Website checkout ready", "Support contact page"].forEach((label) => {
+    ["Minimal layout", "Support available", "Future updates ready"].forEach((label) => {
       const badge = document.createElement("span");
       badge.className = "site-badge";
       badge.textContent = label;
@@ -1230,95 +1230,17 @@ const createSupportReply = (message) => {
 
   if (isGreeting) {
     return {
-      text: `Hello. I can help with products, bundles, freebies, account questions, or support while you browse the ${getCurrentPageLabel()}.`,
+      text: `Hello. I can help with general site questions, account access, or support while you browse the ${getCurrentPageLabel()}.`,
       ctas: [
-        { label: "Shop", href: supportBotLinks.shop },
+        { label: "Home", href: supportBotLinks.home },
         { label: "FAQ", href: supportBotLinks.faq }
       ]
     };
   }
 
-  if (/(file|download|deliver|delivery|instant|access)/.test(lower)) {
+  if (/(access|account|login|sign in|sign up)/.test(lower)) {
     return {
-      text: "Digital products are intended to be delivered as instant downloads after purchase. If you need access help or a replacement file, use the contact page so support can step in.",
-      ctas: [
-        { label: "Read FAQ", href: supportBotLinks.faq },
-        { label: "Contact Support", href: supportBotLinks.contact }
-      ]
-    };
-  }
-
-  if (/(bundle|collection|package)/.test(lower)) {
-    return {
-      text: "Bundles are best when you want a coordinated set instead of a single template. The storefront is currently set up for wedding, business, and organized-life style collections.",
-      ctas: [
-        { label: "View Bundles", href: supportBotLinks.bundles },
-        { label: "Browse Shop", href: supportBotLinks.shop }
-      ]
-    };
-  }
-
-  if (/(free|freebie|lead magnet|sample|checklist)/.test(lower)) {
-    return {
-      text: "The free resources area is meant for starter downloads, checklists, and sample files that help customers try the brand before buying.",
-      ctas: [
-        { label: "See Freebies", href: supportBotLinks.freebies },
-        { label: "Browse Shop", href: supportBotLinks.shop }
-      ]
-    };
-  }
-
-  if (/(custom|service|done for you|designer|design help|personalized|personalised)/.test(lower)) {
-    return {
-      text: "This site is positioned around digital products first. If a customer needs a custom service or wants to ask about tailored help, the best next step is the contact page so you can reply personally.",
-      ctas: [
-        { label: "Contact Page", href: supportBotLinks.contact }
-      ]
-    };
-  }
-
-  if (/(wedding|invitation|signage|event)/.test(lower)) {
-    return {
-      text: "Wedding products are framed as elegant, editable resources like invitations, signage, planners, and event support downloads.",
-      ctas: [
-        { label: "Browse Shop", href: supportBotLinks.shop },
-        { label: "Shop", href: supportBotLinks.shop }
-      ]
-    };
-  }
-
-  if (/(business|client|proposal|brand)/.test(lower)) {
-    return {
-      text: "Business templates are a good fit for onboarding packs, branded forms, client materials, and operational documents that need a polished presentation.",
-      ctas: [
-        { label: "Browse Shop", href: supportBotLinks.shop },
-        { label: "Contact", href: supportBotLinks.contact }
-      ]
-    };
-  }
-
-  if (/(career|resume|cv|job|interview)/.test(lower)) {
-    return {
-      text: "Career products are positioned around resumes, application trackers, interview prep, and planning tools that make a job search feel more organized.",
-      ctas: [
-        { label: "Browse Shop", href: supportBotLinks.shop }
-      ]
-    };
-  }
-
-  if (/(refund|return|cancel|problem|issue|support|help)/.test(lower)) {
-    return {
-      text: "For order issues, file questions, or refund-related conversations, the fastest path is the contact page so support can review the request directly.",
-      ctas: [
-        { label: "Contact Support", href: supportBotLinks.contact },
-        { label: "FAQ", href: supportBotLinks.faq }
-      ]
-    };
-  }
-
-  if (/(login|account|dashboard|sign in|signup|sign up)/.test(lower)) {
-    return {
-      text: "Account and access actions live in the login and dashboard flow. If a customer cannot access something, direct them to the account page first, then contact support if the problem continues.",
+      text: "If you need help with account access or general support, the contact page is the best next step.",
       ctas: [
         { label: "Account", href: supportBotLinks.login },
         { label: "Contact Support", href: supportBotLinks.contact }
@@ -1326,27 +1248,38 @@ const createSupportReply = (message) => {
     };
   }
 
-  if (/(price|cost|how much|pricing)/.test(lower)) {
+  if (/(page|site|website|empty|status)/.test(lower)) {
     return {
-      text: "The current storefront layout is ready for pricing, but exact prices are not shown in every section yet. The best next step is to browse the shop or ask through the contact page if you want manual guidance.",
+      text: "The website is currently being kept in a minimal state, with only core pages and support links active.",
       ctas: [
-        { label: "Browse Shop", href: supportBotLinks.shop },
+        { label: "About", href: "about.html" },
+        { label: "FAQ", href: supportBotLinks.faq }
+      ]
+    };
+  }
+
+  if (/(future|later|update|change)/.test(lower)) {
+    return {
+      text: "Yes. The current state is intentionally simple so future updates can be added from a clean baseline.",
+      ctas: [
+        { label: "Resources", href: supportBotLinks.freebies },
         { label: "Contact", href: supportBotLinks.contact }
       ]
     };
   }
 
-  if (/(contact|email|reach|talk|speak|phone)/.test(lower)) {
+  if (/(support|help|contact|email|reach|refund|return|cancel|problem|issue)/.test(lower)) {
     return {
-      text: "You can reach support through the contact page. That is the best place for pre-sale questions, file help, collaboration requests, or service inquiries.",
+      text: "For support or policy questions, the fastest path is the contact page so someone can review the request directly.",
       ctas: [
-        { label: "Open Contact Page", href: supportBotLinks.contact }
+        { label: "Contact Support", href: supportBotLinks.contact },
+        { label: "FAQ", href: supportBotLinks.faq }
       ]
     };
   }
 
   return {
-    text: `I can help answer common questions about downloads, bundles, custom-service requests, account access, and support. If you want personal help, the contact page is the safest next step.`,
+    text: `I can help with general site questions, account access, and support. If you want personal help, the contact page is the safest next step.`,
     ctas: [
       { label: "FAQ", href: supportBotLinks.faq },
       { label: "Contact", href: supportBotLinks.contact }
@@ -1361,7 +1294,7 @@ const createSupportChatbot = () => {
   launch.setAttribute("aria-expanded", "false");
   launch.setAttribute("aria-controls", "support-bot-panel");
   launch.setAttribute("data-has-unread", "true");
-  launch.innerHTML = `<span>Chat With Atlas</span><small>Questions before you buy?</small>`;
+  launch.innerHTML = `<span>Chat With Atlas</span><small>Need help?</small>`;
 
   const panel = document.createElement("section");
   panel.className = "support-bot";
@@ -1372,16 +1305,16 @@ const createSupportChatbot = () => {
       <div>
         <p class="panel-label">Customer Assistant</p>
         <h2>Atlas Concierge</h2>
-        <p>Ask about products, bundles, downloads, or service support.</p>
+        <p>Ask about the site, support, or account access.</p>
       </div>
       <button class="support-bot__close" type="button" aria-label="Close chat">Close</button>
     </div>
-    <p class="support-bot__welcome">Fast answers for delivery, pricing, support, policies, and service requests.</p>
+    <p class="support-bot__welcome">Fast answers for support, policies, account access, and general questions.</p>
     <div class="support-bot__messages" aria-live="polite"></div>
     <div class="support-bot__suggestions"></div>
     <form class="support-bot__composer">
       <label class="support-bot__label" for="support-bot-input">Message</label>
-      <textarea id="support-bot-input" class="support-bot__input" rows="3" placeholder="Ask about delivery, bundles, custom work, support, or account access"></textarea>
+      <textarea id="support-bot-input" class="support-bot__input" rows="3" placeholder="Ask about support, the site, or account access"></textarea>
       <div class="support-bot__actions">
         <button class="button button-primary" type="submit">Send</button>
       </div>
@@ -1472,9 +1405,9 @@ const createSupportChatbot = () => {
 
     if (!state?.history?.length) {
       addAssistantReply({
-        text: `Welcome to The Digital Atlas. I can help visitors on the ${getCurrentPageLabel()} with product questions, digital download info, bundles, and support directions.`,
+        text: `Welcome to The Digital Atlas. I can help visitors on the ${getCurrentPageLabel()} with support, account access, and general site questions.`,
         ctas: [
-          { label: "Browse Shop", href: supportBotLinks.shop },
+          { label: "Home", href: supportBotLinks.home },
           { label: "Contact Support", href: supportBotLinks.contact }
         ]
       });

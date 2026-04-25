@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${categoryPage.category.name} | The Digital Atlas`,
-    description: "This category is currently empty."
+    description: "This section is currently empty."
   };
 }
 
@@ -34,10 +34,10 @@ export default async function CategoryPage({ params }) {
       <div className="page-intro category-page-intro">
         <p className="eyebrow">{category.navLabel}</p>
         <h1>{category.name}</h1>
-        <p>This category is currently empty. No products or previews are being shown here.</p>
+        <p>This section is currently empty. No previews are being shown here.</p>
         <div className="hero-actions">
           <Link className="button button-secondary" href="/shop">
-            Back To Store Status
+            Back To Status
           </Link>
           <Link className="button button-secondary" href="/categories">
             View Categories Status
@@ -47,8 +47,8 @@ export default async function CategoryPage({ params }) {
 
       <article className="info-card empty-state-card">
         <p className="eyebrow">No Listings</p>
-        <h3>This collection has been cleared.</h3>
-        <p>There are no items, subcategory previews, or purchasable products in this category right now.</p>
+        <h3>This section has been cleared.</h3>
+        <p>There are no items or preview blocks in this area right now.</p>
       </article>
     </section>
   );

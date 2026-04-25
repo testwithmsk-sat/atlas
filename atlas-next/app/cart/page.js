@@ -6,17 +6,17 @@ export default function CartPage() {
   return (
     <section className="section-block">
       <div className="page-intro">
-        <p className="eyebrow">Cart</p>
-        <h1>The cart is unavailable.</h1>
-        <p>Because the storefront is empty, there are no products to review or purchase.</p>
+        <p className="eyebrow">Status</p>
+        <h1>This area is unavailable.</h1>
+        <p>Because the site is empty, there is nothing to review here.</p>
       </div>
 
       <article className="info-card">
-        <p className="eyebrow">No Active Shopping</p>
-        <h2>Nothing can be added to the cart right now.</h2>
-        <p>The storefront has been cleared, so checkout and cart actions are disabled by design.</p>
+        <p className="eyebrow">Inactive</p>
+        <h2>Nothing can be added here right now.</h2>
+        <p>The site has been cleared, so this area is disabled by design.</p>
         <Link className="button button-primary" href="/shop">
-          View Store Status
+          View Site Status
         </Link>
       </article>
     </section>

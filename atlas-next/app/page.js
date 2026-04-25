@@ -5,14 +5,14 @@ export default function HomePage() {
     <>
       <section className="hero-section">
         <div className="hero-copy">
-          <p className="eyebrow">Storefront Update</p>
+          <p className="eyebrow">Site Update</p>
           <h1>The website is currently empty.</h1>
           <p className="hero-text">
-            All products, previews, and collection listings have been removed. The storefront is staying clear until
-            new items are ready to publish.
+            All previews and listing sections have been removed. The site is staying clear until future updates are
+            ready.
           </p>
           <div className="trust-strip">
-            <span>No live products</span>
+            <span>No active listings</span>
             <span>No previews</span>
             <span>Ready for future updates</span>
           </div>
@@ -28,32 +28,32 @@ export default function HomePage() {
         <div className="hero-panel">
           <p className="eyebrow">Current State</p>
           <div className="hero-panel-stat">
-            <strong>Catalog cleared</strong>
-            <span>The storefront has been intentionally emptied so nothing product-related is visible.</span>
+            <strong>Site cleared</strong>
+            <span>The site has been intentionally emptied so no listing-related content is visible.</span>
           </div>
           <ul className="feature-list">
-            <li>No featured products are displayed.</li>
+            <li>No featured sections are displayed.</li>
             <li>No category previews are displayed.</li>
-            <li>No bundle or best-seller sections are displayed.</li>
-            <li>Direct product pages are unavailable.</li>
+            <li>No sales-focused sections are displayed.</li>
+            <li>Detail pages are unavailable.</li>
           </ul>
         </div>
       </section>
 
       <section className="section-block editorial-band">
         <article className="info-card editorial-lead">
-          <p className="eyebrow">No Catalog</p>
+          <p className="eyebrow">Empty State</p>
           <h3>There is nothing for visitors to browse right now.</h3>
           <p>
-            This homepage now acts as a simple empty-state landing page instead of showing product merchandising or
-            shopping previews.
+            This homepage now acts as a simple empty-state landing page instead of showing promotional or preview
+            sections.
           </p>
         </article>
         <article className="info-card editorial-note">
           <p className="eyebrow">Next Step</p>
-          <h3>New products can be added later from a clean baseline.</h3>
+          <h3>Future updates can be added later from a clean baseline.</h3>
           <p>
-            When you are ready to launch again, the site can be repopulated without keeping old product UI online.
+            When you are ready to change the site again, it can be expanded without keeping old listing UI online.
           </p>
         </article>
       </section>

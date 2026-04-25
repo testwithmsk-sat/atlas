@@ -17,10 +17,10 @@ export default async function AccountPage({ searchParams }) {
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Account</p>
-        <h1>Your account is still available, but the storefront is empty.</h1>
-        <p>Sign in if you need account access, but no live products or active purchase flows are being shown.</p>
+        <h1>Your account is still available, but the site is empty.</h1>
+        <p>Sign in if you need account access, but no active listing or purchase flow is being shown.</p>
         {checkoutState === "success" ? (
-          <p className="status-note">The storefront is currently empty, so new purchase activity is not being displayed.</p>
+          <p className="status-note">The site is currently empty, so new activity is not being displayed.</p>
         ) : null}
       </div>
 
@@ -28,10 +28,10 @@ export default async function AccountPage({ searchParams }) {
         <AccountAuthPanel email={email} hasSupabase={hasSupabaseConfig} />
         <article className="info-card">
           <h3>Current account status</h3>
-          <p>The website is in an empty state, so product browsing, orders, and download previews are hidden.</p>
+          <p>The website is in an empty state, so browsing, history, and preview sections are hidden.</p>
           <ul className="feature-list">
-            <li>No live catalog is attached to the storefront.</li>
-            <li>No current product listings are shown here.</li>
+            <li>No active listing flow is attached to the site.</li>
+            <li>No current public-facing entries are shown here.</li>
             <li>Account access can remain available for future use.</li>
           </ul>
         </article>
