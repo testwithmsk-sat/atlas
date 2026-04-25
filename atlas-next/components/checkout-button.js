@@ -26,7 +26,7 @@ function loadRazorpayScript() {
   });
 }
 
-export function CheckoutButton({ hasRazorpayConfig = false }) {
+export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) }) {
   const { items } = useCart();
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);

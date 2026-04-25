@@ -7,6 +7,7 @@ import { formatUsdAmount } from "@/lib/currency";
 
 export default function CartPage() {
   const { items, itemCount, subtotal, updateQuantity, removeItem } = useCart();
+  const hasRazorpayConfig = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
 
   return (
     <section className="section-block">
@@ -73,7 +74,7 @@ export default function CartPage() {
                 Review Checkout
               </Link>
             </div>
-            <CheckoutButton />
+            <CheckoutButton hasRazorpayConfig={hasRazorpayConfig} />
           </article>
         </div>
       )}
