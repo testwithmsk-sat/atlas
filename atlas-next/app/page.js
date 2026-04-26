@@ -5,6 +5,22 @@ import { ProductCard } from "@/components/product-card";
 import { getAllProducts, getBundleProducts, getCategoryDirectoryWithCounts, getFeaturedProducts } from "@/lib/catalog";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
+const formatDiscoveryLinks = [
+  { href: "/shop?q=fillable", label: "Fillable templates", description: "Editable PDF products with typed fields and clean layouts." },
+  { href: "/shop?q=pdf", label: "Printable PDF downloads", description: "Low-friction digital files for fast printing and sharing." },
+  { href: "/shop?q=xlsx", label: "Spreadsheet planners", description: "Trackers, financial sheets, and digital planning workbooks." },
+  { href: "/bundles", label: "Bundle offers", description: "High-value grouped product sets designed for easier buying." }
+];
+
+const popularSearchLinks = [
+  { href: "/shop?q=wedding+template", label: "Wedding template ideas" },
+  { href: "/shop?q=business+template", label: "Business document templates" },
+  { href: "/shop?q=event+planner", label: "Event planner downloads" },
+  { href: "/shop?q=printable+planner", label: "Printable planner products" },
+  { href: "/shop?q=fillable+pdf", label: "Fillable PDF templates" },
+  { href: "/shop?q=spreadsheet", label: "Spreadsheet tools" }
+];
+
 export default async function HomePage({ searchParams }) {
   const params = await searchParams;
   const code = params?.code;
@@ -223,6 +239,76 @@ export default async function HomePage({ searchParams }) {
           <p>
             The storefront is now structured well enough to scale. The next gains will come from stronger product
             storytelling and trust-building details on individual listings.
+          </p>
+        </article>
+      </section>
+
+      <section className="section-block">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Shop By Format</p>
+            <h2>Help buyers discover the store through the file types they already search for.</h2>
+          </div>
+          <Link className="text-link" href="/guides">
+            Read buying guides
+          </Link>
+        </div>
+        <div className="catalog-directory">
+          {formatDiscoveryLinks.map((link) => (
+            <Link className="catalog-card catalog-card--link" key={link.href} href={link.href}>
+              <p className="eyebrow">Discovery</p>
+              <h2>{link.label}</h2>
+              <p>{link.description}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-block">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Popular Searches</p>
+            <h2>Build clearer paths from search intent to the right products.</h2>
+          </div>
+        </div>
+        <div className="catalog-chip-list popular-search-grid">
+          {popularSearchLinks.map((link) => (
+            <Link className="catalog-chip catalog-chip--large" key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-block storefront-editorial">
+        <article className="catalog-card storefront-editorial-main">
+          <p className="eyebrow">Brand Trust</p>
+          <h2>Popularity grows faster when the storefront feels established, useful, and easy to recommend.</h2>
+          <p>
+            Search traffic, repeat visits, and social sharing all improve when the store has clearer buying guides,
+            stronger support pages, and a more obvious story around what makes the catalog useful.
+          </p>
+          <div className="catalog-chip-list">
+            <Link className="catalog-chip" href="/about">
+              About The Store
+            </Link>
+            <Link className="catalog-chip" href="/contact">
+              Contact & Support
+            </Link>
+            <Link className="catalog-chip" href="/faq">
+              Read The FAQ
+            </Link>
+            <Link className="catalog-chip" href="/guides">
+              Explore Guides
+            </Link>
+          </div>
+        </article>
+        <article className="info-card storefront-editorial-side">
+          <p className="eyebrow">Growth Layer</p>
+          <h3>More internal links, stronger trust pages, and clearer keyword hubs make the store easier to find.</h3>
+          <p>
+            These improvements help both Google and real shoppers understand the products, the categories, and the
+            store&apos;s purpose more quickly.
           </p>
         </article>
       </section>

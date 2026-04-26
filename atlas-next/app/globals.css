@@ -918,8 +918,34 @@ img {
 }
 
 .storefront-editorial,
-.shop-overview-grid {
+.shop-overview-grid,
+.guide-stack {
   grid-template-columns: 1.2fr 0.8fr;
+}
+
+.guide-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.guide-card p:last-of-type {
+  margin-bottom: 0;
+}
+
+.popular-search-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.catalog-chip--large {
+  justify-content: center;
+  min-height: 56px;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.66);
 }
 
 .storefront-editorial-main,
@@ -1603,6 +1629,10 @@ img {
   .shop-overview-grid,
   .hero-proof-grid,
   .faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .popular-search-grid {
     grid-template-columns: 1fr;
   }
 

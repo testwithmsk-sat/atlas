@@ -2,6 +2,7 @@ import "./globals.css";
 import { CartProvider } from "@/components/cart-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { absoluteUrl, toJsonLd } from "@/lib/seo";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thedigitalatlas.vercel.app";
 
@@ -49,9 +50,38 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "The Digital Atlas",
+    url: siteUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/shop?q={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  };
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "The Digital Atlas",
+    url: siteUrl,
+    logo: absoluteUrl("/the-digital-atlas-logo-black-gold.svg"),
+    description:
+      "A digital storefront for premium templates, planners, business documents, event kits, and printable resources."
+  };
+
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLd(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLd(organizationJsonLd) }}
+        />
         <CartProvider>
           <div className="shell">
             <SiteHeader />

@@ -49,7 +49,7 @@ export function SiteHeader() {
               TDA
             </span>
           </span>
-          <span className="brand-subtitle">Wedding templates, planners, and printables</span>
+          <span className="brand-subtitle">Digital templates, planners, bundles, and printables</span>
         </Link>
 
         <nav className="primary-nav" aria-label="Primary">
