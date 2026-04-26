@@ -50,6 +50,42 @@ const motionKeywords = [
   "spreadsheet budget trackers"
 ];
 
+const trustMoments = [
+  {
+    title: "Looks polished fast",
+    copy: "Choose files that already feel premium, so customers spend less time fixing layout and more time using them."
+  },
+  {
+    title: "Easy to customize",
+    copy: "From fillable PDFs to spreadsheets and printable planners, the products are built to be used right away."
+  },
+  {
+    title: "Instantly delivered",
+    copy: "No waiting, no confusion. Checkout unlocks digital access quickly so buyers get value immediately."
+  }
+];
+
+const testimonialMoments = [
+  {
+    quote: "Perfect for shoppers who want premium-looking templates without starting from scratch.",
+    label: "Boutique look"
+  },
+  {
+    quote: "Bundles make it easy to get everything in one purchase instead of piecing products together one by one.",
+    label: "Better bundle value"
+  },
+  {
+    quote: "The store feels organized, clear, and easy to trust, which makes buying much faster.",
+    label: "Low-friction buying"
+  }
+];
+
+const futuristicSignals = [
+  { value: "24/7", label: "Instant digital access" },
+  { value: "Curated", label: "Premium visual quality" },
+  { value: "Multi-format", label: "PDF, XLSX, bundle-ready" }
+];
+
 export default async function HomePage({ searchParams }) {
   const params = await searchParams;
   const code = params?.code;
@@ -95,6 +131,7 @@ export default async function HomePage({ searchParams }) {
     getAllProducts(),
     getCategoryDirectoryWithCounts()
   ]);
+
   const bundle = bundleProducts[0] || null;
   const productCount = products.filter((product) => product.isBundle !== true).length;
   const bundleCount = bundleProducts.length;
@@ -106,52 +143,48 @@ export default async function HomePage({ searchParams }) {
     <>
       <section className="hero-section">
         <div className="hero-copy">
-          <p className="eyebrow">Curated Digital Storefront</p>
-          <h1>Templates that feel polished before your customers even open the file.</h1>
+          <p className="eyebrow">Instant Digital Downloads</p>
+          <h1>Professional templates, planners, and bundles that help buyers get results faster.</h1>
           <p className="hero-text">
-            The Digital Atlas combines premium-looking planners, editable spreadsheets, printable PDFs, and smart
-            bundle offers so customers can shop by outcome instead of digging through scattered files.
+            The Digital Atlas is built for customers who want digital products that already look polished, feel easy to
+            use, and save hours of starting from scratch. Shop printable PDFs, editable files, spreadsheets, and
+            curated bundles designed to feel worth buying the moment you land on the page.
           </p>
           <div className="trust-strip">
-            <span>{productCount} individual products</span>
-            <span>{bundleCount} bundle offers</span>
+            <span>{productCount} ready-to-use products</span>
+            <span>{bundleCount} value-packed bundles</span>
             <span>Instant digital delivery</span>
           </div>
           <div className="hero-signal-row">
-            <span>Trending with planners</span>
-            <span>Giftable digital products</span>
-            <span>Fast checkout, instant access</span>
+            <span>Looks premium from the start</span>
+            <span>Editable, printable, practical</span>
+            <span>Fast checkout and instant access</span>
           </div>
           <div className="hero-actions">
             <Link className="button button-primary" href="/shop">
-              Shop All Products
+              Find Your Product
             </Link>
             <Link className="button button-secondary" href="/bundles">
-              View Bundles
+              See Best-Value Bundles
             </Link>
           </div>
           <div className="hero-proof-grid">
-            <div className="hero-proof-card">
-              <strong>Professional by default</strong>
-              <span>Refined templates for businesses, events, weddings, and home planning.</span>
-            </div>
-            <div className="hero-proof-card">
-              <strong>Quick to buy, easy to use</strong>
-              <span>Clear pricing, low-friction bundles, and instant access after checkout.</span>
-            </div>
-            <div className="hero-proof-card">
-              <strong>Built to scale</strong>
-              <span>Customers can browse by category, bundle, or individual use case.</span>
-            </div>
+            {trustMoments.map((moment) => (
+              <div className="hero-proof-card" key={moment.title}>
+                <strong>{moment.title}</strong>
+                <span>{moment.copy}</span>
+              </div>
+            ))}
           </div>
         </div>
+
         <div className="hero-panel">
-          <p className="eyebrow">Store Highlights</p>
+          <p className="eyebrow">Best Place To Start</p>
           <div className="hero-panel-stat hero-panel-stat--spotlight">
             <strong>{bundle ? bundle.name : "Signature bundle"}</strong>
             <span>
               {bundle
-                ? `${bundle.priceLabel} now, compared with ${bundle.compareAtPriceLabel}. A polished all-in-one offer for customers who want the full set.`
+                ? `${bundle.priceLabel} instead of ${bundle.compareAtPriceLabel}. This is the easiest all-in-one purchase for shoppers who want the strongest value without piecing products together manually.`
                 : "Bundle pricing is live with a cleaner premium anchor across the collection."}
             </span>
           </div>
@@ -168,8 +201,16 @@ export default async function HomePage({ searchParams }) {
           </div>
           <div className="hero-microcopy">
             <span>Editable files</span>
-            <span>Printable PDFs</span>
-            <span>Planning kits</span>
+            <span>Bundle savings</span>
+            <span>Instant access</span>
+          </div>
+          <div className="hero-command-grid">
+            {futuristicSignals.map((signal) => (
+              <div className="hero-command-card" key={signal.label}>
+                <strong>{signal.value}</strong>
+                <span>{signal.label}</span>
+              </div>
+            ))}
           </div>
           <div className="hero-color-orbs" aria-hidden="true">
             <span className="hero-orb hero-orb--amber"></span>
@@ -190,8 +231,25 @@ export default async function HomePage({ searchParams }) {
       <section className="section-block">
         <div className="section-heading">
           <div>
+            <p className="eyebrow">Why People Buy</p>
+            <h2>Shoppers convert faster when the product already feels worth the price.</h2>
+          </div>
+        </div>
+        <div className="catalog-directory">
+          {testimonialMoments.map((item) => (
+            <article className="catalog-card testimonial-card" key={item.label}>
+              <p className="eyebrow">{item.label}</p>
+              <h2>"{item.quote}"</h2>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-block">
+        <div className="section-heading">
+          <div>
             <p className="eyebrow">Shop By Category</p>
-            <h2>Organize the store around what people are actually shopping for.</h2>
+            <h2>Start with the exact category that matches what your customer needs right now.</h2>
           </div>
           <Link className="text-link" href="/categories">
             View all categories
@@ -213,8 +271,8 @@ export default async function HomePage({ searchParams }) {
       <section className="section-block">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Featured Collection</p>
-            <h2>Lead with the strongest offers and the cleanest product presentation.</h2>
+            <p className="eyebrow">Featured Best Sellers</p>
+            <h2>These are the easiest products to say yes to when buyers want fast value.</h2>
           </div>
           <Link className="text-link" href="/best-sellers">
             View all best sellers
@@ -229,43 +287,43 @@ export default async function HomePage({ searchParams }) {
 
       <section className="section-block storefront-editorial">
         <article className="catalog-card storefront-editorial-main">
-          <p className="eyebrow">Store Experience</p>
-          <h2>A stronger storefront doesn&apos;t just look good. It makes buying feel easier.</h2>
+          <p className="eyebrow">Why This Store Works</p>
+          <h2>Better product pages, better previews, and clearer offers make the purchase feel safer.</h2>
           <p>
-            Professional merchandising comes from clarity: fewer competing signals, better product hierarchy, and more
-            confidence around what customers get after they purchase.
+            The best digital storefronts remove doubt. Customers should instantly understand what the file is, why it
+            looks premium, how quickly they can use it, and why the bundle may be the smarter choice.
           </p>
           <div className="catalog-chip-list">
-            <span className="catalog-chip">Confident pricing</span>
-            <span className="catalog-chip">Premium previews</span>
-            <span className="catalog-chip">Faster trust building</span>
+            <span className="catalog-chip">Premium presentation</span>
+            <span className="catalog-chip">Clear value</span>
+            <span className="catalog-chip">Confident checkout</span>
           </div>
         </article>
         <article className="info-card storefront-editorial-side">
           <p className="eyebrow">Conversion Focus</p>
-          <h3>Give bundles a premium role while keeping single products simple to understand.</h3>
+          <h3>Lead with stronger bundle value while keeping single-file purchases easy and low risk.</h3>
           <p>
-            The strongest stores make it obvious which products are quick wins, which are premium anchors, and why the
-            customer should trust the purchase flow.
+            When a shopper can immediately see the difference between a quick add-on and a full bundle, average order
+            value rises and the store feels more intentionally merchandised.
           </p>
         </article>
       </section>
 
       <section className="section-block editorial-band">
         <article className="info-card editorial-lead">
-          <p className="eyebrow">How It Works</p>
-          <h3>Customers can choose between single digital files, focused planning tools, and category-based bundles.</h3>
+          <p className="eyebrow">How To Buy</p>
+          <h3>Choose a single template for a quick win, or take a bundle for the biggest value per purchase.</h3>
           <p>
-            The catalog now supports business documents, event planners, home organization tools, and wedding
-            printables from the same storefront.
+            The storefront now supports business documents, event planners, home organization tools, and wedding
+            printables in one place, so shoppers can browse by need instead of hunting through mismatched marketplaces.
           </p>
         </article>
         <article className="info-card editorial-note">
-          <p className="eyebrow">Offer Strategy</p>
-          <h3>Keep every bundle at $10 and use the single files as quick add-ons across each category.</h3>
+          <p className="eyebrow">Best Value</p>
+          <h3>Bundle pricing helps buyers feel like they are getting more for less, without second-guessing the cart.</h3>
           <p>
-            The catalog now uses low, impulse-friendly pricing across the shop while still keeping bundle pricing easy
-            to understand no matter which category a customer starts in.
+            Low-friction single products keep the store approachable, while premium bundles create a stronger reason to
+            increase basket size in one purchase.
           </p>
         </article>
       </section>
@@ -273,19 +331,19 @@ export default async function HomePage({ searchParams }) {
       <section className="section-block trust-band">
         <article className="info-card">
           <p className="eyebrow">Why It Converts</p>
-          <h3>Every category now has a clearer path from browse to bundle to checkout.</h3>
+          <h3>Every page now works harder to reduce hesitation and move buyers toward checkout.</h3>
           <ul className="feature-list">
-            <li>Category-led browsing helps buyers find the right use case faster.</li>
-            <li>Bundles act as premium anchors while single files stay easy add-ons.</li>
-            <li>Instant digital delivery and saved carts reduce checkout hesitation.</li>
+            <li>Category-led browsing helps people find the right use case without confusion.</li>
+            <li>Clear bundle value makes bigger purchases feel smarter, not riskier.</li>
+            <li>Instant digital delivery gives buyers confidence that they can use the file right away.</li>
           </ul>
         </article>
         <article className="info-card editorial-note">
-          <p className="eyebrow">Best Next Step</p>
-          <h3>Keep evolving the strongest categories with more previews, reviews, and product education.</h3>
+          <p className="eyebrow">What Builds Trust</p>
+          <h3>Strong previews, better copy, and simpler product decisions make the store feel more premium.</h3>
           <p>
-            The storefront is now structured well enough to scale. The next gains will come from stronger product
-            storytelling and trust-building details on individual listings.
+            Customers buy faster when the product promise is obvious, the format is clear, and the storefront looks
+            like it was designed by someone who understands digital merchandising.
           </p>
         </article>
       </section>
@@ -294,7 +352,7 @@ export default async function HomePage({ searchParams }) {
         <div className="section-heading">
           <div>
             <p className="eyebrow">Shop By Format</p>
-            <h2>Help buyers discover the store through the file types they already search for.</h2>
+            <h2>Some buyers search by use case. Others search by file type. Give both of them an easy entry point.</h2>
           </div>
           <Link className="text-link" href="/guides">
             Read buying guides
@@ -315,7 +373,7 @@ export default async function HomePage({ searchParams }) {
         <div className="section-heading">
           <div>
             <p className="eyebrow">Popular Searches</p>
-            <h2>Build clearer paths from search intent to the right products.</h2>
+            <h2>Turn high-intent searches into direct paths to products that already match what people want.</h2>
           </div>
         </div>
         <div className="catalog-chip-list popular-search-grid">
@@ -330,10 +388,10 @@ export default async function HomePage({ searchParams }) {
       <section className="section-block storefront-editorial">
         <article className="catalog-card storefront-editorial-main">
           <p className="eyebrow">Brand Trust</p>
-          <h2>Popularity grows faster when the storefront feels established, useful, and easy to recommend.</h2>
+          <h2>People recommend stores that feel polished, helpful, and worth coming back to.</h2>
           <p>
-            Search traffic, repeat visits, and social sharing all improve when the store has clearer buying guides,
-            stronger support pages, and a more obvious story around what makes the catalog useful.
+            Search traffic, repeat visits, and word-of-mouth all grow faster when the storefront feels established,
+            the copy sounds confident, and the customer can quickly tell why the products are worth buying.
           </p>
           <div className="catalog-chip-list">
             <Link className="catalog-chip" href="/about">
@@ -352,10 +410,10 @@ export default async function HomePage({ searchParams }) {
         </article>
         <article className="info-card storefront-editorial-side">
           <p className="eyebrow">Growth Layer</p>
-          <h3>More internal links, stronger trust pages, and clearer keyword hubs make the store easier to find.</h3>
+          <h3>Trust pages, keyword hubs, and stronger product storytelling all work together to grow visibility.</h3>
           <p>
-            These improvements help both Google and real shoppers understand the products, the categories, and the
-            store&apos;s purpose more quickly.
+            These improvements help Google understand the catalog faster, while helping real shoppers feel more certain
+            about clicking, browsing, and purchasing.
           </p>
         </article>
       </section>
