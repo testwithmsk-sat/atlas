@@ -6,10 +6,30 @@ import { getAllProducts, getBundleProducts, getCategoryDirectoryWithCounts, getF
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 const formatDiscoveryLinks = [
-  { href: "/shop?q=fillable", label: "Fillable templates", description: "Editable PDF products with typed fields and clean layouts." },
-  { href: "/shop?q=pdf", label: "Printable PDF downloads", description: "Low-friction digital files for fast printing and sharing." },
-  { href: "/shop?q=xlsx", label: "Spreadsheet planners", description: "Trackers, financial sheets, and digital planning workbooks." },
-  { href: "/bundles", label: "Bundle offers", description: "High-value grouped product sets designed for easier buying." }
+  {
+    href: "/shop?q=fillable",
+    label: "Fillable templates",
+    description: "Editable PDF products with typed fields and clean layouts.",
+    tone: "rose"
+  },
+  {
+    href: "/shop?q=pdf",
+    label: "Printable PDF downloads",
+    description: "Low-friction digital files for fast printing and sharing.",
+    tone: "gold"
+  },
+  {
+    href: "/shop?q=xlsx",
+    label: "Spreadsheet planners",
+    description: "Trackers, financial sheets, and digital planning workbooks.",
+    tone: "sage"
+  },
+  {
+    href: "/bundles",
+    label: "Bundle offers",
+    description: "High-value grouped product sets designed for easier buying.",
+    tone: "sky"
+  }
 ];
 
 const popularSearchLinks = [
@@ -19,6 +39,15 @@ const popularSearchLinks = [
   { href: "/shop?q=printable+planner", label: "Printable planner products" },
   { href: "/shop?q=fillable+pdf", label: "Fillable PDF templates" },
   { href: "/shop?q=spreadsheet", label: "Spreadsheet tools" }
+];
+
+const motionKeywords = [
+  "editable wedding invitation templates",
+  "printable planner bundles",
+  "business proposal templates",
+  "event planning downloads",
+  "fillable PDF products",
+  "spreadsheet budget trackers"
 ];
 
 export default async function HomePage({ searchParams }) {
@@ -88,6 +117,11 @@ export default async function HomePage({ searchParams }) {
             <span>{bundleCount} bundle offers</span>
             <span>Instant digital delivery</span>
           </div>
+          <div className="hero-signal-row">
+            <span>Trending with planners</span>
+            <span>Giftable digital products</span>
+            <span>Fast checkout, instant access</span>
+          </div>
           <div className="hero-actions">
             <Link className="button button-primary" href="/shop">
               Shop All Products
@@ -137,6 +171,19 @@ export default async function HomePage({ searchParams }) {
             <span>Printable PDFs</span>
             <span>Planning kits</span>
           </div>
+          <div className="hero-color-orbs" aria-hidden="true">
+            <span className="hero-orb hero-orb--amber"></span>
+            <span className="hero-orb hero-orb--rose"></span>
+            <span className="hero-orb hero-orb--sky"></span>
+          </div>
+        </div>
+      </section>
+
+      <section className="trend-marquee" aria-label="Popular digital product searches">
+        <div className="trend-marquee-track">
+          {[...motionKeywords, ...motionKeywords].map((term, index) => (
+            <span key={`${term}-${index}`}>{term}</span>
+          ))}
         </div>
       </section>
 
@@ -253,9 +300,9 @@ export default async function HomePage({ searchParams }) {
             Read buying guides
           </Link>
         </div>
-        <div className="catalog-directory">
+        <div className="catalog-directory homepage-format-grid">
           {formatDiscoveryLinks.map((link) => (
-            <Link className="catalog-card catalog-card--link" key={link.href} href={link.href}>
+            <Link className={`catalog-card catalog-card--link format-card format-card--${link.tone}`} key={link.href} href={link.href}>
               <p className="eyebrow">Discovery</p>
               <h2>{link.label}</h2>
               <p>{link.description}</p>
