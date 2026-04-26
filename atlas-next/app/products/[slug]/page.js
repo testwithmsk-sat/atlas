@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { ProductCard } from "@/components/product-card";
 import { ProductPreviewMockup } from "@/components/product-preview-mockup";
-import { getAllProducts, getProductBySlug, getRelatedProducts } from "@/lib/catalog";
+import { getAllProducts, getProductBySlug, getRelatedProducts, parsePriceLabel } from "@/lib/catalog";
+import { absoluteUrl, toJsonLd } from "@/lib/seo";
 
 export async function generateStaticParams() {
   const products = await getAllProducts();
@@ -20,9 +21,33 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const formatLabel = product.details?.format || product.productType;
+  const seoDescription = `${product.summary} Shop this ${product.category.toLowerCase()} digital download from The Digital Atlas in ${formatLabel.toLowerCase()} format.`;
+
   return {
-    title: `${product.name} | The Digital Atlas`,
-    description: product.summary
+    title: `${product.name} ${formatLabel ? `| ${formatLabel}` : ""}`,
+    description: seoDescription,
+    keywords: [
+      product.name.toLowerCase(),
+      `${product.category.toLowerCase()} digital download`,
+      `${product.subcategory.toLowerCase()} template`,
+      `${formatLabel.toLowerCase()} template`,
+      product.productType.toLowerCase()
+    ],
+    alternates: {
+      canonical: `/products/${product.slug}`
+    },
+    openGraph: {
+      title: `${product.name} | The Digital Atlas`,
+      description: seoDescription,
+      url: absoluteUrl(`/products/${product.slug}`),
+      images: [
+        {
+          url: absoluteUrl(product.image),
+          alt: product.name
+        }
+      ]
+    }
   };
 }
 
@@ -40,16 +65,88 @@ export default async function ProductPage({ params }) {
     allProducts.find(
       (candidate) => candidate.isBundle === true && candidate.categorySlug === product.categorySlug && candidate.slug !== product.slug
     );
+  const numericPrice = parsePriceLabel(product.priceLabel);
   const formatBadges = [
     product.details?.format,
     product.isBundle ? `${product.bundleContents.length || product.details?.includes?.length || 0} files` : null,
     product.category,
     product.status
   ].filter(Boolean);
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: absoluteUrl("/")
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Categories",
+        item: absoluteUrl("/categories")
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.category,
+        item: absoluteUrl(`/shop/${product.categorySlug}`)
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: product.name,
+        item: absoluteUrl(`/products/${product.slug}`)
+      }
+    ]
+  };
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.summary,
+    image: [absoluteUrl(product.image)],
+    category: `${product.category} > ${product.subcategory}`,
+    sku: product.slug,
+    brand: {
+      "@type": "Brand",
+      name: "The Digital Atlas"
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD",
+      price: numericPrice.toFixed(2),
+      availability: "https://schema.org/InStock",
+      url: absoluteUrl(`/products/${product.slug}`),
+      itemCondition: "https://schema.org/NewCondition"
+    },
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "Format",
+        value: product.details?.format || product.productType
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Delivery",
+        value: product.status
+      }
+    ]
+  };
 
   return (
     <>
       <section className="section-block">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLd(productJsonLd) }}
+        />
         <div className="product-layout">
           <article className="product-visual-card">
             <ProductPreviewMockup product={product} className="product-mockup--hero" priority="hero" />

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { getCategoryPageData, searchProducts } from "@/lib/catalog";
 import { categoryDirectory } from "@/lib/catalog-taxonomy";
+import { absoluteUrl, toJsonLd } from "@/lib/seo";
 
 export async function generateStaticParams() {
   return categoryDirectory.map((category) => ({ category: category.slug }));
@@ -17,9 +18,27 @@ export async function generateMetadata({ params }) {
     return { title: "Category not found | The Digital Atlas" };
   }
 
+  const { category, liveCount } = categoryPage;
+  const subcategoryNames = category.subcategories.map((subcategory) => subcategory.name).join(", ");
+  const seoDescription = `Shop ${category.name.toLowerCase()} digital templates, printables, and bundle downloads from The Digital Atlas. Explore ${liveCount} products across ${subcategoryNames}.`;
+
   return {
-    title: `${categoryPage.category.name} | The Digital Atlas`,
-    description: `${categoryPage.category.name} products on The Digital Atlas.`
+    title: `${category.name} Digital Templates & Printables`,
+    description: seoDescription,
+    keywords: [
+      `${category.name.toLowerCase()} templates`,
+      `${category.name.toLowerCase()} printables`,
+      `${category.name.toLowerCase()} digital downloads`,
+      ...category.subcategories.map((subcategory) => subcategory.name.toLowerCase())
+    ],
+    alternates: {
+      canonical: `/shop/${category.slug}`
+    },
+    openGraph: {
+      title: `${category.name} Digital Templates & Printables | The Digital Atlas`,
+      description: seoDescription,
+      url: absoluteUrl(`/shop/${category.slug}`)
+    }
   };
 }
 
@@ -32,6 +51,30 @@ export default async function CategoryPage({ params, searchParams }) {
   if (!categoryPage) notFound();
 
   const { category } = categoryPage;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: absoluteUrl("/")
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Categories",
+        item: absoluteUrl("/categories")
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: category.name,
+        item: absoluteUrl(`/shop/${category.slug}`)
+      }
+    ]
+  };
   const filteredGroups = categoryPage.groups
     .map((group) => ({
       ...group,
@@ -42,6 +85,10 @@ export default async function CategoryPage({ params, searchParams }) {
 
   return (
     <section className="section-block">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
+      />
       <div className="page-intro category-page-intro">
         <p className="eyebrow">{category.navLabel}</p>
         <h1>{category.name}</h1>
