@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 const sceneShapes = [
@@ -32,7 +33,9 @@ function drawLight(context, x, y, radius, color) {
   context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
 }
 
-export function InteractiveHeroScene() {
+const plannerChecklist = ["Wedding checklist", "Event timeline", "Budget planner", "Guest list"];
+
+export function InteractiveHeroScene({ spotlight, featuredSingles = [], productCount = 0, bundleCount = 0 }) {
   const canvasRef = useRef(null);
   const stageRef = useRef(null);
   const leftPupilRef = useRef(null);
@@ -154,8 +157,13 @@ export function InteractiveHeroScene() {
     };
   }, []);
 
+  const signalCards = [
+    { label: "live products", value: `${productCount}+` },
+    { label: "bundle drops", value: `${bundleCount}+` }
+  ];
+
   return (
-    <div className="interactive-scene" aria-hidden="true">
+    <div className="interactive-scene">
       <canvas className="interactive-scene-canvas" ref={canvasRef} />
       <div className="interactive-scene-stage" ref={stageRef}>
         <div className="interactive-scene-shapes">
@@ -179,6 +187,61 @@ export function InteractiveHeroScene() {
           ))}
         </div>
 
+        <div className="scene-light-anchor scene-light-anchor--left" aria-hidden="true" />
+        <div className="scene-light-anchor scene-light-anchor--right" aria-hidden="true" />
+        <div className="scene-petal-drift scene-petal-drift--one" aria-hidden="true" />
+        <div className="scene-petal-drift scene-petal-drift--two" aria-hidden="true" />
+
+        <div className="scene-arch" aria-hidden="true">
+          <div className="scene-arch-floral scene-arch-floral--left"></div>
+          <div className="scene-arch-floral scene-arch-floral--right"></div>
+          <div className="scene-arch-curtain scene-arch-curtain--left"></div>
+          <div className="scene-arch-curtain scene-arch-curtain--right"></div>
+          <div className="scene-arch-step scene-arch-step--one"></div>
+          <div className="scene-arch-step scene-arch-step--two"></div>
+        </div>
+
+        <div className="scene-board">
+          <div className="scene-board-frame">
+            <div className="scene-board-surface">
+              <p>Plan.</p>
+              <p>Celebrate.</p>
+              <p>Succeed.</p>
+            </div>
+          </div>
+          <div className="scene-board-legs" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <div className="scene-ui-card scene-ui-card--checklist">
+          <span className="scene-ui-card-glow"></span>
+          <div className="scene-ui-card-body">
+            {plannerChecklist.map((item) => (
+              <div className="scene-ui-list-row" key={item}>
+                <span className="scene-ui-check">✓</span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="scene-ui-card scene-ui-card--chart">
+          <span className="scene-ui-card-glow"></span>
+          <div className="scene-chart">
+            <div className="scene-chart-bars" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div className="scene-chart-line" aria-hidden="true">
+              <span></span>
+            </div>
+          </div>
+        </div>
+
         <div className="scene-blob">
           <div className="scene-blob-shadow"></div>
           <div className="scene-blob-arm scene-blob-arm--left">
@@ -199,9 +262,47 @@ export function InteractiveHeroScene() {
             <div className="scene-blob-mouth"></div>
             <div className="scene-blob-cheek scene-blob-cheek--left"></div>
             <div className="scene-blob-cheek scene-blob-cheek--right"></div>
+            <div className="scene-blob-suit" aria-hidden="true">
+              <div className="scene-blob-collar scene-blob-collar--left"></div>
+              <div className="scene-blob-collar scene-blob-collar--right"></div>
+              <div className="scene-blob-tie"></div>
+            </div>
           </div>
-          <div className="scene-blob-badge">PLAY MODE</div>
+          <div className="scene-blob-legs" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+          <div className="scene-blob-feet" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+          <div className="scene-briefcase" aria-hidden="true">
+            <span className="scene-briefcase-handle"></span>
+          </div>
         </div>
+
+        <div className="scene-hero-footer">
+          <div className="scene-signal-strip">
+            {signalCards.map((card) => (
+              <span className="scene-signal-pill" key={card.label}>
+                <strong>{card.value}</strong>
+                <span>{card.label}</span>
+              </span>
+            ))}
+          </div>
+          <Link className="scene-hero-link" href={spotlight ? `/products/${spotlight.slug}` : "/shop"}>
+            <span>{spotlight ? "Explore the spotlight" : "Explore collections"}</span>
+            <strong>{spotlight ? spotlight.priceLabel : "Start browsing"}</strong>
+          </Link>
+        </div>
+
+        {featuredSingles.length > 0 ? (
+          <div className="scene-product-ribbon">
+            {featuredSingles.slice(0, 3).map((product) => (
+              <span key={product.slug}>{product.name}</span>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );

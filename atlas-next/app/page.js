@@ -52,21 +52,6 @@ const motionKeywords = [
   "spreadsheet budget trackers"
 ];
 
-const trustMoments = [
-  {
-    title: "Looks alive instantly",
-    copy: "A playful first impression makes the catalog feel memorable before shoppers even start browsing."
-  },
-  {
-    title: "Stays easy to scan",
-    copy: "Strong contrast, uppercase hierarchy, and framed sections keep the motion from becoming visual noise."
-  },
-  {
-    title: "Pushes action forward",
-    copy: "Bundles, singles, categories, and support links are still merchandised in a straightforward buying path."
-  }
-];
-
 const testimonialMoments = [
   {
     quote: "The store feels like a brand world instead of a flat catalog page, which makes every download feel more premium.",
@@ -189,74 +174,62 @@ export default async function HomePage({ searchParams }) {
   const liveCategories = categories.filter((category) => category.liveCount > 0);
   const categorySpotlights = liveCategories.slice(0, 4);
   const featuredSingles = featuredProducts.filter((product) => product.isBundle !== true).slice(0, 3);
+  const heroStats = [
+    {
+      value: `${productCount}+`,
+      label: "Premium products"
+    },
+    {
+      value: `${liveCategories.length}+`,
+      label: "Curated category worlds"
+    },
+    {
+      value: `${bundleCount}+`,
+      label: "Bundle power-ups"
+    }
+  ];
 
   return (
     <div className="neo-homepage">
       <section className="neo-hero" data-reveal>
         <div className="neo-hero-grid">
           <div className="neo-hero-copy" data-reveal>
-            <p className="eyebrow eyebrow--electric">Animated digital storefront</p>
+            <p className="eyebrow eyebrow--electric">Curated digital atelier</p>
             <h1>
               DOWNLOAD.
               <span className="outline-word"> FEEL LIKE A</span>
               <span className="accent-word"> POWER-UP.</span>
             </h1>
             <p className="neo-hero-text">
-              The Digital Atlas is evolving into a premium 3D storefront with glowing depth, animated motion, and a
-              playful SaaS-grade finish. Browse editable PDFs, printables, spreadsheets, and bundles in a marketplace
-              that feels valuable before shoppers even hit add to cart.
+              The Digital Atlas blends editable PDFs, printables, spreadsheets, and bundles into a playful premium
+              storefront with glowing depth, bold type, and motion that makes every download feel more valuable before
+              someone even hits add to cart.
             </p>
-            <div className="neo-stat-row">
-              <div className="neo-stat-chip">
-                <strong>{productCount}</strong>
-                <span>single-file products live</span>
-              </div>
-              <div className="neo-stat-chip">
-                <strong>{bundleCount}</strong>
-                <span>bundle shortcuts to bigger carts</span>
-              </div>
-              <div className="neo-stat-chip">
-                <strong>{bundlePriceFloorLabel}+</strong>
-                <span>entry point for value-packed sets</span>
-              </div>
-            </div>
             <div className="hero-actions">
-              <Link className="button button-primary" href="/shop">
-                Start exploring
+              <Link className="button button-primary neo-hero-primary-button" href="/shop">
+                Explore collections
               </Link>
               <Link className="button button-secondary" href="/bundles">
-                Unlock bundles
+                View bundle drops
               </Link>
             </div>
-            <div className="neo-hero-proof-grid">
-              {trustMoments.map((moment) => (
-                <article className="neo-mini-panel" key={moment.title} data-reveal>
-                  <p>{moment.title}</p>
-                  <span>{moment.copy}</span>
+            <div className="neo-stat-row neo-stat-row--hero">
+              {heroStats.map((item) => (
+                <article className="neo-stat-chip neo-stat-chip--hero" key={item.label}>
+                  <strong>{item.value}</strong>
+                  <span>{item.label}</span>
                 </article>
               ))}
             </div>
           </div>
 
           <div className="neo-hero-visual" data-reveal>
-            <InteractiveHeroScene />
-            <aside className="neo-hero-aside">
-              <p className="eyebrow eyebrow--electric">Starter drop</p>
-              <h2>{bundle ? bundle.name : "Signature bundle"}</h2>
-              <p>
-                {bundle
-                  ? `${bundle.priceLabel} instead of ${bundle.compareAtPriceLabel}. Lead with the big value first, then let single-file products handle the quicker yeses.`
-                  : "Bundle pricing stays front and center so the highest-value offer is visible immediately."}
-              </p>
-              <div className="neo-picked-list">
-                {featuredSingles.map((product) => (
-                  <Link className="neo-picked-item" key={product.slug} href={`/products/${product.slug}`}>
-                    <span>{product.name}</span>
-                    <b>{product.priceLabel}</b>
-                  </Link>
-                ))}
-              </div>
-            </aside>
+            <InteractiveHeroScene
+              spotlight={bundle}
+              featuredSingles={featuredSingles}
+              productCount={productCount}
+              bundleCount={bundleCount}
+            />
           </div>
         </div>
       </section>
