@@ -68,6 +68,19 @@ export async function getDownloadLibrary(email) {
   return downloads.filter((item) => item.fileUrl);
 }
 
+export async function getPurchasedProductSlugs(email) {
+  if (!email) return [];
+
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase.from("customer_downloads").select("product_slug").eq("customer_email", email);
+
+  if (error || !data) return [];
+
+  return [...new Set(data.map((item) => item.product_slug).filter(Boolean))];
+}
+
 async function grantDownloadsForOrder({ supabase, orderId, customerEmail, status, items }) {
   await supabase.from("customer_downloads").delete().eq("order_id", orderId);
 

@@ -4,6 +4,7 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { ProductCard } from "@/components/product-card";
 import { ProductPreviewMockup } from "@/components/product-preview-mockup";
 import { getAllProducts, getProductBySlug, getRelatedProducts, parsePriceLabel } from "@/lib/catalog";
+import { supportsOnlineEditor } from "@/lib/pdf-editor";
 import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, toJsonLd } from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -67,6 +68,7 @@ export default async function ProductPage({ params }) {
       (candidate) => candidate.isBundle === true && candidate.categorySlug === product.categorySlug && candidate.slug !== product.slug
     );
   const numericPrice = parsePriceLabel(product.priceLabel);
+  const hasOnlineEditor = supportsOnlineEditor(product);
   const formatBadges = [
     product.details?.format,
     product.isBundle ? `${product.bundleContents.length || product.details?.includes?.length || 0} files` : null,
@@ -179,6 +181,11 @@ export default async function ProductPage({ params }) {
 
             <div className="hero-actions">
               <AddToCartButton product={product} />
+              {hasOnlineEditor ? (
+                <Link className="button button-secondary" href={`/editor/${product.slug}`}>
+                  Edit Online
+                </Link>
+              ) : null}
               <Link className="button button-secondary" href="/shop">
                 Back To Shop
               </Link>
@@ -223,6 +230,12 @@ export default async function ProductPage({ params }) {
                     : "This product works well as an affordable add-on beside bundles."}
                 </p>
               </div>
+              {hasOnlineEditor ? (
+                <div>
+                  <strong>Online editor</strong>
+                  <p>Customers can personalize this PDF in the browser and unlock export after purchase.</p>
+                </div>
+              ) : null}
             </div>
 
             <ul className="feature-list">

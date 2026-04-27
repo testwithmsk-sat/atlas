@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { AccountAuthPanel } from "@/components/account-auth-panel";
+import { getAllProducts } from "@/lib/catalog";
 import { hasSupabaseConfig } from "@/lib/env";
 import { getDownloadLibrary, getOrdersForCustomer } from "@/lib/orders";
+import { supportsOnlineEditor } from "@/lib/pdf-editor";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export const metadata = {
@@ -29,9 +32,10 @@ export default async function AccountPage({ searchParams }) {
   const params = await searchParams;
   const checkoutState = params?.checkout || "";
   const authState = params?.auth || "";
-  const [orders, downloads] = email
-    ? await Promise.all([getOrdersForCustomer(email), getDownloadLibrary(email)])
-    : [[], []];
+  const [orders, downloads, products] = email
+    ? await Promise.all([getOrdersForCustomer(email), getDownloadLibrary(email), getAllProducts()])
+    : [[], [], []];
+  const productMap = new Map(products.map((product) => [product.slug, product]));
 
   let authMessage = "";
   if (authState === "unavailable") {
@@ -86,9 +90,16 @@ export default async function AccountPage({ searchParams }) {
                       <p>{download.fileName}</p>
                       <p>{download.purchasedAt ? `Granted ${new Date(download.purchasedAt).toLocaleDateString("en-IN")}` : "Ready to download"}</p>
                     </div>
-                    <a className="text-link" href={download.fileUrl} target="_blank" rel="noreferrer">
-                      Download
-                    </a>
+                    <div className="account-entry-actions">
+                      {supportsOnlineEditor(productMap.get(download.productSlug)) ? (
+                        <Link className="text-link" href={`/editor/${download.productSlug}`}>
+                          Edit online
+                        </Link>
+                      ) : null}
+                      <a className="text-link" href={download.fileUrl} target="_blank" rel="noreferrer">
+                        Download
+                      </a>
+                    </div>
                   </div>
                 ))}
               </div>
