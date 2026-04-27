@@ -4002,29 +4002,37 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
 /* Header layout + glass neon preview fixes */
 
 .site-header-top {
-  grid-template-columns: minmax(220px, 0.85fr) minmax(420px, 1.15fr) minmax(430px, 0.95fr);
-  gap: 18px;
+  grid-template-columns: minmax(220px, 280px) minmax(360px, 1fr) minmax(220px, 260px) auto;
+  grid-template-areas: "brand nav search actions";
+  gap: 16px;
 }
 
-.header-utility-row {
-  display: grid;
-  grid-template-columns: minmax(0, 240px) auto;
-  align-items: center;
-  justify-content: end;
-  gap: 12px;
+.brand-mark {
+  grid-area: brand;
+  max-width: 18rem;
+}
+
+.primary-nav {
+  grid-area: nav;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
 }
 
 .header-tools {
-  width: min(240px, 100%);
+  grid-area: search;
+  width: 100%;
+  min-width: 220px;
+  max-width: 260px;
   justify-self: end;
 }
 
 .site-search-form {
   width: 100%;
   min-width: 0;
-  max-width: 240px;
+  max-width: none;
   padding: 5px;
-  gap: 8px;
+  gap: 6px;
   border-color: rgba(194, 151, 255, 0.2);
   background:
     linear-gradient(180deg, rgba(20, 10, 36, 0.92), rgba(10, 5, 18, 0.88)),
@@ -4040,6 +4048,7 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
 
 .site-search-input {
   min-width: 0;
+  width: 100%;
   min-height: 40px;
   padding: 9px 14px;
   border-color: rgba(194, 151, 255, 0.16);
@@ -4061,14 +4070,36 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
 .site-search-button {
   flex: 0 0 auto;
   min-height: 40px;
-  padding-inline: 18px;
+  min-width: 92px;
+  padding-inline: 14px;
   white-space: nowrap;
 }
 
-.header-mode-toggle,
-.nav-pill,
+.header-cta-group {
+  grid-area: actions;
+  justify-self: end;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: max-content;
+}
+
+.header-mode-toggle {
+  flex-shrink: 0;
+  min-width: 154px;
+}
+
+.nav-pill {
+  flex-shrink: 0;
+}
+
+.nav-pill--cart {
+  min-width: 106px;
+}
+
 .header-cta-group .button {
   flex-shrink: 0;
+  min-width: 148px;
 }
 
 .header-mode-toggle-label,
@@ -4084,6 +4115,11 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
 .nav-pill:hover,
 .nav-pill:focus-visible {
   color: #ffffff;
+}
+
+.site-header.is-condensed .site-search-form {
+  opacity: 0.9;
+  transform: none;
 }
 
 .product-card {
@@ -4359,34 +4395,47 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
 
 @media (max-width: 1280px) {
   .site-header-top {
-    grid-template-columns: minmax(220px, 0.9fr) minmax(360px, 1fr) minmax(380px, 0.92fr);
+    grid-template-columns: minmax(220px, 280px) minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand nav nav"
+      "search search actions";
   }
 
-  .header-utility-row {
-    grid-template-columns: minmax(0, 220px) auto;
+  .header-tools {
+    min-width: 0;
+    max-width: 320px;
+    width: 100%;
   }
 
-  .header-tools,
   .site-search-form {
-    width: min(220px, 100%);
-    max-width: 220px;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .header-mode-toggle {
+    min-width: 138px;
+  }
+
+  .header-cta-group .button {
+    min-width: 132px;
   }
 }
 
 @media (max-width: 980px) {
   .site-header-top {
     grid-template-columns: 1fr;
-  }
-
-  .header-utility-row {
-    display: flex;
-    justify-content: stretch;
-    flex-wrap: wrap;
+    grid-template-areas:
+      "brand"
+      "nav"
+      "search"
+      "actions";
   }
 
   .header-tools,
   .site-search-form {
     width: 100%;
+    min-width: 0;
     max-width: none;
   }
 }

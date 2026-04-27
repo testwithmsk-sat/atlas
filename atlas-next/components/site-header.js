@@ -112,45 +112,43 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="header-utility-row">
-          <div className="header-tools">
-            <form className="site-search-form" action="/shop" role="search">
-              <label className="site-search-field">
-                <span className="site-search-label">Search products</span>
-                <input
-                  className="site-search-input"
-                  type="search"
-                  name="q"
-                  placeholder="Search products"
-                  autoComplete="off"
-                />
-              </label>
-              <button className="button button-secondary site-search-button" type="submit">
-                Search
-              </button>
-            </form>
-          </div>
-
-          <div className="header-cta-group">
-            <button
-              className={`header-mode-toggle${isArcadeMode ? " is-arcade" : ""}`}
-              type="button"
-              aria-pressed={isArcadeMode}
-              onClick={() => setIsArcadeMode((current) => !current)}
-            >
-              <span className="header-mode-toggle-track">
-                <span className="header-mode-toggle-thumb"></span>
-              </span>
-              <span className="header-mode-toggle-label">{isArcadeMode ? "Arcade" : "Focus"}</span>
+        <div className="header-tools">
+          <form className="site-search-form" action="/shop" role="search">
+            <label className="site-search-field">
+              <span className="site-search-label">Search products</span>
+              <input
+                className="site-search-input"
+                type="search"
+                name="q"
+                placeholder="Search products"
+                autoComplete="off"
+              />
+            </label>
+            <button className="button button-secondary site-search-button" type="submit">
+              Search
             </button>
-            <Link className={`nav-pill nav-pill--cart${itemCount > 0 ? " has-items" : ""}`} href="/cart">
-              Cart
-              <span>{itemCount}</span>
-            </Link>
-            <Link className="button button-primary" href="/account">
-              Account
-            </Link>
-          </div>
+          </form>
+        </div>
+
+        <div className="header-cta-group">
+          <button
+            className={`header-mode-toggle${isArcadeMode ? " is-arcade" : ""}`}
+            type="button"
+            aria-pressed={isArcadeMode}
+            onClick={() => setIsArcadeMode((current) => !current)}
+          >
+            <span className="header-mode-toggle-track">
+              <span className="header-mode-toggle-thumb"></span>
+            </span>
+            <span className="header-mode-toggle-label">{isArcadeMode ? "Arcade" : "Focus"}</span>
+          </button>
+          <Link className={`nav-pill nav-pill--cart${itemCount > 0 ? " has-items" : ""}`} href="/cart">
+            Cart
+            <span>{itemCount}</span>
+          </Link>
+          <Link className="button button-primary" href="/account">
+            Account
+          </Link>
         </div>
       </div>
     </header>
