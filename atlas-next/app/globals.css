@@ -5644,6 +5644,12 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
   gap: 28px;
 }
 
+.storefront-page-shell [data-reveal] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
 .storefront-page-shell .section-block {
   padding-top: 0;
 }
