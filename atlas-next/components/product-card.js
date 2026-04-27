@@ -10,7 +10,7 @@ export function ProductCard({ product }) {
   return (
     <article className="product-card product-card--interactive" data-reveal data-tilt>
       <div className="product-card-image">
-        <span className="product-card-preview-tag">Hover preview</span>
+        <span className="product-card-preview-tag">Glass 3D preview</span>
         <ProductPreviewMockup product={product} />
       </div>
       <div className="product-card-topline">
