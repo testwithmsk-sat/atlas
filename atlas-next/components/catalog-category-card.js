@@ -9,7 +9,7 @@ export function CatalogCategoryCard({ category, href, liveCount = 0, plannedCoun
       : `${liveCount} available now`;
 
   return (
-    <Link className="catalog-card catalog-card--link" href={href} data-reveal>
+    <Link className="catalog-card catalog-card--link storefront-category-card" href={href} data-reveal data-tilt>
       <p className="eyebrow">{category.navLabel}</p>
       <h2>{category.name}</h2>
       <p>{category.description}</p>
@@ -20,7 +20,10 @@ export function CatalogCategoryCard({ category, href, liveCount = 0, plannedCoun
           </span>
         ))}
       </div>
-      <p className="catalog-meta">{hasProducts ? countLabel : "New products coming soon"}</p>
+      <div className="storefront-category-card-footer">
+        <p className="catalog-meta">{hasProducts ? countLabel : "New products coming soon"}</p>
+        <span className="storefront-card-arrow">Enter</span>
+      </div>
     </Link>
   );
 }

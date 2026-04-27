@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CatalogCategoryCard } from "@/components/catalog-category-card";
 import { getCategoryDirectoryWithCounts } from "@/lib/catalog";
 import { absoluteUrl, toJsonLd } from "@/lib/seo";
@@ -39,28 +40,74 @@ export default async function CategoriesPage() {
     ]
   };
 
+  const categoryStats = [
+    {
+      label: "Live worlds",
+      value: liveCategories.length
+    },
+    {
+      label: "Subcategory lanes",
+      value: liveCategories.reduce((total, category) => total + category.subcategories.length, 0)
+    },
+    {
+      label: "Products live",
+      value: liveCategories.reduce((total, category) => total + category.liveCount, 0)
+    }
+  ];
+
   return (
-    <section className="section-block">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
-      />
-      <div className="page-intro">
-        <p className="eyebrow">Categories</p>
-        <h1>Browse the live storefront by category.</h1>
-        <p>Use the live categories to jump straight into business, events, wedding, and planning products.</p>
-      </div>
-      <div className="catalog-directory">
-        {liveCategories.map((category) => (
-          <CatalogCategoryCard
-            key={category.slug}
-            category={category}
-            href={`/shop/${category.slug}`}
-            liveCount={category.liveCount}
-            plannedCount={category.plannedCount}
-          />
-        ))}
-      </div>
-    </section>
+    <div className="storefront-page-shell">
+      <section className="section-block storefront-category-directory-hero" data-reveal>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
+        />
+        <div className="storefront-category-hero-grid">
+          <div className="page-intro storefront-category-copy" data-reveal>
+            <p className="eyebrow eyebrow--electric">Category worlds</p>
+            <h1>Browse the storefront by mood, use case, and product lane.</h1>
+            <p>
+              Instead of dropping shoppers into one giant catalog wall, these category routes create cleaner entry
+              points for wedding, business, events, and planning.
+            </p>
+            <div className="catalog-chip-list storefront-chip-cluster">
+              <Link className="catalog-chip" href="/shop">
+                Open the shop
+              </Link>
+              <Link className="catalog-chip" href="/best-sellers">
+                Browse best sellers
+              </Link>
+              <Link className="catalog-chip" href="/bundles">
+                View bundle offers
+              </Link>
+            </div>
+          </div>
+
+          <div className="storefront-signal-grid storefront-signal-grid--compact" data-reveal>
+            {categoryStats.map((stat) => (
+              <article className="storefront-signal-card" key={stat.label}>
+                <span>{stat.label}</span>
+                <strong>{stat.value}</strong>
+                <p>Structured discovery routes that make the store easier to scan and easier to buy from.</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-block storefront-directory-shell" data-reveal>
+        <div className="catalog-directory storefront-directory-grid">
+          {liveCategories.map((category) => (
+            <CatalogCategoryCard
+              key={category.slug}
+              category={category}
+              href={`/shop/${category.slug}`}
+              liveCount={category.liveCount}
+              plannedCount={category.plannedCount}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }

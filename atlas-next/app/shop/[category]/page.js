@@ -76,77 +76,138 @@ export default async function CategoryPage({ params, searchParams }) {
       }
     ]
   };
+
   const filteredGroups = categoryPage.groups
     .map((group) => ({
       ...group,
       products: searchProducts(group.products, searchQuery)
     }))
     .filter((group) => group.products.length > 0);
+
   const filteredCount = filteredGroups.reduce((total, group) => total + group.products.length, 0);
+  const bundleCount = filteredGroups.reduce(
+    (total, group) => total + group.products.filter((product) => product.isBundle === true).length,
+    0
+  );
+  const singleCount = filteredCount - bundleCount;
+  const spotlightProduct = filteredGroups.flatMap((group) => group.products).find((product) => product.isBundle) || filteredGroups[0]?.products[0] || null;
 
   return (
-    <section className="section-block">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
-      />
-      <div className="page-intro category-page-intro">
-        <p className="eyebrow">{category.navLabel}</p>
-        <h1>{category.name}</h1>
-        <p>{category.description}</p>
-        <div className="category-page-meta">
-          <span>{filteredCount} shown</span>
-          <span>{categoryPage.liveCount} live products</span>
-          <span>{category.subcategories.length} subcategories</span>
-        </div>
-        <CatalogSearchForm
-          action={`/shop/${category.slug}`}
-          query={searchQuery}
-          totalCount={categoryPage.liveCount}
-          resultCount={filteredCount}
-          placeholder={`Search ${category.name.toLowerCase()} products`}
+    <div className="storefront-page-shell">
+      <section className="section-block storefront-category-hero" data-reveal>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
         />
-        <div className="hero-actions">
-          <Link className="button button-secondary" href="/shop">
-            Back To Shop
-          </Link>
-          <Link className="button button-secondary" href="/bundles">
-            View Bundle
-          </Link>
+
+        <div className="storefront-category-hero-grid">
+          <div className="page-intro category-page-intro storefront-category-copy" data-reveal>
+            <p className="eyebrow eyebrow--electric">{category.navLabel}</p>
+            <h1>{category.name}</h1>
+            <p>{category.description}</p>
+
+            <div className="category-page-meta storefront-category-meta">
+              <span>{filteredCount} shown</span>
+              <span>{categoryPage.liveCount} live products</span>
+              <span>{category.subcategories.length} subcategories</span>
+            </div>
+
+            <CatalogSearchForm
+              action={`/shop/${category.slug}`}
+              query={searchQuery}
+              totalCount={categoryPage.liveCount}
+              resultCount={filteredCount}
+              placeholder={`Search ${category.name.toLowerCase()} products`}
+            />
+
+            <div className="storefront-pill-rail storefront-pill-rail--dense">
+              {category.subcategories.map((subcategory) => {
+                const matchingGroup = filteredGroups.find((group) => group.subcategory.slug === subcategory.slug);
+                return matchingGroup ? (
+                  <Link className="storefront-pill" href={`#${subcategory.slug}`} key={subcategory.slug}>
+                    {subcategory.name}
+                    <span>{matchingGroup.products.length}</span>
+                  </Link>
+                ) : null;
+              })}
+            </div>
+          </div>
+
+          <div className="storefront-category-aside" data-reveal>
+            <article className="storefront-spotlight-card storefront-spotlight-card--category">
+              <p className="eyebrow eyebrow--electric">Category spotlight</p>
+              <h2>{spotlightProduct ? spotlightProduct.name : `${category.name} highlights`}</h2>
+              <p>
+                {spotlightProduct
+                  ? `${spotlightProduct.summary} Use this page as a mini landing zone for the category before shoppers drill into individual files.`
+                  : `This category becomes stronger when the hero frames the tone, while the grouped shelves underneath keep browsing easy.`}
+              </p>
+              <div className="hero-actions">
+                <Link className="button button-primary" href={spotlightProduct ? `/products/${spotlightProduct.slug}` : "/shop"}>
+                  View featured item
+                </Link>
+                <Link className="button button-secondary" href="/shop">
+                  Back to shop
+                </Link>
+              </div>
+            </article>
+
+            <div className="storefront-signal-grid storefront-signal-grid--compact">
+              <article className="storefront-signal-card">
+                <span>Bundle lane</span>
+                <strong>{bundleCount}</strong>
+                <p>Grouped offers that anchor the premium side of the category.</p>
+              </article>
+              <article className="storefront-signal-card">
+                <span>Single files</span>
+                <strong>{singleCount}</strong>
+                <p>Focused add-ons and standalone products for quicker yeses.</p>
+              </article>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       {categoryPage.groups.length === 0 ? (
-        <article className="info-card empty-state-card">
-          <p className="eyebrow">Coming Soon</p>
-          <h3>No live products are published in this category yet.</h3>
-          <p>This category is part of the wider catalog plan, but the wedding collection is the only live launch right now.</p>
-        </article>
+        <section className="section-block" data-reveal>
+          <article className="info-card empty-state-card storefront-empty-card">
+            <p className="eyebrow eyebrow--electric">Coming soon</p>
+            <h3>No live products are published in this category yet.</h3>
+            <p>This category is planned in the broader catalog, but the live storefront is still growing into it.</p>
+          </article>
+        </section>
       ) : filteredGroups.length === 0 ? (
-        <article className="info-card empty-state-card">
-          <p className="eyebrow">No Matches</p>
-          <h3>No {category.name.toLowerCase()} products matched "{searchQuery}".</h3>
-          <p>Try a broader keyword like invitation, planner, bundle, checklist, or spreadsheet.</p>
-        </article>
+        <section className="section-block" data-reveal>
+          <article className="info-card empty-state-card storefront-empty-card">
+            <p className="eyebrow eyebrow--electric">No matches</p>
+            <h3>No {category.name.toLowerCase()} products matched "{searchQuery}".</h3>
+            <p>Try broader keywords like planner, checklist, invitation, bundle, spreadsheet, or editable PDF.</p>
+          </article>
+        </section>
       ) : (
-        <div className="subcategory-section-list">
-          {filteredGroups.map((group) => (
-            <section className="subcategory-section" key={group.subcategory.slug}>
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">{group.subcategory.name}</p>
-                  <h2>{group.products.length} product{group.products.length === 1 ? "" : "s"}</h2>
+        <section className="section-block storefront-group-shell" data-reveal>
+          <div className="subcategory-section-list storefront-group-list">
+            {filteredGroups.map((group) => (
+              <section className="subcategory-section storefront-group-section" id={group.subcategory.slug} key={group.subcategory.slug}>
+                <div className="section-heading storefront-section-heading">
+                  <div>
+                    <p className="eyebrow eyebrow--electric">{group.subcategory.name}</p>
+                    <h2>{group.products.length} product{group.products.length === 1 ? "" : "s"}</h2>
+                  </div>
+                  <span className="storefront-subcategory-hint">
+                    {group.products.some((product) => product.isBundle) ? "Includes bundle offers" : "Single-file discovery"}
+                  </span>
                 </div>
-              </div>
-              <div className="product-grid">
-                {group.products.map((product) => (
-                  <ProductCard key={product.slug} product={product} />
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+                <div className="product-grid storefront-product-grid">
+                  {group.products.map((product) => (
+                    <ProductCard key={product.slug} product={product} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
       )}
-    </section>
+    </div>
   );
 }
