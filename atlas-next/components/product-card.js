@@ -8,7 +8,7 @@ export function ProductCard({ product }) {
   const categoryLabel = product.subcategory || product.category;
 
   return (
-    <article className="product-card">
+    <article className="product-card" data-reveal>
       <div className="product-card-image">
         <ProductPreviewMockup product={product} />
       </div>

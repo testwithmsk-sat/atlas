@@ -9,7 +9,7 @@ export function CatalogCategoryCard({ category, href, liveCount = 0, plannedCoun
       : `${liveCount} available now`;
 
   return (
-    <Link className="catalog-card catalog-card--link" href={href}>
+    <Link className="catalog-card catalog-card--link" href={href} data-reveal>
       <p className="eyebrow">{category.navLabel}</p>
       <h2>{category.name}</h2>
       <p>{category.description}</p>

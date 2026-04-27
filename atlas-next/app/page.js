@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CatalogCategoryCard } from "@/components/catalog-category-card";
+import { InteractiveHeroScene } from "@/components/interactive-hero-scene";
 import { ProductCard } from "@/components/product-card";
 import { getAllProducts, getBundleProducts, getCategoryDirectoryWithCounts, getFeaturedProducts } from "@/lib/catalog";
 import { bundlePriceFloorLabel, storePriceRangeLabel } from "@/lib/seo";
@@ -53,31 +54,31 @@ const motionKeywords = [
 
 const trustMoments = [
   {
-    title: "Looks polished fast",
-    copy: "Choose files that already feel premium, so customers spend less time fixing layout and more time using them."
+    title: "Looks alive instantly",
+    copy: "A playful first impression makes the catalog feel memorable before shoppers even start browsing."
   },
   {
-    title: "Easy to customize",
-    copy: "From fillable PDFs to spreadsheets and printable planners, the products are built to be used right away."
+    title: "Stays easy to scan",
+    copy: "Strong contrast, uppercase hierarchy, and framed sections keep the motion from becoming visual noise."
   },
   {
-    title: "Instantly delivered",
-    copy: "No waiting, no confusion. Checkout unlocks digital access quickly so buyers get value immediately."
+    title: "Pushes action forward",
+    copy: "Bundles, singles, categories, and support links are still merchandised in a straightforward buying path."
   }
 ];
 
 const testimonialMoments = [
   {
-    quote: "Perfect for shoppers who want premium-looking templates without starting from scratch.",
-    label: "Boutique look"
+    quote: "The store feels like a brand world instead of a flat catalog page, which makes every download feel more premium.",
+    label: "Playful identity"
   },
   {
-    quote: "Bundles make it easy to get everything in one purchase instead of piecing products together one by one.",
-    label: "Better bundle value"
+    quote: "Bundles read like power-ups now, so buyers instantly understand why the all-in purchase is the smarter move.",
+    label: "Bundle gravity"
   },
   {
-    quote: "The store feels organized, clear, and easy to trust, which makes buying much faster.",
-    label: "Low-friction buying"
+    quote: "Motion, contrast, and clearer hierarchy make the shopping journey easier to scan without losing the fun.",
+    label: "Faster scanning"
   }
 ];
 
@@ -149,87 +150,76 @@ export default async function HomePage({ searchParams }) {
   const featuredSingles = featuredProducts.filter((product) => product.isBundle !== true).slice(0, 3);
 
   return (
-    <>
-      <section className="hero-section">
-        <div className="hero-copy">
-          <p className="eyebrow">Instant Digital Downloads</p>
-          <h1>Professional templates, planners, and bundles that help buyers get results faster.</h1>
-          <p className="hero-text">
-            The Digital Atlas is built for customers who want polished digital products without paying premium-agency
-            prices. Shop printable PDFs, editable files, spreadsheets, and curated bundles with most single products
-            priced from {storePriceRangeLabel} and bundle offers starting from {bundlePriceFloorLabel}.
-          </p>
-          <div className="trust-strip">
-            <span>{productCount} ready-to-use products</span>
-            <span>{storePriceRangeLabel} most single files</span>
-            <span>{bundlePriceFloorLabel}+ bundle offers</span>
-          </div>
-          <div className="hero-signal-row">
-            <span>Looks premium from the start</span>
-            <span>Low-cost digital products with real value</span>
-            <span>Fast checkout and instant access</span>
-          </div>
-          <div className="hero-actions">
-            <Link className="button button-primary" href="/shop">
-              Find Your Product
-            </Link>
-            <Link className="button button-secondary" href="/bundles">
-              See Best-Value Bundles
-            </Link>
-          </div>
-          <div className="hero-proof-grid">
-            {trustMoments.map((moment) => (
-              <div className="hero-proof-card" key={moment.title}>
-                <strong>{moment.title}</strong>
-                <span>{moment.copy}</span>
+    <div className="neo-homepage">
+      <section className="neo-hero" data-reveal>
+        <div className="neo-hero-grid">
+          <div className="neo-hero-copy" data-reveal>
+            <p className="eyebrow eyebrow--electric">Animated digital storefront</p>
+            <h1>
+              MAKE EVERY <span className="outline-word">DOWNLOAD</span> FEEL LIKE A
+              <span className="accent-word"> POWER-UP.</span>
+            </h1>
+            <p className="neo-hero-text">
+              The Digital Atlas now leans into playful motion, big contrast, and premium-but-fun energy. Browse
+              editable PDFs, printables, spreadsheets, and bundles in a storefront that feels alive before shoppers
+              even hit add to cart.
+            </p>
+            <div className="neo-stat-row">
+              <div className="neo-stat-chip">
+                <strong>{productCount}</strong>
+                <span>single-file products live</span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="hero-panel">
-          <p className="eyebrow">Best Place To Start</p>
-          <div className="hero-panel-stat hero-panel-stat--spotlight">
-            <strong>{bundle ? bundle.name : "Signature bundle"}</strong>
-            <span>
-              {bundle
-                ? `${bundle.priceLabel} instead of ${bundle.compareAtPriceLabel}. This is the easiest all-in-one purchase for shoppers who want the strongest value without piecing products together manually.`
-                : "Bundle pricing is live with a cleaner premium anchor across the collection."}
-            </span>
-          </div>
-          <div className="hero-spotlight-list">
-            {featuredSingles.map((product) => (
-              <Link className="hero-spotlight-item" key={product.slug} href={`/products/${product.slug}`}>
-                <div>
-                  <strong>{product.name}</strong>
-                  <span>{product.subcategory || product.category}</span>
-                </div>
-                <b>{product.priceLabel}</b>
+              <div className="neo-stat-chip">
+                <strong>{bundleCount}</strong>
+                <span>bundle shortcuts to bigger carts</span>
+              </div>
+              <div className="neo-stat-chip">
+                <strong>{bundlePriceFloorLabel}+</strong>
+                <span>entry point for value-packed sets</span>
+              </div>
+            </div>
+            <div className="hero-actions">
+              <Link className="button button-primary" href="/shop">
+                Shop the catalog
               </Link>
-            ))}
+              <Link className="button button-secondary" href="/bundles">
+                Explore bundles
+              </Link>
+            </div>
+            <div className="neo-hero-proof-grid">
+              {trustMoments.map((moment) => (
+                <article className="neo-mini-panel" key={moment.title} data-reveal>
+                  <p>{moment.title}</p>
+                  <span>{moment.copy}</span>
+                </article>
+              ))}
+            </div>
           </div>
-          <div className="hero-microcopy">
-            <span>Editable files</span>
-            <span>Bundle savings</span>
-            <span>Instant access</span>
-          </div>
-          <div className="hero-command-grid">
-            {futuristicSignals.map((signal) => (
-              <div className="hero-command-card" key={signal.label}>
-                <strong>{signal.value}</strong>
-                <span>{signal.label}</span>
+
+          <div className="neo-hero-visual" data-reveal>
+            <InteractiveHeroScene />
+            <aside className="neo-hero-aside">
+              <p className="eyebrow eyebrow--electric">Starter drop</p>
+              <h2>{bundle ? bundle.name : "Signature bundle"}</h2>
+              <p>
+                {bundle
+                  ? `${bundle.priceLabel} instead of ${bundle.compareAtPriceLabel}. Lead with the big value first, then let single-file products handle the quicker yeses.`
+                  : "Bundle pricing stays front and center so the highest-value offer is visible immediately."}
+              </p>
+              <div className="neo-picked-list">
+                {featuredSingles.map((product) => (
+                  <Link className="neo-picked-item" key={product.slug} href={`/products/${product.slug}`}>
+                    <span>{product.name}</span>
+                    <b>{product.priceLabel}</b>
+                  </Link>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="hero-color-orbs" aria-hidden="true">
-            <span className="hero-orb hero-orb--amber"></span>
-            <span className="hero-orb hero-orb--rose"></span>
-            <span className="hero-orb hero-orb--sky"></span>
+            </aside>
           </div>
         </div>
       </section>
 
-      <section className="trend-marquee" aria-label="Popular digital product searches">
+      <section className="trend-marquee neo-trend-marquee" aria-label="Popular digital product searches" data-reveal>
         <div className="trend-marquee-track">
           {[...motionKeywords, ...motionKeywords].map((term, index) => (
             <span key={`${term}-${index}`}>{term}</span>
@@ -237,16 +227,26 @@ export default async function HomePage({ searchParams }) {
         </div>
       </section>
 
-      <section className="section-block">
-        <div className="section-heading">
+      <section className="neo-command-grid-shell" data-reveal>
+        {formatDiscoveryLinks.map((link) => (
+          <Link className={`neo-command-card neo-command-card--${link.tone}`} key={link.href} href={link.href} data-reveal>
+            <span>Jump in</span>
+            <strong>{link.label}</strong>
+            <p>{link.description}</p>
+          </Link>
+        ))}
+      </section>
+
+      <section className="section-block neo-section" data-reveal>
+        <div className="section-heading neo-section-heading">
           <div>
-            <p className="eyebrow">Why People Buy</p>
-            <h2>Shoppers convert faster when the product already feels worth the price.</h2>
+            <p className="eyebrow eyebrow--electric">Why the redesign works</p>
+            <h2>Motion grabs attention. Strong hierarchy makes that attention useful.</h2>
           </div>
         </div>
-        <div className="catalog-directory">
+        <div className="neo-quote-grid">
           {testimonialMoments.map((item) => (
-            <article className="catalog-card testimonial-card" key={item.label}>
+            <article className="catalog-card testimonial-card neo-quote-card" key={item.label} data-reveal>
               <p className="eyebrow">{item.label}</p>
               <h2>"{item.quote}"</h2>
             </article>
@@ -254,17 +254,17 @@ export default async function HomePage({ searchParams }) {
         </div>
       </section>
 
-      <section className="section-block">
-        <div className="section-heading">
+      <section className="section-block neo-section" data-reveal>
+        <div className="section-heading neo-section-heading">
           <div>
-            <p className="eyebrow">Shop By Category</p>
-            <h2>Start with the exact category that matches what your customer needs right now.</h2>
+            <p className="eyebrow eyebrow--electric">Shop by category</p>
+            <h2>Drop people into the exact universe they need, not a generic wall of products.</h2>
           </div>
           <Link className="text-link" href="/categories">
             View all categories
           </Link>
         </div>
-        <div className="catalog-directory category-spotlight-grid">
+        <div className="catalog-directory category-spotlight-grid neo-category-grid">
           {categorySpotlights.map((category) => (
             <CatalogCategoryCard
               key={category.slug}
@@ -277,155 +277,86 @@ export default async function HomePage({ searchParams }) {
         </div>
       </section>
 
-      <section className="section-block">
-        <div className="section-heading">
+      <section className="section-block neo-section" data-reveal>
+        <div className="section-heading neo-section-heading">
           <div>
-            <p className="eyebrow">Featured Best Sellers</p>
-            <h2>These are the easiest products to say yes to when buyers want fast value.</h2>
+            <p className="eyebrow eyebrow--electric">Featured best sellers</p>
+            <h2>These products now sit inside a louder, bolder frame that makes their value easier to feel fast.</h2>
           </div>
           <Link className="text-link" href="/best-sellers">
             View all best sellers
           </Link>
         </div>
-        <div className="product-grid">
+        <div className="product-grid neo-product-grid">
           {featuredProducts.map((product) => (
             <ProductCard key={product.slug} product={product} />
           ))}
         </div>
       </section>
 
-      <section className="section-block storefront-editorial">
-        <article className="catalog-card storefront-editorial-main">
-          <p className="eyebrow">Why This Store Works</p>
-          <h2>Better product pages, better previews, and clearer offers make the purchase feel safer.</h2>
+      <section className="section-block neo-editorial-band" data-reveal>
+        <article className="catalog-card storefront-editorial-main neo-editorial-main" data-reveal>
+          <p className="eyebrow eyebrow--electric">Signal boost</p>
+          <h2>Use playful spectacle up top, then let clarity and conversion do the rest of the work.</h2>
           <p>
-            The best digital storefronts remove doubt. Customers should instantly understand what the file is, why it
-            looks premium, how quickly they can use it, and why the bundle may be the smarter choice.
+            The homepage now acts like a stage set. Cursor glow, animated geometry, and the mascot create memorability,
+            while the merchandised sections underneath keep the buying path obvious.
           </p>
-          <div className="catalog-chip-list">
-            <span className="catalog-chip">Premium presentation</span>
-            <span className="catalog-chip">Clear value</span>
-            <span className="catalog-chip">Confident checkout</span>
+          <div className="neo-signal-grid">
+            {futuristicSignals.map((signal) => (
+              <div className="neo-signal-card" key={signal.label}>
+                <strong>{signal.value}</strong>
+                <span>{signal.label}</span>
+              </div>
+            ))}
           </div>
         </article>
-        <article className="info-card storefront-editorial-side">
-          <p className="eyebrow">Conversion Focus</p>
-          <h3>Lead with stronger bundle value while keeping single-file purchases easy and low risk.</h3>
+        <article className="info-card storefront-editorial-side neo-editorial-side" data-reveal>
+          <p className="eyebrow eyebrow--electric">Conversion focus</p>
+          <h3>Lead with bolder bundles, then let quick-hit singles mop up the rest of the demand.</h3>
           <p>
-            When a shopper can immediately see the difference between a quick add-on and a full bundle, average order
-            value rises and the store feels more intentionally merchandised.
+            The redesign makes the store feel intentional, which means shoppers understand what they should buy first
+            instead of spending energy decoding the page.
           </p>
-        </article>
-      </section>
-
-      <section className="section-block editorial-band">
-        <article className="info-card editorial-lead">
-          <p className="eyebrow">How To Buy</p>
-          <h3>Choose a single template for a quick win, or take a bundle for the biggest value per purchase.</h3>
-          <p>
-            The storefront now supports business documents, event planners, home organization tools, and wedding
-            printables in one place, so shoppers can browse by need instead of hunting through mismatched marketplaces.
-          </p>
-        </article>
-        <article className="info-card editorial-note">
-          <p className="eyebrow">Best Value</p>
-          <h3>Bundle pricing helps buyers feel like they are getting more for less, without second-guessing the cart.</h3>
-          <p>
-            Low-friction single products keep the store approachable, while premium bundles create a stronger reason to
-            increase basket size in one purchase.
-          </p>
-        </article>
-      </section>
-
-      <section className="section-block trust-band">
-        <article className="info-card">
-          <p className="eyebrow">Why It Converts</p>
-          <h3>Every page now works harder to reduce hesitation and move buyers toward checkout.</h3>
-          <ul className="feature-list">
-            <li>Category-led browsing helps people find the right use case without confusion.</li>
-            <li>Clear bundle value makes bigger purchases feel smarter, not riskier.</li>
-            <li>Instant digital delivery gives buyers confidence that they can use the file right away.</li>
-          </ul>
-        </article>
-        <article className="info-card editorial-note">
-          <p className="eyebrow">What Builds Trust</p>
-          <h3>Strong previews, better copy, and simpler product decisions make the store feel more premium.</h3>
-          <p>
-            Customers buy faster when the product promise is obvious, the format is clear, and the storefront looks
-            like it was designed by someone who understands digital merchandising.
-          </p>
-        </article>
-      </section>
-
-      <section className="section-block">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Shop By Format</p>
-            <h2>Some buyers search by use case. Others search by file type. Give both of them an easy entry point.</h2>
+          <div className="catalog-chip-list popular-search-grid neo-search-grid">
+            {popularSearchLinks.map((link) => (
+              <Link className="catalog-chip catalog-chip--large" key={link.href} href={link.href}>
+                {link.label}
+              </Link>
+            ))}
           </div>
-          <Link className="text-link" href="/guides">
-            Read buying guides
-          </Link>
-        </div>
-        <div className="catalog-directory homepage-format-grid">
-          {formatDiscoveryLinks.map((link) => (
-            <Link className={`catalog-card catalog-card--link format-card format-card--${link.tone}`} key={link.href} href={link.href}>
-              <p className="eyebrow">Discovery</p>
-              <h2>{link.label}</h2>
-              <p>{link.description}</p>
-            </Link>
-          ))}
-        </div>
+        </article>
       </section>
 
-      <section className="section-block">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Popular Searches</p>
-            <h2>Turn high-intent searches into direct paths to products that already match what people want.</h2>
-          </div>
-        </div>
-        <div className="catalog-chip-list popular-search-grid">
-          {popularSearchLinks.map((link) => (
-            <Link className="catalog-chip catalog-chip--large" key={link.href} href={link.href}>
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="section-block storefront-editorial">
-        <article className="catalog-card storefront-editorial-main">
-          <p className="eyebrow">Brand Trust</p>
-          <h2>People recommend stores that feel polished, helpful, and worth coming back to.</h2>
-          <p>
-            Search traffic, repeat visits, and word-of-mouth all grow faster when the storefront feels established,
-            the copy sounds confident, and the customer can quickly tell why the products are worth buying.
-          </p>
+      <section className="section-block neo-bottom-band" data-reveal>
+        <article className="catalog-card storefront-editorial-main neo-bottom-card" data-reveal>
+          <p className="eyebrow eyebrow--electric">Explore the orbit</p>
+          <h2>Guide people from spectacle into certainty with sharper routes, support, and discovery pages.</h2>
+          <p>The homepage sells the feeling. The support pages and category routes keep selling the trust.</p>
           <div className="catalog-chip-list">
             <Link className="catalog-chip" href="/about">
-              About The Store
+              About the store
             </Link>
             <Link className="catalog-chip" href="/contact">
-              Contact & Support
+              Contact & support
             </Link>
             <Link className="catalog-chip" href="/faq">
-              Read The FAQ
+              Read the FAQ
             </Link>
             <Link className="catalog-chip" href="/guides">
-              Explore Guides
+              Explore guides
             </Link>
           </div>
         </article>
-        <article className="info-card storefront-editorial-side">
-          <p className="eyebrow">Growth Layer</p>
-          <h3>Trust pages, keyword hubs, and stronger product storytelling all work together to grow visibility.</h3>
+        <article className="info-card storefront-editorial-side neo-bottom-note" data-reveal>
+          <p className="eyebrow eyebrow--electric">Growth layer</p>
+          <h3>Keep the animated attitude on the homepage, but let the catalog stay practical and fast underneath.</h3>
           <p>
-            These improvements help Google understand the catalog faster, while helping real shoppers feel more certain
-            about clicking, browsing, and purchasing.
+            That balance keeps the brand memorable without slowing down the routes that matter most when someone is
+            ready to browse, compare, and buy.
           </p>
         </article>
       </section>
-    </>
+    </div>
   );
 }

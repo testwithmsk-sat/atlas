@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" data-reveal>
       <div>
         <h2>The Digital Atlas</h2>
         <p>

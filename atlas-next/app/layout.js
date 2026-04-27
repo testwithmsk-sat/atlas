@@ -1,5 +1,6 @@
 import "./globals.css";
 import { CartProvider } from "@/components/cart-provider";
+import { SiteEffects } from "@/components/site-effects";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, storePriceSnippet, toJsonLd } from "@/lib/seo";
@@ -84,6 +85,7 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: toJsonLd(organizationJsonLd) }}
         />
+        <SiteEffects />
         <CartProvider>
           <div className="shell">
             <SiteHeader />
