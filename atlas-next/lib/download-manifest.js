@@ -63,6 +63,197 @@ function createCatalogEntry({
 const businessImage = "/products/business-invoice-template-1.png";
 const eventsImage = "/products/events-parties-bundle-1.png";
 const planningImage = "/products/budget-bride-plan-1.png";
+const weddingPlanningImage = "/products/budget-wedding-planner-bundle.svg";
+
+const weddingChecklistFiles = [
+  {
+    slug: "wedding-checklist-customer-guide",
+    name: "Wedding Checklist Customer Guide",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Guide",
+    basePrice: 8,
+    productType: "Printable PDF checklist",
+    summary: "A customer guide that shows buyers how to use the full wedding checklist collection with confidence.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\00_Customer_Guide.pdf`,
+        "wedding/checklists/00_Customer_Guide.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "twelve-month-master-wedding-checklist",
+    name: "12-Month Master Wedding Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Planning Essential",
+    basePrice: 12,
+    productType: "Printable PDF checklist",
+    summary: "A master wedding checklist for planning each milestone across a full 12-month timeline.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\01_12Month_Master_Wedding_Checklist.pdf`,
+        "wedding/checklists/01_12Month_Master_Wedding_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "final-countdown-wedding-checklist",
+    name: "Final Countdown Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Deadline Saver",
+    basePrice: 10,
+    productType: "Printable PDF checklist",
+    summary: "A final countdown checklist for the last-stage wedding tasks before the big day.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\02_FinalCountdown_Checklist.pdf`,
+        "wedding/checklists/02_FinalCountdown_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "vendor-booking-wedding-checklist",
+    name: "Vendor Booking Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Vendor Planner",
+    basePrice: 10,
+    productType: "Printable PDF checklist",
+    summary: "A vendor booking checklist for managing research, bookings, and supplier follow-up steps.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\03_Vendor_Booking_Checklist.pdf`,
+        "wedding/checklists/03_Vendor_Booking_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "attire-beauty-wedding-checklist",
+    name: "Attire & Beauty Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Style Planner",
+    basePrice: 10,
+    productType: "Printable PDF checklist",
+    summary: "An attire and beauty checklist for gowns, fittings, styling, and preparation appointments.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\04_Attire_Beauty_Checklist.pdf`,
+        "wedding/checklists/04_Attire_Beauty_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "ceremony-planning-wedding-checklist",
+    name: "Ceremony Planning Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Ceremony Planner",
+    basePrice: 10,
+    productType: "Printable PDF checklist",
+    summary: "A ceremony planning checklist for organizing vows, order of events, and ceremony logistics.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\05_Ceremony_Planning_Checklist.pdf`,
+        "wedding/checklists/05_Ceremony_Planning_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "reception-planning-wedding-checklist",
+    name: "Reception Planning Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Reception Planner",
+    basePrice: 10,
+    productType: "Printable PDF checklist",
+    summary: "A reception planning checklist for tracking setup, decor, food, music, and guest experience details.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\06_Reception_Planning_Checklist.pdf`,
+        "wedding/checklists/06_Reception_Planning_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "wedding-day-emergency-kit-checklist",
+    name: "Wedding Day Emergency Kit",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Day-Of Essential",
+    basePrice: 9,
+    productType: "Printable PDF checklist",
+    summary: "A wedding day emergency kit checklist for packing the practical extras couples often need on the day.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\07_Wedding_Day_Emergency_Kit.pdf`,
+        "wedding/checklists/07_Wedding_Day_Emergency_Kit.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "honeymoon-planning-checklist",
+    name: "Honeymoon Planning Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Travel Planner",
+    basePrice: 10,
+    productType: "Printable PDF checklist",
+    summary: "A honeymoon planning checklist for bookings, packing, and post-wedding travel preparation.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\08_Honeymoon_Planning_Checklist.pdf`,
+        "wedding/checklists/08_Honeymoon_Planning_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "post-wedding-admin-checklist",
+    name: "Post-Wedding Admin Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "After The Day",
+    basePrice: 9,
+    productType: "Printable PDF checklist",
+    summary: "A post-wedding admin checklist for final paperwork, thank-yous, and after-the-day follow-up tasks.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\09_PostWedding_Admin_Checklist.pdf`,
+        "wedding/checklists/09_PostWedding_Admin_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  },
+  {
+    slug: "wedding-day-checklist-template",
+    name: "Wedding Day Checklist",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Day-Of Planner",
+    basePrice: 10,
+    productType: "Printable PDF checklist",
+    summary: "A wedding day checklist for keeping the full event timeline and responsibilities organized.",
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\10_Wedding_Day_Checklist.pdf`,
+        "wedding/checklists/10_Wedding_Day_Checklist.pdf",
+        PDF_TYPE
+      )
+    ]
+  }
+];
 
 const businessCoreFiles = [
   {
@@ -857,6 +1048,48 @@ const celebrationFiles = [
 ];
 
 export const additionalDownloadManifest = [
+  createCatalogEntry({
+    slug: "wedding-checklist-bundle-sage-green-blush",
+    name: "Wedding Checklist Bundle - Sage Green & Blush",
+    category: "Wedding",
+    categorySlug: "wedding",
+    subcategory: "Planning & Budget",
+    subcategorySlug: "planning-budget",
+    badge: "Checklist Bundle",
+    basePrice: 59,
+    isBundle: true,
+    productType: "ZIP wedding checklist bundle",
+    summary: "A complete wedding checklist bundle covering timeline planning, vendors, ceremony, reception, honeymoon, and day-of organization.",
+    image: weddingPlanningImage,
+    highlights: [
+      "11 printable checklist files with the customer guide included",
+      "Delivered as one ready-to-download bundle ZIP after checkout",
+      "Organized in the Wedding planning category"
+    ],
+    files: [
+      createFile(
+        String.raw`C:\Users\Dell\Downloads\files (3)\Wedding_Checklist_Bundle_SageGreen_Blush.zip`,
+        "wedding/checklists/Wedding_Checklist_Bundle_SageGreen_Blush.zip",
+        {
+          fileType: "zip",
+          contentType: "application/zip"
+        }
+      )
+    ]
+  }),
+  ...weddingChecklistFiles.map((item) =>
+    createCatalogEntry({
+      ...item,
+      category: "Wedding",
+      categorySlug: "wedding",
+      image: weddingPlanningImage,
+      highlights: [
+        "Instant digital download after checkout",
+        "Mapped directly to the original source file",
+        "Organized in the Wedding planning category"
+      ]
+    })
+  ),
   createCatalogEntry({
     slug: "complete-business-templates-bundle",
     name: "Complete Business Templates Bundle",

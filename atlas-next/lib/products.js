@@ -1554,6 +1554,119 @@ function createDigitalBundleProduct({
   });
 }
 
+const weddingChecklistItems = [
+  {
+    slug: "wedding-checklist-customer-guide",
+    name: "Wedding Checklist Customer Guide",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Guide",
+    useCase: "getting buyers started quickly with the full wedding checklist bundle",
+    price: 8,
+    compareAt: 12
+  },
+  {
+    slug: "twelve-month-master-wedding-checklist",
+    name: "12-Month Master Wedding Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Planning Essential",
+    useCase: "mapping the full wedding timeline from the first planning month onward",
+    price: 12,
+    compareAt: 18
+  },
+  {
+    slug: "final-countdown-wedding-checklist",
+    name: "Final Countdown Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Deadline Saver",
+    useCase: "staying on top of the final wedding tasks in the last stretch before the event",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "vendor-booking-wedding-checklist",
+    name: "Vendor Booking Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Vendor Planner",
+    useCase: "organizing vendor research, booking milestones, and supplier follow-ups",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "attire-beauty-wedding-checklist",
+    name: "Attire & Beauty Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Style Planner",
+    useCase: "tracking outfits, fittings, beauty prep, and styling appointments",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "ceremony-planning-wedding-checklist",
+    name: "Ceremony Planning Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Ceremony Planner",
+    useCase: "structuring ceremony details, logistics, and key planning decisions",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "reception-planning-wedding-checklist",
+    name: "Reception Planning Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Reception Planner",
+    useCase: "coordinating reception flow, decor, entertainment, and guest-facing details",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "wedding-day-emergency-kit-checklist",
+    name: "Wedding Day Emergency Kit",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Day-Of Essential",
+    useCase: "preparing a practical emergency kit for the wedding day",
+    price: 9,
+    compareAt: 14
+  },
+  {
+    slug: "honeymoon-planning-checklist",
+    name: "Honeymoon Planning Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Travel Planner",
+    useCase: "organizing post-wedding travel details, packing, and booking prep",
+    price: 10,
+    compareAt: 15
+  },
+  {
+    slug: "post-wedding-admin-checklist",
+    name: "Post-Wedding Admin Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "After The Day",
+    useCase: "handling post-wedding admin, follow-ups, and wrap-up tasks without missing anything",
+    price: 9,
+    compareAt: 14
+  },
+  {
+    slug: "wedding-day-checklist-template",
+    name: "Wedding Day Checklist",
+    subcategorySlug: "planning-budget",
+    format: "PDF",
+    badge: "Day-Of Planner",
+    useCase: "keeping the full wedding day organized from morning prep to final send-off",
+    price: 10,
+    compareAt: 15
+  }
+];
+
 const businessCoreItems = [
   {
     slug: "business-templates-guide",
@@ -2080,6 +2193,31 @@ const celebrationPlannerItems = [
 ];
 
 const generatedCatalogProducts = [
+  createDigitalBundleProduct({
+    slug: "wedding-checklist-bundle-sage-green-blush",
+    name: "Wedding Checklist Bundle - Sage Green & Blush",
+    categorySlug: "wedding",
+    subcategorySlug: "planning-budget",
+    badge: "Checklist Bundle",
+    price: 59,
+    compareAt: 99,
+    image: "/products/budget-wedding-planner-bundle.svg",
+    summary:
+      "A complete wedding checklist bundle with timeline, vendor, beauty, ceremony, reception, honeymoon, and day-of planning files in one elegant digital pack.",
+    highlights: [
+      "11 printable checklist files with the customer guide included",
+      "Built for brides, planners, and couples who want a clear wedding planning flow",
+      "Strong bundle offer for the wedding planning category"
+    ],
+    items: weddingChecklistItems
+  }),
+  ...weddingChecklistItems.map((item) =>
+    createDigitalFileProduct({
+      ...item,
+      categorySlug: "wedding",
+      image: "/products/budget-wedding-planner-bundle.svg"
+    })
+  ),
   createDigitalBundleProduct({
     slug: "complete-business-templates-bundle",
     name: "Complete Business Templates Bundle",
