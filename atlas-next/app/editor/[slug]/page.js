@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PdfTemplateEditor } from "@/components/pdf-template-editor";
 import { getAllProducts, getProductBySlug, getProductsBySlugs } from "@/lib/catalog";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { customerHasEditorAccess, getEditorTemplate, supportsOnlineEditor } from "@/lib/pdf-editor";
+import { customerHasEditorAccess, supportsOnlineEditor } from "@/lib/pdf-editor";
 import { getPurchasedProductSlugs } from "@/lib/orders";
 
 export async function generateStaticParams() {
@@ -36,7 +36,6 @@ export default async function EditorPage({ params }) {
     notFound();
   }
 
-  const template = getEditorTemplate(product);
   const supabase = await createSupabaseServerClient();
   const sessionResult = supabase ? await supabase.auth.getUser() : null;
   const email = sessionResult?.data?.user?.email || "";
@@ -71,7 +70,6 @@ export default async function EditorPage({ params }) {
 
       <PdfTemplateEditor
         product={product}
-        template={template}
         canExport={canExport}
         hasAccount={Boolean(email)}
         supportMessage={supportMessage}
