@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/components/cart-provider";
@@ -24,6 +24,10 @@ export function SiteHeader() {
   const { itemCount } = useCart();
   const pathname = usePathname();
   const [isCondensed, setIsCondensed] = useState(false);
+  const [isArcadeMode, setIsArcadeMode] = useState(true);
+  const [indicatorStyle, setIndicatorStyle] = useState(null);
+  const navRef = useRef(null);
+  const linkRefs = useRef({});
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +41,35 @@ export function SiteHeader() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const updateIndicator = () => {
+      const activeLink = Object.values(linkRefs.current).find((node) => node?.dataset.active === "true");
+      const navNode = navRef.current;
+
+      if (!activeLink || !navNode) {
+        setIndicatorStyle(null);
+        return;
+      }
+
+      setIndicatorStyle({
+        width: `${activeLink.offsetWidth}px`,
+        height: `${activeLink.offsetHeight}px`,
+        transform: `translate(${activeLink.offsetLeft}px, ${activeLink.offsetTop}px)`
+      });
+    };
+
+    updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+
+    return () => {
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    document.documentElement.dataset.uiMode = isArcadeMode ? "arcade" : "focus";
+  }, [isArcadeMode]);
 
   return (
     <header className={`site-header${isCondensed ? " is-condensed" : ""}`}>
@@ -52,7 +85,12 @@ export function SiteHeader() {
           <span className="brand-subtitle">Digital templates, planners, bundles, and printables</span>
         </Link>
 
-        <nav className="primary-nav" aria-label="Primary">
+        <nav className="primary-nav" aria-label="Primary" ref={navRef}>
+          <span
+            className={`primary-nav-indicator${indicatorStyle ? " is-visible" : ""}`}
+            style={indicatorStyle || undefined}
+            aria-hidden="true"
+          />
           {primaryLinks.map((link) => {
             const isActive = isPrimaryLinkActive(pathname, link.href);
 
@@ -62,6 +100,11 @@ export function SiteHeader() {
                 href={link.href}
                 className={isActive ? "is-active" : undefined}
                 aria-current={isActive ? "page" : undefined}
+                data-active={isActive ? "true" : "false"}
+                ref={(node) => {
+                  if (!node) return;
+                  linkRefs.current[link.href] = node;
+                }}
               >
                 {link.label}
               </Link>
@@ -89,7 +132,18 @@ export function SiteHeader() {
           </div>
 
           <div className="header-cta-group">
-            <Link className="nav-pill nav-pill--cart" href="/cart">
+            <button
+              className={`header-mode-toggle${isArcadeMode ? " is-arcade" : ""}`}
+              type="button"
+              aria-pressed={isArcadeMode}
+              onClick={() => setIsArcadeMode((current) => !current)}
+            >
+              <span className="header-mode-toggle-track">
+                <span className="header-mode-toggle-thumb"></span>
+              </span>
+              <span className="header-mode-toggle-label">{isArcadeMode ? "Arcade" : "Focus"}</span>
+            </button>
+            <Link className={`nav-pill nav-pill--cart${itemCount > 0 ? " has-items" : ""}`} href="/cart">
               Cart
               <span>{itemCount}</span>
             </Link>

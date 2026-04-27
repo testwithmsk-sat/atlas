@@ -10,9 +10,44 @@ function markVisibleEntries(entries) {
   });
 }
 
+function attachTiltHandlers(node) {
+  if (!node || node.dataset.tiltBound === "true") return () => {};
+  node.dataset.tiltBound = "true";
+
+  const handleMove = (event) => {
+    const bounds = node.getBoundingClientRect();
+    const relativeX = (event.clientX - bounds.left) / Math.max(bounds.width, 1);
+    const relativeY = (event.clientY - bounds.top) / Math.max(bounds.height, 1);
+    const rotateY = (relativeX - 0.5) * 18;
+    const rotateX = (0.5 - relativeY) * 16;
+
+    node.style.setProperty("--tilt-rotate-x", `${rotateX.toFixed(2)}deg`);
+    node.style.setProperty("--tilt-rotate-y", `${rotateY.toFixed(2)}deg`);
+    node.style.setProperty("--tilt-glow-x", `${(relativeX * 100).toFixed(2)}%`);
+    node.style.setProperty("--tilt-glow-y", `${(relativeY * 100).toFixed(2)}%`);
+  };
+
+  const handleLeave = () => {
+    node.style.setProperty("--tilt-rotate-x", "0deg");
+    node.style.setProperty("--tilt-rotate-y", "0deg");
+    node.style.setProperty("--tilt-glow-x", "50%");
+    node.style.setProperty("--tilt-glow-y", "50%");
+  };
+
+  node.addEventListener("pointermove", handleMove);
+  node.addEventListener("pointerleave", handleLeave);
+  handleLeave();
+
+  return () => {
+    node.removeEventListener("pointermove", handleMove);
+    node.removeEventListener("pointerleave", handleLeave);
+  };
+}
+
 export function SiteEffects() {
   useEffect(() => {
     const root = document.documentElement;
+    const tiltCleanups = new Map();
 
     const setPointerPosition = (x, y) => {
       root.style.setProperty("--cursor-x", `${x}px`);
@@ -48,6 +83,11 @@ export function SiteEffects() {
         node.dataset.revealObserved = "true";
         observer.observe(node);
       });
+
+      document.querySelectorAll("[data-tilt]").forEach((node) => {
+        if (tiltCleanups.has(node)) return;
+        tiltCleanups.set(node, attachTiltHandlers(node));
+      });
     };
 
     observeRevealNodes();
@@ -64,8 +104,20 @@ export function SiteEffects() {
       window.removeEventListener("resize", setScrollProgress);
       observer.disconnect();
       mutationObserver.disconnect();
+      tiltCleanups.forEach((cleanup) => cleanup());
     };
   }, []);
 
-  return <div className="site-cursor-glow" aria-hidden="true" />;
+  return (
+    <>
+      <div className="site-background-system" aria-hidden="true">
+        <span className="site-backdrop-orb site-backdrop-orb--violet"></span>
+        <span className="site-backdrop-orb site-backdrop-orb--pink"></span>
+        <span className="site-backdrop-orb site-backdrop-orb--blue"></span>
+        <span className="site-backdrop-streak site-backdrop-streak--one"></span>
+        <span className="site-backdrop-streak site-backdrop-streak--two"></span>
+      </div>
+      <div className="site-cursor-glow" aria-hidden="true" />
+    </>
+  );
 }

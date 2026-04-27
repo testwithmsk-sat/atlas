@@ -8,8 +8,9 @@ export function ProductCard({ product }) {
   const categoryLabel = product.subcategory || product.category;
 
   return (
-    <article className="product-card" data-reveal>
+    <article className="product-card product-card--interactive" data-reveal data-tilt>
       <div className="product-card-image">
+        <span className="product-card-preview-tag">Hover preview</span>
         <ProductPreviewMockup product={product} />
       </div>
       <div className="product-card-topline">
@@ -29,11 +30,12 @@ export function ProductCard({ product }) {
           <span className="price-offer">{product.priceLabel}</span>
           {hasCompareAt ? <span className="price-original">{product.compareAtPriceLabel}</span> : null}
         </div>
+        <span className="product-card-quicklook">Quick look</span>
+      </div>
+      <div className="card-actions product-card-action-row">
         <Link className="product-card-link" href={`/products/${product.slug}`}>
           View product
         </Link>
-      </div>
-      <div className="card-actions">
         <AddToCartButton product={product} className="button button-primary product-card-button" />
       </div>
     </article>

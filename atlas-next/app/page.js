@@ -88,6 +88,47 @@ const futuristicSignals = [
   { value: `${bundlePriceFloorLabel}+`, label: "Bundle deals start low" }
 ];
 
+const toolkitLevels = [
+  {
+    title: "Starter energy",
+    progress: 74,
+    copy: "Single-file templates for quick wins, instant downloads, and low-friction entry points."
+  },
+  {
+    title: "Creator combo",
+    progress: 88,
+    copy: "Category bundles and featured packs that feel like unlockable upgrades instead of plain add-ons."
+  },
+  {
+    title: "Empire mode",
+    progress: 96,
+    copy: "High-clarity routing, premium motion, and better merchandising for stronger average order value."
+  }
+];
+
+const rewardDrops = [
+  {
+    title: "Bundle vault",
+    badge: "Unlockable",
+    copy: "Position curated packs as collectible shortcuts that save time and increase perceived value.",
+    tone: "violet"
+  },
+  {
+    title: "XP badges",
+    badge: "Live reward",
+    copy: "Use progress language, streak-style visuals, and glowing chips to make browsing feel more playful.",
+    tone: "pink"
+  },
+  {
+    title: "Power-up paths",
+    badge: "Fast route",
+    copy: "Guide shoppers from single files into premium bundles with less hesitation and cleaner hierarchy.",
+    tone: "blue"
+  }
+];
+
+const empireSignals = ["Animated hero", "3D hover cards", "Gamified bundles", "Glowing CTA"];
+
 export const metadata = {
   title: `Affordable Digital Templates From ${storePriceRangeLabel}`,
   description: `Shop wedding templates, planners, checklists, business files, and digital downloads from ${storePriceRangeLabel}, with curated bundles from ${bundlePriceFloorLabel}.`,
@@ -156,13 +197,14 @@ export default async function HomePage({ searchParams }) {
           <div className="neo-hero-copy" data-reveal>
             <p className="eyebrow eyebrow--electric">Animated digital storefront</p>
             <h1>
-              MAKE EVERY <span className="outline-word">DOWNLOAD</span> FEEL LIKE A
+              DOWNLOAD.
+              <span className="outline-word"> FEEL LIKE A</span>
               <span className="accent-word"> POWER-UP.</span>
             </h1>
             <p className="neo-hero-text">
-              The Digital Atlas now leans into playful motion, big contrast, and premium-but-fun energy. Browse
-              editable PDFs, printables, spreadsheets, and bundles in a storefront that feels alive before shoppers
-              even hit add to cart.
+              The Digital Atlas is evolving into a premium 3D storefront with glowing depth, animated motion, and a
+              playful SaaS-grade finish. Browse editable PDFs, printables, spreadsheets, and bundles in a marketplace
+              that feels valuable before shoppers even hit add to cart.
             </p>
             <div className="neo-stat-row">
               <div className="neo-stat-chip">
@@ -180,10 +222,10 @@ export default async function HomePage({ searchParams }) {
             </div>
             <div className="hero-actions">
               <Link className="button button-primary" href="/shop">
-                Shop the catalog
+                Start exploring
               </Link>
               <Link className="button button-secondary" href="/bundles">
-                Explore bundles
+                Unlock bundles
               </Link>
             </div>
             <div className="neo-hero-proof-grid">
@@ -229,7 +271,7 @@ export default async function HomePage({ searchParams }) {
 
       <section className="neo-command-grid-shell" data-reveal>
         {formatDiscoveryLinks.map((link) => (
-          <Link className={`neo-command-card neo-command-card--${link.tone}`} key={link.href} href={link.href} data-reveal>
+          <Link className={`neo-command-card neo-command-card--${link.tone}`} key={link.href} href={link.href} data-reveal data-tilt>
             <span>Jump in</span>
             <strong>{link.label}</strong>
             <p>{link.description}</p>
@@ -291,6 +333,40 @@ export default async function HomePage({ searchParams }) {
           {featuredProducts.map((product) => (
             <ProductCard key={product.slug} product={product} />
           ))}
+        </div>
+      </section>
+
+      <section className="section-block neo-game-section" data-reveal>
+        <div className="section-heading neo-section-heading">
+          <div>
+            <p className="eyebrow eyebrow--electric">Level up your digital toolkit</p>
+            <h2>Blend game energy with storefront clarity so shoppers feel momentum while they browse.</h2>
+          </div>
+        </div>
+        <div className="neo-game-grid">
+          <div className="neo-xp-column">
+            {toolkitLevels.map((level) => (
+              <article className="neo-xp-card" key={level.title} data-reveal style={{ "--xp-progress": `${level.progress}%` }}>
+                <div className="neo-xp-topline">
+                  <span>{level.title}</span>
+                  <strong>{level.progress}%</strong>
+                </div>
+                <div className="neo-xp-bar">
+                  <span className="neo-xp-fill"></span>
+                </div>
+                <p>{level.copy}</p>
+              </article>
+            ))}
+          </div>
+          <div className="neo-reward-grid">
+            {rewardDrops.map((reward) => (
+              <article className={`neo-reward-card neo-reward-card--${reward.tone}`} key={reward.title} data-reveal data-tilt>
+                <p className="eyebrow">{reward.badge}</p>
+                <h3>{reward.title}</h3>
+                <p>{reward.copy}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -356,6 +432,32 @@ export default async function HomePage({ searchParams }) {
             ready to browse, compare, and buy.
           </p>
         </article>
+      </section>
+
+      <section className="section-block neo-cta-section" data-reveal>
+        <div className="neo-cta-copy">
+          <p className="eyebrow eyebrow--electric">Conversion booster</p>
+          <h2>START BUILDING YOUR DIGITAL EMPIRE TODAY</h2>
+          <p>
+            Keep the mood premium, the path obvious, and the bundles irresistible with a CTA that feels like the next
+            step in the experience instead of the end of the page.
+          </p>
+          <div className="catalog-chip-list neo-cta-chip-row">
+            {empireSignals.map((signal) => (
+              <span className="catalog-chip" key={signal}>
+                {signal}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="neo-cta-actions">
+          <Link className="button button-primary neo-cta-button" href="/shop">
+            Launch the catalog
+          </Link>
+          <Link className="button button-secondary" href="/account">
+            Join the account hub
+          </Link>
+        </div>
       </section>
     </div>
   );
