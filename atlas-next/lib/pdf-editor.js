@@ -1,4 +1,5 @@
 const supportedEditorProductSlugs = [
+  "editable-wedding-pdf-template-bundle",
   "wedding-checklist-customer-guide",
   "twelve-month-master-wedding-checklist",
   "final-countdown-wedding-checklist",
@@ -62,7 +63,7 @@ function getProductFormatText(product) {
 }
 
 export function supportsOnlineEditor(product) {
-  if (!product || product.isBundle) return false;
+  if (!product) return false;
   return supportedEditorSlugSet.has(product.slug) && getProductFormatText(product).includes("pdf");
 }
 
