@@ -141,7 +141,7 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      <section className="section-block">
+      <section className="section-block product-page-shell">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }}
