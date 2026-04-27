@@ -4,7 +4,7 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { ProductCard } from "@/components/product-card";
 import { ProductPreviewMockup } from "@/components/product-preview-mockup";
 import { getAllProducts, getProductBySlug, getRelatedProducts, parsePriceLabel } from "@/lib/catalog";
-import { absoluteUrl, toJsonLd } from "@/lib/seo";
+import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, toJsonLd } from "@/lib/seo";
 
 export async function generateStaticParams() {
   const products = await getAllProducts();
@@ -22,13 +22,14 @@ export async function generateMetadata({ params }) {
   }
 
   const formatLabel = product.details?.format || product.productType;
-  const seoDescription = `${product.summary} Shop this ${product.category.toLowerCase()} digital download from The Digital Atlas in ${formatLabel.toLowerCase()} format.`;
+  const seoDescription = `${product.summary} Only ${product.priceLabel} from The Digital Atlas. Shop this ${product.category.toLowerCase()} digital download in ${formatLabel.toLowerCase()} format, with most single files across the store priced from ${storePriceRangeLabel} and bundles from ${bundlePriceFloorLabel}.`;
 
   return {
     title: `${product.name} ${formatLabel ? `| ${formatLabel}` : ""}`,
     description: seoDescription,
     keywords: [
       product.name.toLowerCase(),
+      `${product.priceLabel} digital download`,
       `${product.category.toLowerCase()} digital download`,
       `${product.subcategory.toLowerCase()} template`,
       `${formatLabel.toLowerCase()} template`,

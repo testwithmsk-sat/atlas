@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { getCategoryPageData, searchProducts } from "@/lib/catalog";
 import { categoryDirectory } from "@/lib/catalog-taxonomy";
-import { absoluteUrl, toJsonLd } from "@/lib/seo";
+import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, toJsonLd } from "@/lib/seo";
 
 export async function generateStaticParams() {
   return categoryDirectory.map((category) => ({ category: category.slug }));
@@ -20,13 +20,14 @@ export async function generateMetadata({ params }) {
 
   const { category, liveCount } = categoryPage;
   const subcategoryNames = category.subcategories.map((subcategory) => subcategory.name).join(", ");
-  const seoDescription = `Shop ${category.name.toLowerCase()} digital templates, printables, and bundle downloads from The Digital Atlas. Explore ${liveCount} products across ${subcategoryNames}.`;
+  const seoDescription = `Shop ${category.name.toLowerCase()} digital templates, printables, and bundle downloads from The Digital Atlas. Most single files are priced from ${storePriceRangeLabel}, with bundle deals from ${bundlePriceFloorLabel}. Explore ${liveCount} products across ${subcategoryNames}.`;
 
   return {
-    title: `${category.name} Digital Templates & Printables`,
+    title: `${category.name} Digital Templates From ${storePriceRangeLabel}`,
     description: seoDescription,
     keywords: [
       `${category.name.toLowerCase()} templates`,
+      `${category.name.toLowerCase()} templates ${storePriceRangeLabel}`,
       `${category.name.toLowerCase()} printables`,
       `${category.name.toLowerCase()} digital downloads`,
       ...category.subcategories.map((subcategory) => subcategory.name.toLowerCase())
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }) {
       canonical: `/shop/${category.slug}`
     },
     openGraph: {
-      title: `${category.name} Digital Templates & Printables | The Digital Atlas`,
+      title: `${category.name} Digital Templates From ${storePriceRangeLabel} | The Digital Atlas`,
       description: seoDescription,
       url: absoluteUrl(`/shop/${category.slug}`)
     }

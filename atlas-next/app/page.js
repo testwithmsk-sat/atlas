@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { CatalogCategoryCard } from "@/components/catalog-category-card";
 import { ProductCard } from "@/components/product-card";
 import { getAllProducts, getBundleProducts, getCategoryDirectoryWithCounts, getFeaturedProducts } from "@/lib/catalog";
+import { bundlePriceFloorLabel, storePriceRangeLabel } from "@/lib/seo";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 const formatDiscoveryLinks = [
@@ -82,9 +83,17 @@ const testimonialMoments = [
 
 const futuristicSignals = [
   { value: "24/7", label: "Instant digital access" },
-  { value: "Curated", label: "Premium visual quality" },
-  { value: "Multi-format", label: "PDF, XLSX, bundle-ready" }
+  { value: "$1-$5", label: "Most single files" },
+  { value: `${bundlePriceFloorLabel}+`, label: "Bundle deals start low" }
 ];
+
+export const metadata = {
+  title: `Affordable Digital Templates From ${storePriceRangeLabel}`,
+  description: `Shop wedding templates, planners, checklists, business files, and digital downloads from ${storePriceRangeLabel}, with curated bundles from ${bundlePriceFloorLabel}.`,
+  alternates: {
+    canonical: "/"
+  }
+};
 
 export default async function HomePage({ searchParams }) {
   const params = await searchParams;
@@ -146,18 +155,18 @@ export default async function HomePage({ searchParams }) {
           <p className="eyebrow">Instant Digital Downloads</p>
           <h1>Professional templates, planners, and bundles that help buyers get results faster.</h1>
           <p className="hero-text">
-            The Digital Atlas is built for customers who want digital products that already look polished, feel easy to
-            use, and save hours of starting from scratch. Shop printable PDFs, editable files, spreadsheets, and
-            curated bundles designed to feel worth buying the moment you land on the page.
+            The Digital Atlas is built for customers who want polished digital products without paying premium-agency
+            prices. Shop printable PDFs, editable files, spreadsheets, and curated bundles with most single products
+            priced from {storePriceRangeLabel} and bundle offers starting from {bundlePriceFloorLabel}.
           </p>
           <div className="trust-strip">
             <span>{productCount} ready-to-use products</span>
-            <span>{bundleCount} value-packed bundles</span>
-            <span>Instant digital delivery</span>
+            <span>{storePriceRangeLabel} most single files</span>
+            <span>{bundlePriceFloorLabel}+ bundle offers</span>
           </div>
           <div className="hero-signal-row">
             <span>Looks premium from the start</span>
-            <span>Editable, printable, practical</span>
+            <span>Low-cost digital products with real value</span>
             <span>Fast checkout and instant access</span>
           </div>
           <div className="hero-actions">
