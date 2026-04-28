@@ -4,6 +4,7 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { ProductCard } from "@/components/product-card";
 import { ProductPreviewMockup } from "@/components/product-preview-mockup";
 import { getAllProducts, getProductBySlug, getRelatedProducts, parsePriceLabel } from "@/lib/catalog";
+import { getProductPreviewSources } from "@/lib/product-preview-sources";
 import { supportsOnlineEditor } from "@/lib/pdf-editor";
 import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, toJsonLd } from "@/lib/seo";
 
@@ -69,6 +70,10 @@ export default async function ProductPage({ params }) {
     );
   const numericPrice = parsePriceLabel(product.priceLabel);
   const hasOnlineEditor = supportsOnlineEditor(product);
+  const previewFiles = getProductPreviewSources(product.slug);
+  const hasDocumentPreview = previewFiles.length > 0;
+  const heroPreview = previewFiles[0] || null;
+  const missingPreviewCount = Math.max(0, product.bundleContents.length - previewFiles.length);
   const formatBadges = [
     product.details?.format,
     product.isBundle ? `${product.bundleContents.length || product.details?.includes?.length || 0} files` : null,
@@ -152,7 +157,43 @@ export default async function ProductPage({ params }) {
         />
         <div className="product-layout">
           <article className="product-visual-card">
-            <ProductPreviewMockup product={product} className="product-mockup--hero" priority="hero" />
+            {hasDocumentPreview && heroPreview ? (
+              <div className="product-preview-panel">
+                <div className="product-preview-heading">
+                  <p className="eyebrow">{previewFiles.length > 1 ? "Bundle PDF Preview" : "Full PDF Preview"}</p>
+                  <h3>{previewFiles.length > 1 ? "Browse the actual files included in this product." : "Browse the actual PDF right on the product page."}</h3>
+                  <p>
+                    Scroll inside the embedded preview to see the full document pages before checkout.
+                  </p>
+                </div>
+                <div className="product-preview-frame-shell product-preview-frame-shell--hero">
+                  <iframe
+                    className="product-preview-frame"
+                    src={`${heroPreview.src}#view=FitH`}
+                    title={`Preview of ${heroPreview.label}`}
+                    loading="eager"
+                  />
+                </div>
+                <div className="catalog-chip-list product-preview-chip-list">
+                  {previewFiles.slice(0, 6).map((preview) => (
+                    <span className="catalog-chip" key={preview.id}>
+                      {preview.label}
+                    </span>
+                  ))}
+                  {previewFiles.length > 6 ? (
+                    <span className="catalog-chip">+{previewFiles.length - 6} more PDF previews</span>
+                  ) : null}
+                </div>
+                {missingPreviewCount > 0 ? (
+                  <p className="product-preview-note">
+                    {missingPreviewCount} included file{missingPreviewCount === 1 ? "" : "s"} do not render inline here
+                    because they are delivered in a different format.
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <ProductPreviewMockup product={product} className="product-mockup--hero" priority="hero" />
+            )}
           </article>
 
           <article className="product-summary">
@@ -253,6 +294,35 @@ export default async function ProductPage({ params }) {
             </div>
           </article>
         </div>
+
+        {previewFiles.length > 1 ? (
+          <article className="product-detail-card product-detail-card--wide product-preview-gallery-card">
+            <p className="eyebrow">See Inside The Bundle</p>
+            <h3>Customers can browse each included PDF directly on the website.</h3>
+            <p>
+              Each preview below opens the real document inline so shoppers can see what is inside the bundle before
+              adding it to cart.
+            </p>
+            <div className="product-preview-gallery">
+              {previewFiles.map((preview) => (
+                <div className="product-preview-gallery-item" key={preview.id}>
+                  <div className="product-preview-gallery-copy">
+                    <strong>{preview.label}</strong>
+                    <span>Full PDF preview</span>
+                  </div>
+                  <div className="product-preview-frame-shell">
+                    <iframe
+                      className="product-preview-frame"
+                      src={`${preview.src}#view=FitH`}
+                      title={`Preview of ${preview.label}`}
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+        ) : null}
 
         <div className="product-details-grid">
           <article className="product-detail-card">
