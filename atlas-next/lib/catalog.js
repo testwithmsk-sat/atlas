@@ -36,7 +36,38 @@ export async function getBundleProducts() {
 }
 
 export async function getBestSellerProducts() {
-  return fallbackProducts.filter((product) => product.isBestSeller === true || product.isBundle === true);
+  return fallbackProducts.filter((product) => product.isBestSeller === true);
+}
+
+export function partitionProducts(products) {
+  const bundleProducts = products.filter((product) => product.isBundle === true);
+  const singleProducts = products.filter((product) => product.isBundle !== true);
+  const bundleFileProducts = singleProducts.filter((product) => (product.parentBundleSlugs?.length || 0) > 0);
+  const standaloneProducts = singleProducts.filter((product) => (product.parentBundleSlugs?.length || 0) === 0);
+
+  return {
+    bundleProducts,
+    bundleFileProducts,
+    standaloneProducts
+  };
+}
+
+export function buildCategorySections(products) {
+  return categoryDirectory
+    .map((category) => ({
+      category,
+      products: products.filter((product) => product.categorySlug === category.slug)
+    }))
+    .filter((section) => section.products.length > 0);
+}
+
+export function buildSubcategorySections(products, category) {
+  return category.subcategories
+    .map((subcategory) => ({
+      subcategory,
+      products: products.filter((product) => product.subcategorySlug === subcategory.slug)
+    }))
+    .filter((section) => section.products.length > 0);
 }
 
 export async function getRelatedProducts(product, limit = 3) {

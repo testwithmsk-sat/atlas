@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
-import { getBestSellerProducts } from "@/lib/catalog";
+import { buildCategorySections, getBestSellerProducts, partitionProducts } from "@/lib/catalog";
 
 export const metadata = {
   title: "Best Sellers | The Digital Atlas",
@@ -9,8 +9,11 @@ export const metadata = {
 
 export default async function BestSellersPage() {
   const products = await getBestSellerProducts();
-  const bundleCount = products.filter((product) => product.isBundle).length;
-  const singleCount = products.length - bundleCount;
+  const { bundleProducts, bundleFileProducts, standaloneProducts } = partitionProducts(products);
+  const bundleSections = buildCategorySections(bundleProducts);
+  const bundleFileSections = buildCategorySections(bundleFileProducts);
+  const standaloneSections = buildCategorySections(standaloneProducts);
+  const bundleCount = bundleProducts.length;
 
   return (
     <div className="storefront-page-shell">
@@ -48,21 +51,100 @@ export default async function BestSellersPage() {
               <p>Grouped offers designed to lift perceived value and average order size.</p>
             </article>
             <article className="storefront-signal-card">
-              <span>Quick add-ons</span>
-              <strong>{singleCount}</strong>
-              <p>Focused single-file products for lower-friction decisions.</p>
+              <span>Bundle files</span>
+              <strong>{bundleFileProducts.length}</strong>
+              <p>High-performing single-file products that also live inside bundles.</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section className="section-block storefront-shelf" data-reveal>
-        <div className="product-grid storefront-product-grid">
-          {products.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
-        </div>
-      </section>
+      {bundleProducts.length > 0 ? (
+        <section className="section-block storefront-group-shell" data-reveal>
+          <div className="section-heading storefront-section-heading">
+            <div>
+              <p className="eyebrow eyebrow--electric">Best-selling bundles</p>
+              <h2>Top grouped offers first.</h2>
+            </div>
+          </div>
+          <div className="subcategory-section-list storefront-group-list">
+            {bundleSections.map((section) => (
+              <section className="subcategory-section storefront-group-section" key={`best-bundles-${section.category.slug}`}>
+                <div className="section-heading storefront-section-heading">
+                  <div>
+                    <p className="eyebrow eyebrow--electric">{section.category.navLabel}</p>
+                    <h2>{section.products.length} bundle offer{section.products.length === 1 ? "" : "s"}</h2>
+                  </div>
+                  <span className="storefront-subcategory-hint">Best-selling grouped offers</span>
+                </div>
+                <div className="product-grid storefront-product-grid">
+                  {section.products.map((product) => (
+                    <ProductCard key={product.slug} product={product} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {bundleFileProducts.length > 0 ? (
+        <section className="section-block storefront-group-shell" data-reveal>
+          <div className="section-heading storefront-section-heading">
+            <div>
+              <p className="eyebrow eyebrow--electric">Best-selling bundle files</p>
+              <h2>Single files that also strengthen the larger bundle ecosystem.</h2>
+            </div>
+          </div>
+          <div className="subcategory-section-list storefront-group-list">
+            {bundleFileSections.map((section) => (
+              <section className="subcategory-section storefront-group-section" key={`best-bundle-files-${section.category.slug}`}>
+                <div className="section-heading storefront-section-heading">
+                  <div>
+                    <p className="eyebrow eyebrow--electric">{section.category.navLabel}</p>
+                    <h2>{section.products.length} bundle file{section.products.length === 1 ? "" : "s"}</h2>
+                  </div>
+                  <span className="storefront-subcategory-hint">Best sellers inside bundle ecosystems</span>
+                </div>
+                <div className="product-grid storefront-product-grid">
+                  {section.products.map((product) => (
+                    <ProductCard key={product.slug} product={product} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {standaloneProducts.length > 0 ? (
+        <section className="section-block storefront-group-shell" data-reveal>
+          <div className="section-heading storefront-section-heading">
+            <div>
+              <p className="eyebrow eyebrow--electric">Best-selling standalone files</p>
+              <h2>Strong independent products that are not attached to bundle collections.</h2>
+            </div>
+          </div>
+          <div className="subcategory-section-list storefront-group-list">
+            {standaloneSections.map((section) => (
+              <section className="subcategory-section storefront-group-section" key={`best-standalone-${section.category.slug}`}>
+                <div className="section-heading storefront-section-heading">
+                  <div>
+                    <p className="eyebrow eyebrow--electric">{section.category.navLabel}</p>
+                    <h2>{section.products.length} standalone file{section.products.length === 1 ? "" : "s"}</h2>
+                  </div>
+                  <span className="storefront-subcategory-hint">Independent best sellers only</span>
+                </div>
+                <div className="product-grid storefront-product-grid">
+                  {section.products.map((product) => (
+                    <ProductCard key={product.slug} product={product} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

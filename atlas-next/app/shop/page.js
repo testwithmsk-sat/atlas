@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CatalogSearchForm } from "@/components/catalog-search-form";
 import { ProductCard } from "@/components/product-card";
-import { parsePriceLabel, getAllProducts, searchProducts } from "@/lib/catalog";
+import { buildCategorySections, parsePriceLabel, getAllProducts, partitionProducts, searchProducts } from "@/lib/catalog";
 import { categoryDirectory } from "@/lib/catalog-taxonomy";
 import { supportsOnlineEditor } from "@/lib/pdf-editor";
 
@@ -83,10 +83,10 @@ export default async function ShopPage({ searchParams }) {
   const products = await getAllProducts();
   const searchedProducts = searchProducts(products, searchQuery);
   const filteredProducts = sortProducts(filterProducts(searchedProducts, { categorySlug, focusKey }), sortKey);
-  const bundleProducts = filteredProducts.filter((product) => product.isBundle === true);
-  const singleProducts = filteredProducts.filter((product) => product.isBundle !== true);
-  const bundleFileProducts = singleProducts.filter((product) => product.parentBundleSlugs?.length > 0);
-  const standaloneProducts = singleProducts.filter((product) => (product.parentBundleSlugs?.length || 0) === 0);
+  const { bundleProducts, bundleFileProducts, standaloneProducts } = partitionProducts(filteredProducts);
+  const bundleSections = buildCategorySections(bundleProducts);
+  const bundleFileSections = buildCategorySections(bundleFileProducts);
+  const standaloneSections = buildCategorySections(standaloneProducts);
   const editorReadyProducts = filteredProducts.filter((product) => supportsOnlineEditor(product));
   const bestSellerProducts = filteredProducts.filter((product) => product.isBestSeller === true).slice(0, 3);
   const spotlightProduct = bestSellerProducts[0] || bundleProducts[0] || filteredProducts[0] || null;
@@ -249,57 +249,96 @@ export default async function ShopPage({ searchParams }) {
       {hasResults ? (
         <>
           {bundleProducts.length > 0 ? (
-            <section className="section-block storefront-shelf" data-reveal>
+            <section className="section-block storefront-group-shell" data-reveal>
               <div className="section-heading storefront-section-heading">
                 <div>
                   <p className="eyebrow eyebrow--electric">Bundle lane</p>
-                  <h2>{searchQuery ? "High-value matches that group more of the work together." : "Premium grouped offers for faster yeses and bigger carts."}</h2>
+                  <h2>{searchQuery ? "High-value matches grouped by category." : "Premium grouped offers, organized by category first."}</h2>
                 </div>
                 <Link className="text-link" href={buildShopHref(searchQuery, { category: categorySlug, focus: "bundles", sort: sortKey })}>
                   View bundles only
                 </Link>
               </div>
-              <div className="product-grid storefront-product-grid">
-                {bundleProducts.map((product) => (
-                  <ProductCard key={product.slug} product={product} />
+              <div className="subcategory-section-list storefront-group-list">
+                {bundleSections.map((section) => (
+                  <section className="subcategory-section storefront-group-section" key={`bundles-${section.category.slug}`}>
+                    <div className="section-heading storefront-section-heading">
+                      <div>
+                        <p className="eyebrow eyebrow--electric">{section.category.navLabel}</p>
+                        <h2>{section.products.length} bundle offer{section.products.length === 1 ? "" : "s"}</h2>
+                      </div>
+                      <span className="storefront-subcategory-hint">Grouped offers in {section.category.name}</span>
+                    </div>
+                    <div className="product-grid storefront-product-grid">
+                      {section.products.map((product) => (
+                        <ProductCard key={product.slug} product={product} />
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             </section>
           ) : null}
 
           {bundleFileProducts.length > 0 ? (
-            <section className="section-block storefront-shelf" data-reveal>
+            <section className="section-block storefront-group-shell" data-reveal>
               <div className="section-heading storefront-section-heading">
                 <div>
                   <p className="eyebrow eyebrow--electric">Bundle-file lane</p>
-                  <h2>{searchQuery ? "Single-file matches that are also part of a larger bundle." : "Single files organized by the bundle collections they belong to."}</h2>
+                  <h2>{searchQuery ? "Single-file matches that belong to bundles, grouped by category." : "Single files inside bundle ecosystems, grouped by category."}</h2>
                 </div>
                 <Link className="text-link" href={buildShopHref(searchQuery, { category: categorySlug, focus: "singles", sort: sortKey })}>
                   View singles only
                 </Link>
               </div>
-              <div className="product-grid storefront-product-grid">
-                {bundleFileProducts.map((product) => (
-                  <ProductCard key={product.slug} product={product} />
+              <div className="subcategory-section-list storefront-group-list">
+                {bundleFileSections.map((section) => (
+                  <section className="subcategory-section storefront-group-section" key={`bundle-files-${section.category.slug}`}>
+                    <div className="section-heading storefront-section-heading">
+                      <div>
+                        <p className="eyebrow eyebrow--electric">{section.category.navLabel}</p>
+                        <h2>{section.products.length} bundle file{section.products.length === 1 ? "" : "s"}</h2>
+                      </div>
+                      <span className="storefront-subcategory-hint">Single products that also live in bundles</span>
+                    </div>
+                    <div className="product-grid storefront-product-grid">
+                      {section.products.map((product) => (
+                        <ProductCard key={product.slug} product={product} />
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             </section>
           ) : null}
 
           {standaloneProducts.length > 0 ? (
-            <section className="section-block storefront-shelf" data-reveal>
+            <section className="section-block storefront-group-shell" data-reveal>
               <div className="section-heading storefront-section-heading">
                 <div>
                   <p className="eyebrow eyebrow--electric">Standalone single-file lane</p>
-                  <h2>{searchQuery ? "Focused matches that are not attached to a bundle collection." : "Standalone files kept separate from the bundle ecosystems."}</h2>
+                  <h2>{searchQuery ? "Focused matches that stay independent, grouped by category." : "Standalone files kept separate from bundle ecosystems and organized by category."}</h2>
                 </div>
                 <Link className="text-link" href={buildShopHref(searchQuery, { category: categorySlug, focus: "singles", sort: sortKey })}>
                   Review all singles
                 </Link>
               </div>
-              <div className="product-grid storefront-product-grid">
-                {standaloneProducts.map((product) => (
-                  <ProductCard key={product.slug} product={product} />
+              <div className="subcategory-section-list storefront-group-list">
+                {standaloneSections.map((section) => (
+                  <section className="subcategory-section storefront-group-section" key={`standalone-${section.category.slug}`}>
+                    <div className="section-heading storefront-section-heading">
+                      <div>
+                        <p className="eyebrow eyebrow--electric">{section.category.navLabel}</p>
+                        <h2>{section.products.length} standalone file{section.products.length === 1 ? "" : "s"}</h2>
+                      </div>
+                      <span className="storefront-subcategory-hint">Independent products only</span>
+                    </div>
+                    <div className="product-grid storefront-product-grid">
+                      {section.products.map((product) => (
+                        <ProductCard key={product.slug} product={product} />
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             </section>

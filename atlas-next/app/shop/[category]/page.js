@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CatalogSearchForm } from "@/components/catalog-search-form";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
-import { getCategoryPageData, searchProducts } from "@/lib/catalog";
+import { buildSubcategorySections, getCategoryPageData, partitionProducts, searchProducts } from "@/lib/catalog";
 import { categoryDirectory } from "@/lib/catalog-taxonomy";
 import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, toJsonLd } from "@/lib/seo";
 
@@ -83,14 +83,34 @@ export default async function CategoryPage({ params, searchParams }) {
       products: searchProducts(group.products, searchQuery)
     }))
     .filter((group) => group.products.length > 0);
+  const filteredProducts = filteredGroups.flatMap((group) => group.products);
+  const { bundleProducts, bundleFileProducts, standaloneProducts } = partitionProducts(filteredProducts);
+  const bundleSections = buildSubcategorySections(bundleProducts, category);
+  const bundleFileSections = buildSubcategorySections(bundleFileProducts, category);
+  const standaloneSections = buildSubcategorySections(standaloneProducts, category);
+  const sectionAnchorBySubcategory = new Map();
 
-  const filteredCount = filteredGroups.reduce((total, group) => total + group.products.length, 0);
-  const bundleCount = filteredGroups.reduce(
-    (total, group) => total + group.products.filter((product) => product.isBundle === true).length,
-    0
-  );
-  const singleCount = filteredCount - bundleCount;
-  const spotlightProduct = filteredGroups.flatMap((group) => group.products).find((product) => product.isBundle) || filteredGroups[0]?.products[0] || null;
+  bundleSections.forEach((group) => {
+    sectionAnchorBySubcategory.set(group.subcategory.slug, `bundle-${group.subcategory.slug}`);
+  });
+
+  bundleFileSections.forEach((group) => {
+    if (!sectionAnchorBySubcategory.has(group.subcategory.slug)) {
+      sectionAnchorBySubcategory.set(group.subcategory.slug, group.subcategory.slug);
+    }
+  });
+
+  standaloneSections.forEach((group) => {
+    if (!sectionAnchorBySubcategory.has(group.subcategory.slug)) {
+      sectionAnchorBySubcategory.set(group.subcategory.slug, `standalone-${group.subcategory.slug}`);
+    }
+  });
+
+  const filteredCount = filteredProducts.length;
+  const bundleCount = bundleProducts.length;
+  const bundleFileCount = bundleFileProducts.length;
+  const standaloneCount = standaloneProducts.length;
+  const spotlightProduct = bundleProducts[0] || bundleFileProducts[0] || standaloneProducts[0] || null;
 
   return (
     <div className="storefront-page-shell">
@@ -123,8 +143,9 @@ export default async function CategoryPage({ params, searchParams }) {
             <div className="storefront-pill-rail storefront-pill-rail--dense">
               {category.subcategories.map((subcategory) => {
                 const matchingGroup = filteredGroups.find((group) => group.subcategory.slug === subcategory.slug);
+                const anchorId = sectionAnchorBySubcategory.get(subcategory.slug);
                 return matchingGroup ? (
-                  <Link className="storefront-pill" href={`#${subcategory.slug}`} key={subcategory.slug}>
+                  <Link className="storefront-pill" href={anchorId ? `#${anchorId}` : "#"} key={subcategory.slug}>
                     {subcategory.name}
                     <span>{matchingGroup.products.length}</span>
                   </Link>
@@ -154,14 +175,19 @@ export default async function CategoryPage({ params, searchParams }) {
 
             <div className="storefront-signal-grid storefront-signal-grid--compact">
               <article className="storefront-signal-card">
-                <span>Bundle lane</span>
+                <span>Bundle offers</span>
                 <strong>{bundleCount}</strong>
                 <p>Grouped offers that anchor the premium side of the category.</p>
               </article>
               <article className="storefront-signal-card">
-                <span>Single files</span>
-                <strong>{singleCount}</strong>
-                <p>Focused add-ons and standalone products for quicker yeses.</p>
+                <span>Bundle files</span>
+                <strong>{bundleFileCount}</strong>
+                <p>Single-file products that belong to one or more larger bundles.</p>
+              </article>
+              <article className="storefront-signal-card">
+                <span>Standalone files</span>
+                <strong>{standaloneCount}</strong>
+                <p>Independent products that are intentionally separate from bundle collections.</p>
               </article>
             </div>
           </div>
@@ -185,28 +211,101 @@ export default async function CategoryPage({ params, searchParams }) {
           </article>
         </section>
       ) : (
-        <section className="section-block storefront-group-shell" data-reveal>
-          <div className="subcategory-section-list storefront-group-list">
-            {filteredGroups.map((group) => (
-              <section className="subcategory-section storefront-group-section" id={group.subcategory.slug} key={group.subcategory.slug}>
-                <div className="section-heading storefront-section-heading">
-                  <div>
-                    <p className="eyebrow eyebrow--electric">{group.subcategory.name}</p>
-                    <h2>{group.products.length} product{group.products.length === 1 ? "" : "s"}</h2>
-                  </div>
-                  <span className="storefront-subcategory-hint">
-                    {group.products.some((product) => product.isBundle) ? "Includes bundle offers" : "Single-file discovery"}
-                  </span>
+        <>
+          {bundleSections.length > 0 ? (
+            <section className="section-block storefront-group-shell" data-reveal>
+              <div className="section-heading storefront-section-heading">
+                <div>
+                  <p className="eyebrow eyebrow--electric">Bundle offers</p>
+                  <h2>Primary bundle collections, grouped by subcategory.</h2>
                 </div>
-                <div className="product-grid storefront-product-grid">
-                  {group.products.map((product) => (
-                    <ProductCard key={product.slug} product={product} />
-                  ))}
+                <span className="storefront-subcategory-hint">Complete grouped offers</span>
+              </div>
+              <div className="subcategory-section-list storefront-group-list">
+                {bundleSections.map((group) => (
+                  <section
+                    className="subcategory-section storefront-group-section"
+                    id={`bundle-${group.subcategory.slug}`}
+                    key={`bundle-${group.subcategory.slug}`}
+                  >
+                    <div className="section-heading storefront-section-heading">
+                      <div>
+                        <p className="eyebrow eyebrow--electric">{group.subcategory.name}</p>
+                        <h2>{group.products.length} bundle offer{group.products.length === 1 ? "" : "s"}</h2>
+                      </div>
+                      <span className="storefront-subcategory-hint">Bundle products only</span>
+                    </div>
+                    <div className="product-grid storefront-product-grid">
+                      {group.products.map((product) => (
+                        <ProductCard key={product.slug} product={product} />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {bundleFileSections.length > 0 ? (
+            <section className="section-block storefront-group-shell" data-reveal>
+              <div className="section-heading storefront-section-heading">
+                <div>
+                  <p className="eyebrow eyebrow--electric">Files inside bundles</p>
+                  <h2>Single-file products that belong to larger bundle collections.</h2>
                 </div>
-              </section>
-            ))}
-          </div>
-        </section>
+                <span className="storefront-subcategory-hint">Organized by subcategory</span>
+              </div>
+              <div className="subcategory-section-list storefront-group-list">
+                {bundleFileSections.map((group) => (
+                  <section className="subcategory-section storefront-group-section" id={group.subcategory.slug} key={`bundle-files-${group.subcategory.slug}`}>
+                    <div className="section-heading storefront-section-heading">
+                      <div>
+                        <p className="eyebrow eyebrow--electric">{group.subcategory.name}</p>
+                        <h2>{group.products.length} bundle file{group.products.length === 1 ? "" : "s"}</h2>
+                      </div>
+                      <span className="storefront-subcategory-hint">Included in one or more bundles</span>
+                    </div>
+                    <div className="product-grid storefront-product-grid">
+                      {group.products.map((product) => (
+                        <ProductCard key={product.slug} product={product} />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {standaloneSections.length > 0 ? (
+            <section className="section-block storefront-group-shell" data-reveal>
+              <div className="section-heading storefront-section-heading">
+                <div>
+                  <p className="eyebrow eyebrow--electric">Standalone files</p>
+                  <h2>Independent products that are not part of any bundle.</h2>
+                </div>
+                <span className="storefront-subcategory-hint">Separate from bundle ecosystems</span>
+              </div>
+              <div className="subcategory-section-list storefront-group-list">
+                {standaloneSections.map((group) => (
+                  <section className="subcategory-section storefront-group-section" id={`standalone-${group.subcategory.slug}`} key={`standalone-${group.subcategory.slug}`}>
+                    <div className="section-heading storefront-section-heading">
+                      <div>
+                        <p className="eyebrow eyebrow--electric">{group.subcategory.name}</p>
+                        <h2>{group.products.length} standalone file{group.products.length === 1 ? "" : "s"}</h2>
+                      </div>
+                      <span className="storefront-subcategory-hint">Not included in any bundle</span>
+                    </div>
+                    <div className="product-grid storefront-product-grid">
+                      {group.products.map((product) => (
+                        <ProductCard key={product.slug} product={product} />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </>
       )}
     </div>
   );
