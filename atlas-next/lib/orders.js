@@ -119,14 +119,21 @@ async function grantDownloadsForOrder({ supabase, orderId, customerEmail, status
   return { ok: true };
 }
 
-export async function createPendingCheckoutOrder({ gatewayOrderId, items, amountTotal, currency }) {
+export async function createPendingCheckoutOrder({
+  gatewayOrderId,
+  items,
+  amountTotal,
+  currency,
+  customerEmail,
+  customerName
+}) {
   const supabase = getSupabaseAdmin();
   if (!supabase) return { ok: false, reason: "supabase-admin-missing" };
 
   const orderPayload = {
     stripe_checkout_session_id: gatewayOrderId,
-    customer_email: "",
-    customer_name: "",
+    customer_email: customerEmail || "",
+    customer_name: customerName || "",
     amount_total: Number(amountTotal || 0),
     currency: String(currency || "INR").toUpperCase(),
     payment_status: "pending",
@@ -176,10 +183,22 @@ export async function finalizeCheckoutOrder({
   const supabase = getSupabaseAdmin();
   if (!supabase) return { ok: false, reason: "supabase-admin-missing" };
 
+  const { data: existingOrder, error: existingOrderError } = await supabase
+    .from("orders")
+    .select("id, customer_email, customer_name")
+    .eq("stripe_checkout_session_id", gatewayOrderId)
+    .single();
+
+  if (existingOrderError || !existingOrder) {
+    return { ok: false, reason: "order-fetch-failed", error: existingOrderError };
+  }
+
+  const resolvedCustomerEmail = customerEmail || existingOrder.customer_email || "";
+  const resolvedCustomerName = customerName || existingOrder.customer_name || "";
   const status = paymentStatus === "paid" || paymentStatus === "captured" ? "paid" : "pending";
   const updatePayload = {
-    customer_email: customerEmail || "",
-    customer_name: customerName || "",
+    customer_email: resolvedCustomerEmail,
+    customer_name: resolvedCustomerName,
     amount_total: Number(amountTotal || 0),
     currency: String(currency || "INR").toUpperCase(),
     payment_status: paymentStatus,
@@ -209,7 +228,7 @@ export async function finalizeCheckoutOrder({
   const grantResult = await grantDownloadsForOrder({
     supabase,
     orderId: orderRow.id,
-    customerEmail: customerEmail || "",
+    customerEmail: resolvedCustomerEmail,
     status,
     items: items || []
   });

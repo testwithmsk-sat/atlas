@@ -7,6 +7,10 @@ const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";
 
 let razorpayScriptPromise;
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+}
+
 function loadRazorpayScript() {
   if (typeof window === "undefined") {
     return Promise.reject(new Error("Razorpay checkout can only open in the browser."));
@@ -85,11 +89,14 @@ function getRazorpayErrorMessage(error) {
 }
 
 export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) }) {
-  const { items, clearCart } = useCart();
+  const { items, clearCart, checkoutContact, updateCheckoutContact } = useCart();
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [scriptReady, setScriptReady] = useState(Boolean(typeof window !== "undefined" && window.Razorpay));
   const isVerifyingRef = useRef(false);
+  const customerEmail = checkoutContact.email || "";
+  const customerName = checkoutContact.name || "";
+  const hasValidCustomerEmail = isValidEmail(customerEmail);
 
   useEffect(() => {
     if (!hasRazorpayConfig) return;
@@ -124,6 +131,11 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
       return;
     }
 
+    if (!hasValidCustomerEmail) {
+      setStatus("Enter the email address that should receive this order before starting checkout.");
+      return;
+    }
+
     setLoading(true);
     setStatus("");
     isVerifyingRef.current = false;
@@ -134,7 +146,13 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
         fetch("/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items })
+          body: JSON.stringify({
+            items,
+            customer: {
+              email: customerEmail,
+              name: customerName
+            }
+          })
         }).then((response) => readJsonResponse(response, "Checkout is not ready yet."))
       ]);
 
@@ -154,6 +172,10 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
         name: payload.name,
         description: payload.description,
         order_id: payload.orderId,
+        prefill: {
+          email: customerEmail,
+          name: customerName
+        },
         handler: async (paymentResult) => {
           isVerifyingRef.current = true;
           setLoading(true);
@@ -209,12 +231,40 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
 
   return (
     <div className="checkout-launch">
+      <div className="auth-form checkout-contact-form">
+        <label>
+          <span>Delivery Email</span>
+          <input
+            name="checkout-email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            value={customerEmail}
+            onChange={(event) => updateCheckoutContact({ email: event.target.value })}
+            required
+          />
+        </label>
+        <label>
+          <span>Customer Name</span>
+          <input
+            name="checkout-name"
+            type="text"
+            placeholder="Your name"
+            autoComplete="name"
+            value={customerName}
+            onChange={(event) => updateCheckoutContact({ name: event.target.value })}
+          />
+        </label>
+      </div>
+      <p className="status-note">
+        We use this email to attach your order, account library access, and download delivery to the right customer.
+      </p>
       <button
         className="button button-primary"
         type="button"
         onClick={handleCheckout}
-        disabled={loading || !hasRazorpayConfig}
-        aria-disabled={loading || !hasRazorpayConfig}
+        disabled={loading || !hasRazorpayConfig || !hasValidCustomerEmail}
+        aria-disabled={loading || !hasRazorpayConfig || !hasValidCustomerEmail}
       >
         {loading
           ? "Starting Checkout..."
@@ -230,6 +280,8 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
         <p className="status-note">
           Add `NEXT_PUBLIC_RAZORPAY_KEY_ID`, `RAZORPAY_KEY_ID`, and `RAZORPAY_KEY_SECRET` to `.env.local` to enable checkout.
         </p>
+      ) : !hasValidCustomerEmail ? (
+        <p className="status-note">Enter a valid delivery email to continue to payment.</p>
       ) : null}
     </div>
   );

@@ -5,6 +5,7 @@ import { parseNumericAmount } from "@/lib/currency";
 import { fallbackProducts } from "@/lib/products";
 
 const CART_STORAGE_KEY = "tda-next-cart";
+const CHECKOUT_CONTACT_STORAGE_KEY = "tda-next-checkout-contact";
 
 const CartContext = createContext(null);
 const validProductMap = new Map(fallbackProducts.map((product) => [product.slug, product]));
@@ -34,8 +35,19 @@ function sanitizeCartItems(items) {
     .filter(Boolean);
 }
 
+function sanitizeCheckoutContact(contact) {
+  const email = typeof contact?.email === "string" ? contact.email.trim().toLowerCase() : "";
+  const name = typeof contact?.name === "string" ? contact.name.trim() : "";
+
+  return {
+    email,
+    name
+  };
+}
+
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
+  const [checkoutContact, setCheckoutContact] = useState({ email: "", name: "" });
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -44,8 +56,14 @@ export function CartProvider({ children }) {
       if (saved) {
         setItems(sanitizeCartItems(JSON.parse(saved)));
       }
+
+      const savedContact = window.localStorage.getItem(CHECKOUT_CONTACT_STORAGE_KEY);
+      if (savedContact) {
+        setCheckoutContact(sanitizeCheckoutContact(JSON.parse(savedContact)));
+      }
     } catch {
       setItems([]);
+      setCheckoutContact({ email: "", name: "" });
     } finally {
       setHydrated(true);
     }
@@ -54,7 +72,8 @@ export function CartProvider({ children }) {
   useEffect(() => {
     if (!hydrated) return;
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-  }, [hydrated, items]);
+    window.localStorage.setItem(CHECKOUT_CONTACT_STORAGE_KEY, JSON.stringify(checkoutContact));
+  }, [checkoutContact, hydrated, items]);
 
   const value = useMemo(() => {
     const addItem = (product) => {
@@ -106,20 +125,31 @@ export function CartProvider({ children }) {
       setItems([]);
     };
 
+    const updateCheckoutContact = (nextContact) => {
+      setCheckoutContact((current) =>
+        sanitizeCheckoutContact({
+          ...current,
+          ...nextContact
+        })
+      );
+    };
+
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = items.reduce((sum, item) => sum + item.priceValue * item.quantity, 0);
 
     return {
       items,
+      checkoutContact,
       hydrated,
       addItem,
       updateQuantity,
       removeItem,
       clearCart,
+      updateCheckoutContact,
       itemCount,
       subtotal
     };
-  }, [hydrated, items]);
+  }, [checkoutContact, hydrated, items]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

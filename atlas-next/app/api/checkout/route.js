@@ -5,13 +5,34 @@ import { createPendingCheckoutOrder } from "@/lib/orders";
 import { createRazorpayOrder } from "@/lib/razorpay";
 import { env, hasRazorpayConfig } from "@/lib/env";
 
+function normalizeCustomer(payload) {
+  const email = typeof payload?.email === "string" ? payload.email.trim().toLowerCase() : "";
+  const name = typeof payload?.name === "string" ? payload.name.trim() : "";
+
+  return { email, name };
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+}
+
 export async function POST(request) {
   try {
     const payload = await request.json().catch(() => ({}));
     const items = Array.isArray(payload?.items) ? payload.items : [];
+    const customer = normalizeCustomer(payload?.customer);
 
     if (items.length === 0) {
       return NextResponse.json({ error: "Your cart is empty." }, { status: 400 });
+    }
+
+    if (!isValidEmail(customer.email)) {
+      return NextResponse.json(
+        {
+          error: "Enter a valid customer email before starting checkout."
+        },
+        { status: 400 }
+      );
     }
 
     if (!hasRazorpayConfig) {
@@ -60,7 +81,9 @@ export async function POST(request) {
       receipt,
       notes: {
         source: "the-digital-atlas",
-        item_count: String(validLineItems.length)
+        item_count: String(validLineItems.length),
+        customer_email: customer.email,
+        customer_name: customer.name || "Customer"
       }
     });
 
@@ -72,7 +95,9 @@ export async function POST(request) {
       gatewayOrderId: razorpayOrder.id,
       items: validLineItems,
       amountTotal: amount / 100,
-      currency: checkoutCurrency
+      currency: checkoutCurrency,
+      customerEmail: customer.email,
+      customerName: customer.name
     });
 
     if (!pendingOrder.ok) {
