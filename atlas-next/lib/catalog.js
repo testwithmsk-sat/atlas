@@ -2,6 +2,8 @@ import { fallbackProducts } from "@/lib/products";
 import { categoryDirectory, getCategoryBySlug } from "@/lib/catalog-taxonomy";
 import { parseNumericAmount } from "@/lib/currency";
 
+const productMap = new Map(fallbackProducts.map((product) => [product.slug, product]));
+
 export function parsePriceLabel(label) {
   return parseNumericAmount(label);
 }
@@ -40,22 +42,60 @@ export async function getBestSellerProducts() {
 export async function getRelatedProducts(product, limit = 3) {
   if (!product) return [];
 
+  const collected = [];
+  const seen = new Set([product.slug]);
+
+  const collectCandidates = (candidates) => {
+    for (const candidate of candidates) {
+      if (!candidate || seen.has(candidate.slug)) continue;
+      seen.add(candidate.slug);
+      collected.push(candidate);
+      if (collected.length >= limit) break;
+    }
+  };
+
+  if (product.isBundle && product.includedProductSlugs?.length) {
+    collectCandidates(product.includedProductSlugs.map((slug) => productMap.get(slug)).filter(Boolean));
+  }
+
+  if (!product.isBundle && product.parentBundleSlugs?.length) {
+    collectCandidates(product.parentBundleSlugs.map((slug) => productMap.get(slug)).filter(Boolean));
+
+    const siblingSlugs = [...new Set(
+      product.parentBundleSlugs.flatMap((bundleSlug) => productMap.get(bundleSlug)?.includedProductSlugs || [])
+    )].filter((slug) => slug !== product.slug);
+
+    collectCandidates(siblingSlugs.map((slug) => productMap.get(slug)).filter(Boolean));
+  }
+
+  if (collected.length >= limit) {
+    return collected.slice(0, limit);
+  }
+
   const exactSubcategoryMatches = fallbackProducts.filter(
-    (candidate) => candidate.slug !== product.slug && candidate.subcategorySlug === product.subcategorySlug
+    (candidate) =>
+      candidate.slug !== product.slug &&
+      candidate.subcategorySlug === product.subcategorySlug &&
+      !seen.has(candidate.slug)
   );
 
   if (exactSubcategoryMatches.length >= limit) {
-    return exactSubcategoryMatches.slice(0, limit);
+    collectCandidates(exactSubcategoryMatches);
+    return collected.slice(0, limit);
   }
 
   const categoryMatches = fallbackProducts.filter(
     (candidate) =>
       candidate.slug !== product.slug &&
       candidate.categorySlug === product.categorySlug &&
-      !exactSubcategoryMatches.some((match) => match.slug === candidate.slug)
+      !exactSubcategoryMatches.some((match) => match.slug === candidate.slug) &&
+      !seen.has(candidate.slug)
   );
 
-  return [...exactSubcategoryMatches, ...categoryMatches].slice(0, limit);
+  collectCandidates(exactSubcategoryMatches);
+  collectCandidates(categoryMatches);
+
+  return collected.slice(0, limit);
 }
 
 export async function getCategoryDirectoryWithCounts() {

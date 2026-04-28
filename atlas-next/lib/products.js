@@ -2335,7 +2335,95 @@ const generatedCatalogProducts = [
   )
 ];
 
-export const fallbackProducts = [...weddingProducts, ...generatedCatalogProducts];
+const bundleChildrenBySlug = {
+  "editable-wedding-pdf-template-bundle": [
+    "fillable-wedding-invitation-template",
+    "fillable-wedding-programme-template",
+    "fillable-wedding-seating-chart-template",
+    "fillable-wedding-menu-card-template",
+    "editable-wedding-instagram-stories-pack",
+    "fillable-wedding-budget-planner",
+    "fillable-wedding-favour-tags-and-thank-you-card",
+    "fillable-bridal-party-proposal-cards",
+    "fillable-welcome-sign-and-bar-menu-pack",
+    "fillable-wedding-rsvp-card"
+  ],
+  "wedding-planning-bundle-spreadsheet": [
+    "wedding-budget-spreadsheet",
+    "wedding-vendor-tracker",
+    "wedding-checklist-pdf",
+    "wedding-day-timeline-pdf",
+    "wedding-planning-checklist-pdf"
+  ],
+  "wedding-vendor-finance-bundle": ["wedding-budget-spreadsheet", "wedding-vendor-tracker"],
+  "wedding-bundle-vol-2-dusty-rose-gold": [
+    "dusty-rose-gold-customer-guide-vol-2",
+    "luxury-wedding-invitation-pdf-vol-2",
+    "wedding-day-timeline-pdf-vol-2",
+    "table-seating-planner-pdf-vol-2",
+    "wedding-vows-card-pdf-vol-2",
+    "guest-book-sign-in-sheet-pdf-vol-2",
+    "vendor-contact-sheet-pdf-vol-2",
+    "rehearsal-dinner-invitation-pdf-vol-2",
+    "gift-registry-card-pdf-vol-2",
+    "post-wedding-thank-you-tracker-pdf-vol-2",
+    "honeymoon-packing-list-pdf-vol-2"
+  ],
+  "wedding-bundle-vol-3-midnight-ivory-gold": [
+    "midnight-ivory-gold-customer-guide-vol-3",
+    "black-tie-wedding-invitation-pdf-vol-3",
+    "luxury-ceremony-programme-pdf-vol-3",
+    "estate-dinner-menu-card-pdf-vol-3",
+    "wedding-speech-planner-pdf-vol-3",
+    "premium-gift-tracking-ledger-pdf-vol-3",
+    "luxury-rsvp-card-pdf-vol-3",
+    "floral-decor-brief-pdf-vol-3",
+    "music-entertainment-planner-pdf-vol-3",
+    "prewedding-beauty-countdown-pdf-vol-3",
+    "wedding-weekend-itinerary-pdf-vol-3"
+  ],
+  "wedding-checklist-bundle-sage-green-blush": weddingChecklistItems.map((item) => item.slug),
+  "complete-business-templates-bundle": businessCoreItems.map((item) => item.slug),
+  "business-growth-toolkit-bundle": businessGrowthItems.map((item) => item.slug),
+  "interior-design-planner-bundle": interiorDesignItems.map((item) => item.slug),
+  "event-planning-bundle": eventPlanningItems.map((item) => item.slug),
+  "celebration-party-planner-bundle": celebrationPlannerItems.map((item) => item.slug)
+};
+
+function attachBundleRelationships(products) {
+  const productMap = new Map(products.map((product) => [product.slug, product]));
+  const resolvedBundleChildrenBySlug = new Map(
+    Object.entries(bundleChildrenBySlug).map(([bundleSlug, childSlugs]) => [
+      bundleSlug,
+      [...new Set(childSlugs)].filter((slug) => {
+        const product = productMap.get(slug);
+        return product && product.isBundle !== true;
+      })
+    ])
+  );
+  const parentBundleSlugsByProduct = new Map();
+
+  resolvedBundleChildrenBySlug.forEach((childSlugs, bundleSlug) => {
+    childSlugs.forEach((childSlug) => {
+      const currentParents = parentBundleSlugsByProduct.get(childSlug) || [];
+      parentBundleSlugsByProduct.set(childSlug, [...currentParents, bundleSlug]);
+    });
+  });
+
+  return products.map((product) => {
+    const includedProductSlugs = resolvedBundleChildrenBySlug.get(product.slug) || [];
+    const parentBundleSlugs = parentBundleSlugsByProduct.get(product.slug) || [];
+
+    return {
+      ...product,
+      includedProductSlugs,
+      parentBundleSlugs,
+      productFamily: product.isBundle ? "bundle" : parentBundleSlugs.length > 0 ? "bundle-file" : "standalone-file"
+    };
+  });
+}
+
+export const fallbackProducts = attachBundleRelationships([...weddingProducts, ...generatedCatalogProducts]);
 
 export function getAllProducts() {
   return fallbackProducts;

@@ -4,8 +4,13 @@ import { ProductPreviewMockup } from "@/components/product-preview-mockup";
 
 export function ProductCard({ product }) {
   const hasCompareAt = product.compareAtPriceLabel && product.compareAtPriceLabel !== product.priceLabel;
-  const productTypeLabel = product.isBundle ? "Bundle" : "Digital file";
+  const productTypeLabel = product.isBundle ? "Bundle" : product.parentBundleSlugs?.length ? "Bundle file" : "Single file";
   const categoryLabel = product.subcategory || product.category;
+  const bundleStatusLabel = product.isBundle
+    ? `${product.includedProductSlugs?.length || product.bundleContents?.length || 0} items`
+    : product.parentBundleSlugs?.length
+      ? `In ${product.parentBundleSlugs.length} bundle${product.parentBundleSlugs.length === 1 ? "" : "s"}`
+      : "Standalone";
 
   return (
     <article className="product-card product-card--interactive" data-reveal data-tilt>
@@ -23,7 +28,7 @@ export function ProductCard({ product }) {
       <div className="product-card-highlights">
         <span>Instant download</span>
         <span>{productTypeLabel}</span>
-        <span>{categoryLabel}</span>
+        <span>{bundleStatusLabel}</span>
       </div>
       <div className="card-meta">
         <div className="price-stack">

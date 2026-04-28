@@ -85,6 +85,8 @@ export default async function ShopPage({ searchParams }) {
   const filteredProducts = sortProducts(filterProducts(searchedProducts, { categorySlug, focusKey }), sortKey);
   const bundleProducts = filteredProducts.filter((product) => product.isBundle === true);
   const singleProducts = filteredProducts.filter((product) => product.isBundle !== true);
+  const bundleFileProducts = singleProducts.filter((product) => product.parentBundleSlugs?.length > 0);
+  const standaloneProducts = singleProducts.filter((product) => (product.parentBundleSlugs?.length || 0) === 0);
   const editorReadyProducts = filteredProducts.filter((product) => supportsOnlineEditor(product));
   const bestSellerProducts = filteredProducts.filter((product) => product.isBestSeller === true).slice(0, 3);
   const spotlightProduct = bestSellerProducts[0] || bundleProducts[0] || filteredProducts[0] || null;
@@ -106,14 +108,14 @@ export default async function ShopPage({ searchParams }) {
       copy: searchQuery ? "Matching the current search and filters." : "Live items available to browse right now."
     },
     {
-      label: "Bundle shortcuts",
+      label: "Bundle offers",
       value: bundleProducts.length,
       copy: "High-value grouped offers merchandised as the premium first choice."
     },
     {
-      label: "Editor-ready",
-      value: editorReadyProducts.length,
-      copy: "Products that can send shoppers into the online editing flow."
+      label: "Bundle files",
+      value: bundleFileProducts.length,
+      copy: "Single-file listings that also belong to a larger bundle collection."
     }
   ];
 
@@ -265,19 +267,38 @@ export default async function ShopPage({ searchParams }) {
             </section>
           ) : null}
 
-          {singleProducts.length > 0 ? (
+          {bundleFileProducts.length > 0 ? (
             <section className="section-block storefront-shelf" data-reveal>
               <div className="section-heading storefront-section-heading">
                 <div>
-                  <p className="eyebrow eyebrow--electric">Single-file lane</p>
-                  <h2>{searchQuery ? "Focused product matches for shoppers who already know what they need." : "Lower-friction files for quick comparisons, add-ons, and focused buying."}</h2>
+                  <p className="eyebrow eyebrow--electric">Bundle-file lane</p>
+                  <h2>{searchQuery ? "Single-file matches that are also part of a larger bundle." : "Single files organized by the bundle collections they belong to."}</h2>
                 </div>
                 <Link className="text-link" href={buildShopHref(searchQuery, { category: categorySlug, focus: "singles", sort: sortKey })}>
                   View singles only
                 </Link>
               </div>
               <div className="product-grid storefront-product-grid">
-                {singleProducts.map((product) => (
+                {bundleFileProducts.map((product) => (
+                  <ProductCard key={product.slug} product={product} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {standaloneProducts.length > 0 ? (
+            <section className="section-block storefront-shelf" data-reveal>
+              <div className="section-heading storefront-section-heading">
+                <div>
+                  <p className="eyebrow eyebrow--electric">Standalone single-file lane</p>
+                  <h2>{searchQuery ? "Focused matches that are not attached to a bundle collection." : "Standalone files kept separate from the bundle ecosystems."}</h2>
+                </div>
+                <Link className="text-link" href={buildShopHref(searchQuery, { category: categorySlug, focus: "singles", sort: sortKey })}>
+                  Review all singles
+                </Link>
+              </div>
+              <div className="product-grid storefront-product-grid">
+                {standaloneProducts.map((product) => (
                   <ProductCard key={product.slug} product={product} />
                 ))}
               </div>

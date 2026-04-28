@@ -8,6 +8,30 @@ import { getProductPreviewSources } from "@/lib/product-preview-sources";
 import { supportsOnlineEditor } from "@/lib/pdf-editor";
 import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, toJsonLd } from "@/lib/seo";
 
+function normalizeBundleLabel(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/^\d+\s*/g, "")
+    .replace(/\bvol\.?\s*\d+\b/g, "")
+    .replace(/\bpdf\b/g, "")
+    .replace(/&/g, "and")
+    .replace(/[_-]+/g, " ")
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function bundleLabelMatchesProduct(label, includedProduct) {
+  const normalizedLabel = normalizeBundleLabel(label);
+  const normalizedProductName = normalizeBundleLabel(includedProduct?.name);
+
+  return (
+    normalizedLabel === normalizedProductName ||
+    normalizedLabel.includes(normalizedProductName) ||
+    normalizedProductName.includes(normalizedLabel)
+  );
+}
+
 export async function generateStaticParams() {
   const products = await getAllProducts();
   return products.map((product) => ({ slug: product.slug }));
@@ -63,11 +87,12 @@ export default async function ProductPage({ params }) {
   const hasCompareAt = product.compareAtPriceLabel && product.compareAtPriceLabel !== product.priceLabel;
   const relatedProducts = await getRelatedProducts(product, 3);
   const allProducts = await getAllProducts();
-  const bundleUpsell =
-    !product.isBundle &&
-    allProducts.find(
-      (candidate) => candidate.isBundle === true && candidate.categorySlug === product.categorySlug && candidate.slug !== product.slug
-    );
+  const productMap = new Map(allProducts.map((candidate) => [candidate.slug, candidate]));
+  const parentBundles = (product.parentBundleSlugs || []).map((bundleSlug) => productMap.get(bundleSlug)).filter(Boolean);
+  const includedProducts = (product.includedProductSlugs || []).map((includedSlug) => productMap.get(includedSlug)).filter(Boolean);
+  const extraBundleContentLabels = (product.bundleContents || []).filter(
+    (item) => !includedProducts.some((includedProduct) => bundleLabelMatchesProduct(item, includedProduct))
+  );
   const numericPrice = parsePriceLabel(product.priceLabel);
   const hasOnlineEditor = supportsOnlineEditor(product);
   const previewFiles = getProductPreviewSources(product.slug);
@@ -232,24 +257,29 @@ export default async function ProductPage({ params }) {
               </Link>
             </div>
 
-            {bundleUpsell ? (
+            {parentBundles.length > 0 ? (
               <div className="product-upsell-card">
-                <p className="eyebrow">Frequently Bought Together</p>
-                <h3>{bundleUpsell.name}</h3>
+                <p className="eyebrow">{parentBundles.length === 1 ? "Included In This Bundle" : "Included In These Bundles"}</p>
+                <h3>{parentBundles.length === 1 ? parentBundles[0].name : "This single file is organized inside multiple bundle offers."}</h3>
                 <p>
-                  Prefer a more complete set? This product also fits naturally inside the bundle, giving shoppers a
-                  stronger all-in-one offer.
+                  This file is sold separately, but it also belongs to the exact bundle collection listed below. That
+                  keeps the single-file listing and the bundle structure aligned instead of mixing unrelated products.
                 </p>
-                <div className="price-row compact-price-row">
-                  <div className="price-stack">
-                    <strong>{bundleUpsell.priceLabel}</strong>
-                    {bundleUpsell.compareAtPriceLabel ? (
-                      <span className="price-original">{bundleUpsell.compareAtPriceLabel}</span>
-                    ) : null}
-                  </div>
-                  <Link className="text-link" href={`/products/${bundleUpsell.slug}`}>
-                    View bundle
-                  </Link>
+                <div className="account-list">
+                  {parentBundles.map((bundle) => (
+                    <div className="account-entry" key={bundle.slug}>
+                      <div>
+                        <strong>{bundle.name}</strong>
+                        <p>{bundle.summary}</p>
+                      </div>
+                      <div className="account-entry-actions">
+                        <span className="eyebrow">{bundle.priceLabel}</span>
+                        <Link className="text-link" href={`/products/${bundle.slug}`}>
+                          View bundle
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : null}
@@ -354,9 +384,21 @@ export default async function ProductPage({ params }) {
           <article className="product-detail-card">
             <p className="eyebrow">{product.isBundle ? "Bundle Contents" : "What You Get"}</p>
             <ul className="feature-list compact-detail-list">
-              {(product.bundleContents.length > 0 ? product.bundleContents : product.details.includes).map((item) => (
-                <li key={item}>{item}</li>
-              ))}
+              {product.isBundle && includedProducts.length > 0
+                ? includedProducts.map((includedProduct) => (
+                    <li key={includedProduct.slug}>
+                      <Link className="text-link" href={`/products/${includedProduct.slug}`}>
+                        {includedProduct.name}
+                      </Link>
+                    </li>
+                  ))
+                : null}
+              {product.isBundle && extraBundleContentLabels.length > 0
+                ? extraBundleContentLabels.map((item) => <li key={item}>{item}</li>)
+                : null}
+              {!product.isBundle
+                ? product.details.includes.map((item) => <li key={item}>{item}</li>)
+                : null}
             </ul>
           </article>
 

@@ -95,7 +95,18 @@ function buildManifestPdfSources(entry) {
 }
 
 function buildBundleChildPdfSources(product) {
-  if (!product?.isBundle || !Array.isArray(product.bundleContents) || product.bundleContents.length === 0) {
+  if (!product?.isBundle) {
+    return [];
+  }
+
+  if (Array.isArray(product.includedProductSlugs) && product.includedProductSlugs.length > 0) {
+    return product.includedProductSlugs
+      .map((slug) => manifestEntryBySlug.get(slug))
+      .filter(Boolean)
+      .flatMap((entry) => buildManifestPdfSources(entry));
+  }
+
+  if (!Array.isArray(product.bundleContents) || product.bundleContents.length === 0) {
     return [];
   }
 
