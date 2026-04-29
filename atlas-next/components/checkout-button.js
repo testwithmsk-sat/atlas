@@ -89,7 +89,7 @@ function getRazorpayErrorMessage(error) {
 }
 
 export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) }) {
-  const { items, clearCart, checkoutContact, updateCheckoutContact } = useCart();
+  const { items, clearCart, checkoutContact, updateCheckoutContact, hasGeneratedBundle } = useCart();
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [scriptReady, setScriptReady] = useState(Boolean(typeof window !== "undefined" && window.Razorpay));
@@ -141,9 +141,13 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
     isVerifyingRef.current = false;
 
     try {
+      const checkoutEndpoint =
+        items.length > 0 && items.every((item) => item.kind === "generated_bundle")
+          ? "/api/checkout/generated"
+          : "/api/checkout";
       const [Razorpay, payload] = await Promise.all([
         loadRazorpayScript(),
-        fetch("/api/checkout", {
+        fetch(checkoutEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -257,7 +261,7 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
         </label>
       </div>
       <p className="status-note">
-        We use this email to attach your order, account library access, and download delivery to the right customer.
+        We use this email to attach your order, account library access, and generated download delivery to the right customer.
       </p>
       <button
         className="button button-primary"
@@ -282,6 +286,8 @@ export function CheckoutButton({ hasRazorpayConfig = Boolean(process.env.NEXT_PU
         </p>
       ) : !hasValidCustomerEmail ? (
         <p className="status-note">Enter a valid delivery email to continue to payment.</p>
+      ) : hasGeneratedBundle ? (
+        <p className="status-note">Phase 1 checkout unlocks one AI-generated full bundle tied to your current workspace session.</p>
       ) : null}
     </div>
   );

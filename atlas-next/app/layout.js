@@ -3,36 +3,33 @@ import { CartProvider } from "@/components/cart-provider";
 import { SiteEffects } from "@/components/site-effects";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { absoluteUrl, bundlePriceFloorLabel, storePriceRangeLabel, storePriceSnippet, toJsonLd } from "@/lib/seo";
+import { absoluteUrl, toJsonLd } from "@/lib/seo";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://thedigitalatlas.vercel.app";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `The Digital Atlas | Digital Templates From ${storePriceRangeLabel}`,
+    default: "The Digital Atlas | Intent-To-Product AI Workspace",
     template: "%s | The Digital Atlas"
   },
   description:
-    `Shop affordable digital templates, planners, wedding checklists, business documents, and printables from ${storePriceRangeLabel}, with bundle deals from ${bundlePriceFloorLabel}.`,
+    "Describe a wedding, event, business, or life-planning goal and let The Digital Atlas turn it into a free sample and a paid editable bundle.",
   keywords: [
-    "digital templates",
-    "digital templates $1 to $5",
-    "cheap digital downloads",
-    "affordable printables",
-    "printable planners",
-    "wedding templates",
-    "business templates",
-    "event printables",
-    "digital downloads"
+    "intent-to-product ai",
+    "digital product planning ai",
+    "wedding planning ai",
+    "event planning ai",
+    "business template ai",
+    "life organization ai"
   ],
   alternates: {
     canonical: "/"
   },
   openGraph: {
-    title: `The Digital Atlas | Digital Templates From ${storePriceRangeLabel}`,
+    title: "The Digital Atlas | Intent-To-Product AI Workspace",
     description:
-      `Shop affordable digital templates, planners, wedding checklists, business documents, and printables from ${storePriceRangeLabel}, with bundle deals from ${bundlePriceFloorLabel}.`,
+      "An AI-first layer that turns customer goals into free starter samples and premium editable bundle downloads.",
     url: siteUrl,
     siteName: "The Digital Atlas",
     locale: "en_US",
@@ -40,9 +37,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `The Digital Atlas | Digital Templates From ${storePriceRangeLabel}`,
+    title: "The Digital Atlas | Intent-To-Product AI Workspace",
     description:
-      `Shop affordable digital templates, planners, wedding checklists, business documents, and printables from ${storePriceRangeLabel}, with bundle deals from ${bundlePriceFloorLabel}.`
+      "An AI-first layer that turns customer goals into free starter samples and premium editable bundle downloads."
   },
   verification: {
     google: "DYhZFvndEMpeNcDI8Hfh3Trx4iL0XXDPJIyBEuc2moc"
@@ -61,7 +58,7 @@ export default function RootLayout({ children }) {
     url: siteUrl,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteUrl}/shop?q={search_term_string}`,
+      target: `${siteUrl}/?prompt={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
   };
@@ -71,7 +68,7 @@ export default function RootLayout({ children }) {
     name: "The Digital Atlas",
     url: siteUrl,
     logo: absoluteUrl("/the-digital-atlas-logo-black-gold.svg"),
-    description: `A digital storefront for stylish, affordable templates, planners, checklists, and printable resources. ${storePriceSnippet}`
+    description: "An AI-first planning layer for digital products that helps customers describe a goal, receive a free sample, and unlock the right editable downloads."
   };
 
   return (

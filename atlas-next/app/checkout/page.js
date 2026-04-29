@@ -9,8 +9,8 @@ export default async function CheckoutPage({ searchParams }) {
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Checkout</p>
-        <h1>Complete your digital template order.</h1>
-        <p>Review your offer pricing, confirm how delivery works, and use Razorpay to complete a secure digital checkout.</p>
+        <h1>Unlock your generated full bundle.</h1>
+        <p>Review your workspace bundle, confirm delivery, and use Razorpay to complete a secure digital checkout.</p>
         {status === "cancelled" ? (
           <p className="status-note">Checkout was cancelled, but your cart is still available.</p>
         ) : null}
@@ -20,10 +20,10 @@ export default async function CheckoutPage({ searchParams }) {
         <article className="info-card">
           <h3>Before you pay</h3>
           <ul className="feature-list">
-            <li>Prices shown here use the active offer pricing.</li>
-            <li>Products are digital only and can include PDFs, spreadsheets, or full multi-file bundles.</li>
+            <li>Prices shown here reflect the full bundle generated from your AI workspace session.</li>
+            <li>Bundle outputs can include PDFs, PNG previews, editable DOCX files, or spreadsheets depending on the template family.</li>
             <li>Your cart stays saved if you cancel checkout.</li>
-            <li>Signed-in customers can access purchases again later from the account library.</li>
+            <li>Signed-in customers can access unlocked bundles again later from the account workspace.</li>
           </ul>
           <div className="checkout-assurance-grid">
             <div className="checkout-assurance-card">
@@ -32,11 +32,11 @@ export default async function CheckoutPage({ searchParams }) {
             </div>
             <div className="checkout-assurance-card">
               <strong>Instant delivery</strong>
-              <p>Files are attached to the purchased product and become available in the account download library.</p>
+              <p>Files are attached to the purchased generation session and become available in the account workspace.</p>
             </div>
             <div className="checkout-assurance-card">
-              <strong>Bundle-friendly</strong>
-              <p>Bundle purchases unlock the full included file set, not just a placeholder download.</p>
+              <strong>Session-specific</strong>
+              <p>Each bundle is tied to the exact AI workspace session that created it, not to a generic product page.</p>
             </div>
           </div>
           {!hasRazorpayConfig ? (

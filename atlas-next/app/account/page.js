@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { AccountAuthPanel } from "@/components/account-auth-panel";
-import { getAllProducts } from "@/lib/catalog";
+import { getBundleAssets, getSampleAssets, listGeneratedAssetsForSession } from "@/lib/ai/assets";
+import { listGenerationOrdersForCustomer } from "@/lib/ai/orders";
+import { listGenerationSessionsForCustomer } from "@/lib/ai/sessions";
 import { hasSupabaseConfig } from "@/lib/env";
-import { getDownloadLibrary, getOrdersForCustomer } from "@/lib/orders";
-import { supportsOnlineEditor } from "@/lib/pdf-editor";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export const metadata = {
@@ -32,10 +32,17 @@ export default async function AccountPage({ searchParams }) {
   const params = await searchParams;
   const checkoutState = params?.checkout || "";
   const authState = params?.auth || "";
-  const [orders, downloads, products] = email
-    ? await Promise.all([getOrdersForCustomer(email), getDownloadLibrary(email), getAllProducts()])
-    : [[], [], []];
-  const productMap = new Map(products.map((product) => [product.slug, product]));
+  const [sessions, orders] = email
+    ? await Promise.all([listGenerationSessionsForCustomer(email), listGenerationOrdersForCustomer(email)])
+    : [[], []];
+  const assetsBySession = new Map();
+
+  if (sessions.length) {
+    const assetsList = await Promise.all(sessions.map((session) => listGeneratedAssetsForSession(session.sessionId)));
+    sessions.forEach((session, index) => {
+      assetsBySession.set(session.sessionId, assetsList[index]);
+    });
+  }
 
   let authMessage = "";
   if (authState === "unavailable") {
@@ -50,82 +57,99 @@ export default async function AccountPage({ searchParams }) {
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Account</p>
-        <h1>Manage your account and future downloads.</h1>
-        <p>Sign in to keep your order history connected and prepare this account for customer download access.</p>
-        {checkoutState === "success" ? (
-          <p className="status-note">Your order was completed successfully.</p>
-        ) : null}
+        <h1>Manage your AI workspaces, samples, and unlocked bundles.</h1>
+        <p>Sign in to save generation sessions, revisit free samples, and access the full bundles you have unlocked.</p>
+        {checkoutState === "success" ? <p className="status-note">Your generated bundle order was completed successfully.</p> : null}
         {authMessage ? <p className="status-note">{authMessage}</p> : null}
       </div>
 
       <div className="split-panel">
         <AccountAuthPanel email={email} hasSupabase={hasSupabaseConfig} />
         <article className="info-card">
-          <h3>Account readiness</h3>
-          <p>This account area is ready for order history, download access, and returning purchases.</p>
+          <h3>Account continuity</h3>
+          <p>This account area keeps the new intent-first workflow coherent over time.</p>
           <ul className="feature-list">
-            <li>Customers can sign in to manage purchases and access files again later.</li>
-            <li>Bundle purchases now unlock the real source files attached to each product.</li>
-            <li>Business, events, wedding, and planning files can all be delivered from the same library.</li>
+            <li>Signed-in users can revisit old generation sessions instead of starting from scratch.</li>
+            <li>Free sample assets stay attached to their saved workspace history.</li>
+            <li>Paid bundle downloads can be reopened from this one account hub.</li>
           </ul>
         </article>
       </div>
 
       {email ? (
-        <div className="account-data-grid">
+        <div className="stack">
           <article className="info-card">
-            <p className="eyebrow">Download Library</p>
-            <h3>{downloads.length ? `${downloads.length} file${downloads.length === 1 ? "" : "s"} ready` : "No downloads yet"}</h3>
+            <p className="eyebrow">Saved Workspaces</p>
+            <h3>{sessions.length ? `${sessions.length} workspace${sessions.length === 1 ? "" : "s"} saved` : "No saved workspaces yet"}</h3>
             <p>
-              {downloads.length
-                ? "Your purchased files stay available here with signed download links."
-                : "Complete a checkout while signed in and your purchased files will appear here."}
+              {sessions.length
+                ? "Every signed-in generation session is collected here with its free sample and bundle status."
+                : "Start a generation session while signed in and it will appear here automatically."}
             </p>
-            {downloads.length ? (
+            {sessions.length ? (
               <div className="account-list">
-                {downloads.map((download) => (
-                  <div className="account-entry" key={`${download.orderId}-${download.productSlug}-${download.fileName}`}>
-                    <div>
-                      <strong>{download.productName}</strong>
-                      <p>{download.fileName}</p>
-                      <p>{download.purchasedAt ? `Granted ${new Date(download.purchasedAt).toLocaleDateString("en-IN")}` : "Ready to download"}</p>
-                    </div>
-                    <div className="account-entry-actions">
-                      {supportsOnlineEditor(productMap.get(download.productSlug)) ? (
-                        <Link className="text-link" href={`/editor/${download.productSlug}`}>
-                          Edit online
+                {sessions.map((workspace) => {
+                  const sessionAssets = assetsBySession.get(workspace.sessionId) || [];
+                  const sampleAssets = getSampleAssets(sessionAssets);
+
+                  return (
+                    <div className="account-entry" key={workspace.sessionId}>
+                      <div>
+                        <strong>{workspace.normalizedIntent.recommendedTitle}</strong>
+                        <p>{workspace.normalizedIntent.useCaseType}</p>
+                        <p>{workspace.normalizedIntent.intentSummary}</p>
+                      </div>
+                      <div className="account-entry-actions">
+                        <Link className="text-link" href={`/workspace/${workspace.sessionId}`}>
+                          Open workspace
                         </Link>
-                      ) : null}
-                      <a className="text-link" href={download.fileUrl} target="_blank" rel="noreferrer">
-                        Download
-                      </a>
+                        {sampleAssets[0] ? (
+                          <a className="text-link" href={`/api/assets/${sampleAssets[0].id}/download`}>
+                            Download sample
+                          </a>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : null}
           </article>
 
           <article className="info-card">
-            <p className="eyebrow">Order History</p>
-            <h3>{orders.length ? `${orders.length} order${orders.length === 1 ? "" : "s"} found` : "No orders yet"}</h3>
+            <p className="eyebrow">Unlocked Bundles</p>
+            <h3>{orders.length ? `${orders.length} paid bundle${orders.length === 1 ? "" : "s"}` : "No paid bundles yet"}</h3>
             <p>
               {orders.length
-                ? "Your completed and pending checkout records appear here."
-                : "Once you place an order, its payment status and amount will show in this account."}
+                ? "These are the generation sessions you have unlocked through checkout."
+                : "When you unlock a full generated bundle, it will show up here with its workspace and download links."}
             </p>
             {orders.length ? (
               <div className="account-list">
-                {orders.map((order) => (
-                  <div className="account-entry" key={order.id}>
-                    <div>
-                      <strong>{formatOrderAmount(order.amount_total, order.currency)}</strong>
-                      <p>{order.payment_status || order.status || "pending"}</p>
-                      <p>{order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN") : "Recent order"}</p>
+                {orders.map((order) => {
+                  const sessionAssets = assetsBySession.get(order.sessionId) || [];
+                  const paidAssets = getBundleAssets(sessionAssets);
+
+                  return (
+                    <div className="account-entry" key={order.gatewayOrderId}>
+                      <div>
+                        <strong>{formatOrderAmount(order.amountTotal, order.currency)}</strong>
+                        <p>{order.status}</p>
+                        <p>{order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-IN") : "Recent order"}</p>
+                      </div>
+                      <div className="account-entry-actions">
+                        <Link className="text-link" href={`/workspace/${order.sessionId}`}>
+                          Open workspace
+                        </Link>
+                        {paidAssets[0] ? (
+                          <a className="text-link" href={`/api/assets/${paidAssets[0].id}/download`}>
+                            Download files
+                          </a>
+                        ) : null}
+                      </div>
                     </div>
-                    <span className="eyebrow">{order.order_items?.length || 0} items</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : null}
           </article>

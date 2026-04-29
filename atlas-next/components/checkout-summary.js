@@ -7,17 +7,17 @@ import { formatUsdAmount } from "@/lib/currency";
 
 export function CheckoutSummary({ hasRazorpayConfig = false }) {
   const { items, itemCount, subtotal } = useCart();
-  const bundleCount = items.filter((item) => item.isBundle === true).length;
+  const bundleCount = items.filter((item) => item.kind === "generated_bundle" || item.isBundle === true).length;
 
   if (items.length === 0) {
     return (
       <article className="summary-card">
         <p className="eyebrow">Your Order</p>
         <h2>Your cart is empty.</h2>
-        <p>Add wedding templates before starting checkout.</p>
+        <p>Add a generated premium bundle from the AI workspace before starting checkout.</p>
         <div className="summary-actions">
-          <Link className="button button-secondary" href="/shop">
-            Browse Products
+          <Link className="button button-secondary" href="/">
+            Start The Planner
           </Link>
         </div>
       </article>
@@ -46,7 +46,7 @@ export function CheckoutSummary({ hasRazorpayConfig = false }) {
           <strong>{bundleCount}</strong>
         </div>
       </div>
-      <p>Use Razorpay to complete payment for the current offer prices shown across the storefront.</p>
+      <p>Use Razorpay to unlock the full generated bundle tied to your AI workspace session.</p>
       <div className="checkout-microcopy">
         <span>Secure Razorpay payment</span>
         <span>Instant digital delivery</span>

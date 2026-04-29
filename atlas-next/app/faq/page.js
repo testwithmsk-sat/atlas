@@ -1,61 +1,61 @@
 const faqSections = [
   {
-    title: "Downloads & Access",
+    title: "Free Samples",
     items: [
       {
-        question: "How do I get my files after checkout?",
+        question: "What do I get for free?",
         answer:
-          "After successful checkout, your files are connected to your account and available from the account download library."
+          "Each AI workspace can generate a free starter sample. That includes a preview image plus a starter PDF that helps you confirm the direction before paying for the full bundle."
       },
       {
-        question: "What if I lose my download link?",
+        question: "Do I need an account for the free sample?",
         answer:
-          "Sign back into your account and open the download library. Your available files stay connected to your purchase history there."
+          "No. Anyone can generate and download a free sample. If you are signed in, the workspace is also saved to your account for later."
       },
       {
-        question: "Do I receive files instantly?",
+        question: "Why does the app sometimes ask me to choose a direction first?",
         answer:
-          "Yes. This is a digital storefront, so eligible files are delivered immediately after payment is confirmed."
+          "Some prompts are broad enough that multiple output families could work. In those cases, the workspace asks you to pick the safest lane before it generates a sample."
       }
     ]
   },
   {
-    title: "Editing & Compatibility",
+    title: "Full Bundles",
     items: [
       {
-        question: "What file types are included?",
+        question: "What does the paid bundle unlock?",
         answer:
-          "Products may include printable PDFs, editable spreadsheets, and bundle file sets. Each product page lists the exact format before purchase."
+          "The paid bundle unlocks the full session-specific asset set for the chosen direction. Depending on the request, that can include PDF, PNG, DOCX, and XLSX files."
       },
       {
-        question: "Do I need special software?",
+        question: "Are paid bundles tied to a product page?",
         answer:
-          "Most PDF products work with standard PDF viewers, and spreadsheet products work in compatible spreadsheet software such as Excel or similar tools."
+          "No. Paid bundles are tied to the exact AI workspace session that created them, not to a public catalog product."
       },
       {
-        question: "Can I use these on Mac and Windows?",
+        question: "How do I get my full files after checkout?",
         answer:
-          "Yes, in most cases. Digital files are delivered in standard formats designed to work across common desktop environments."
+          "After successful checkout, the unlocked files appear in the success flow immediately and remain available in your account workspace when you are signed in."
       }
     ]
   },
   {
-    title: "Store Policies",
+    title: "Formats & Editing",
     items: [
+      {
+        question: "Which file formats can the app generate?",
+        answer:
+          "Phase 1 supports PDF, PNG, DOCX, and XLSX. The exact mix depends on the template family chosen for your request."
+      },
+      {
+        question: "Will every request get all four formats?",
+        answer:
+          "No. The app chooses the safest formats for the job. Text-heavy outputs lean toward DOCX and PDF, while trackers lean toward XLSX and PDF."
+      },
       {
         question: "Are these physical products?",
         answer:
-          "No. The Digital Atlas sells digital products only. Nothing is shipped physically."
-      },
-      {
-        question: "Can I return a digital file?",
-        answer:
-          "Because digital files are delivered instantly, returns are generally limited. Customers should review the product details, format, and included files before purchase."
-      },
-      {
-        question: "How do I know what is inside a bundle?",
-        answer:
-          "Each bundle page includes a contents list and format details so customers can see what they are purchasing before checkout."
+          "No. The Digital Atlas delivers digital files only. Nothing is shipped physically."
       }
     ]
   }
@@ -63,7 +63,7 @@ const faqSections = [
 
 export const metadata = {
   title: "FAQ | The Digital Atlas",
-  description: "Answers to common questions about downloads, file access, editing, and digital product delivery."
+  description: "Answers to common questions about AI workspaces, free samples, generated bundles, and account access."
 };
 
 export default function FaqPage() {
@@ -71,10 +71,10 @@ export default function FaqPage() {
     <section className="section-block">
       <div className="page-intro">
         <p className="eyebrow">Support</p>
-        <h1>Frequently asked questions for digital product buyers.</h1>
+        <h1>Frequently asked questions for AI-guided digital product generation.</h1>
         <p>
-          Clear answers help the store feel more trustworthy. This page explains delivery, file access, compatibility,
-          and what customers should expect after checkout.
+          This page explains how the new workspace works, what is included in the free sample, and how full bundles
+          are unlocked and delivered.
         </p>
       </div>
 

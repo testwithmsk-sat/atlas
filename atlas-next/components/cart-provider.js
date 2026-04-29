@@ -15,12 +15,31 @@ function sanitizeCartItems(items) {
 
   return items
     .map((item) => {
+      if (item?.kind === "generated_bundle" || item?.sessionId) {
+        const sessionId = typeof item?.sessionId === "string" ? item.sessionId : "";
+        if (!sessionId) return null;
+
+        return {
+          kind: "generated_bundle",
+          sessionId,
+          name: typeof item?.name === "string" ? item.name : "Generated Digital Bundle",
+          image: typeof item?.image === "string" ? item.image : "",
+          priceLabel: typeof item?.priceLabel === "string" ? item.priceLabel : "$0.00",
+          priceValue: Number(item?.priceValue || parseNumericAmount(item?.priceLabel)),
+          status: typeof item?.status === "string" ? item.status : "AI-generated premium bundle",
+          includedFormats: Array.isArray(item?.includedFormats) ? item.includedFormats : [],
+          deliverables: Array.isArray(item?.deliverables) ? item.deliverables : [],
+          quantity: 1
+        };
+      }
+
       if (!item?.slug) return null;
 
       const product = validProductMap.get(item.slug);
       if (!product || product.isPurchasable === false) return null;
 
       return {
+        kind: "legacy_product",
         slug: product.slug,
         name: product.name,
         image: product.image,
@@ -43,6 +62,11 @@ function sanitizeCheckoutContact(contact) {
     email,
     name
   };
+}
+
+function getCartItemKey(item) {
+  if (!item) return "";
+  return item.kind === "generated_bundle" ? item.sessionId : item.slug;
 }
 
 export function CartProvider({ children }) {
@@ -76,8 +100,27 @@ export function CartProvider({ children }) {
   }, [checkoutContact, hydrated, items]);
 
   const value = useMemo(() => {
-    const addItem = (product) => {
-      setItems((current) => {
+      const addItem = (product) => {
+        if (product?.sessionId) {
+          setItems((current) => [
+            ...current.filter((item) => item.kind !== "generated_bundle"),
+            {
+              kind: "generated_bundle",
+              sessionId: product.sessionId,
+              name: product.name,
+              image: product.image || "",
+              priceLabel: product.priceLabel,
+              priceValue: parseNumericAmount(product.priceLabel),
+              status: product.status || "AI-generated premium bundle",
+              includedFormats: product.includedFormats || [],
+              deliverables: product.deliverables || [],
+              quantity: 1
+            }
+          ]);
+          return;
+        }
+
+        setItems((current) => {
         const normalizedCurrent = sanitizeCartItems(current);
         const existing = normalizedCurrent.find((item) => item.slug === product.slug);
         if (existing) {
@@ -109,7 +152,7 @@ export function CartProvider({ children }) {
       setItems((current) =>
         current
           .map((item) =>
-            item.slug === slug
+            getCartItemKey(item) === slug
               ? { ...item, quantity: Math.max(0, nextQuantity) }
               : item
           )
@@ -118,7 +161,7 @@ export function CartProvider({ children }) {
     };
 
     const removeItem = (slug) => {
-      setItems((current) => current.filter((item) => item.slug !== slug));
+      setItems((current) => current.filter((item) => getCartItemKey(item) !== slug));
     };
 
     const clearCart = () => {
@@ -134,8 +177,9 @@ export function CartProvider({ children }) {
       );
     };
 
-    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+        const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = items.reduce((sum, item) => sum + item.priceValue * item.quantity, 0);
+    const hasGeneratedBundle = items.some((item) => item.kind === "generated_bundle");
 
     return {
       items,
@@ -147,7 +191,8 @@ export function CartProvider({ children }) {
       clearCart,
       updateCheckoutContact,
       itemCount,
-      subtotal
+      subtotal,
+      hasGeneratedBundle
     };
   }, [checkoutContact, hydrated, items]);
 

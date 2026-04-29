@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { finalizeGeneratedCheckoutOrder, getGenerationOrderByGatewayOrderId } from "@/lib/ai/orders";
+import { getGenerationSession, saveGenerationSession } from "@/lib/ai/sessions";
 import { finalizeCheckoutOrder } from "@/lib/orders";
 import { fetchRazorpayPayment, verifyRazorpaySignature } from "@/lib/razorpay";
 import { hasRazorpayConfig } from "@/lib/env";
@@ -44,22 +46,43 @@ export async function POST(request) {
       return NextResponse.json({ error: "Razorpay reported a failed payment." }, { status: 400 });
     }
 
-    const finalizeResult = await finalizeCheckoutOrder({
-      gatewayOrderId: orderId,
-      customerEmail: payment.email || "",
-      customerName: payment.notes?.customer_name || "",
-      amountTotal: Number(payment.amount || 0) / 100,
-      currency: payment.currency || "INR",
-      paymentStatus: payment.status || "paid"
-    });
+    const generationOrder = await getGenerationOrderByGatewayOrderId(orderId);
+    const finalizeResult = generationOrder
+      ? await finalizeGeneratedCheckoutOrder({
+          gatewayOrderId: orderId,
+          customerEmail: payment.email || generationOrder.customerEmail || "",
+          amountTotal: Number(payment.amount || 0) / 100,
+          currency: payment.currency || "INR",
+          paymentStatus: payment.status || "paid"
+        })
+      : await finalizeCheckoutOrder({
+          gatewayOrderId: orderId,
+          customerEmail: payment.email || "",
+          customerName: payment.notes?.customer_name || "",
+          amountTotal: Number(payment.amount || 0) / 100,
+          currency: payment.currency || "INR",
+          paymentStatus: payment.status || "paid"
+        });
 
     if (!finalizeResult.ok) {
       return NextResponse.json({ error: "Payment was verified but order sync failed." }, { status: 500 });
     }
 
+    if (generationOrder) {
+      const session = await getGenerationSession(generationOrder.sessionId);
+      if (session) {
+        await saveGenerationSession({
+          ...session,
+          bundleStatus: "paid"
+        });
+      }
+    }
+
     return NextResponse.json({
       ok: true,
-      redirectUrl: `/checkout/success?payment_id=${encodeURIComponent(paymentId)}&order_id=${encodeURIComponent(orderId)}`
+      redirectUrl: generationOrder
+        ? `/checkout/success?payment_id=${encodeURIComponent(paymentId)}&order_id=${encodeURIComponent(orderId)}&session_id=${encodeURIComponent(generationOrder.sessionId)}`
+        : `/checkout/success?payment_id=${encodeURIComponent(paymentId)}&order_id=${encodeURIComponent(orderId)}`
     });
   } catch (error) {
     return NextResponse.json(

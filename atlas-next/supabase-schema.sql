@@ -83,6 +83,16 @@ create table if not exists public.customer_downloads (
   unique (order_id, customer_email, download_file_id)
 );
 
+create table if not exists public.intent_sessions (
+  session_id text primary key,
+  prompt text not null,
+  normalized_intent jsonb not null default '{}'::jsonb,
+  category_slug text not null,
+  free_download_slug text not null default '',
+  premium_recommendation_slugs jsonb not null default '[]'::jsonb,
+  created_at timestamptz default now()
+);
+
 alter table public.download_files alter column file_url drop not null;
 alter table public.products add column if not exists category_slug text;
 alter table public.products add column if not exists subcategory text;
@@ -104,6 +114,8 @@ create index if not exists products_subcategory_slug_idx on public.products(subc
 create index if not exists download_files_product_slug_idx on public.download_files(product_slug);
 create index if not exists customer_downloads_customer_email_idx on public.customer_downloads(customer_email);
 create index if not exists customer_downloads_order_id_idx on public.customer_downloads(order_id);
+create index if not exists intent_sessions_category_slug_idx on public.intent_sessions(category_slug);
+create index if not exists intent_sessions_created_at_idx on public.intent_sessions(created_at desc);
 
 insert into public.product_categories (slug, name, nav_label, description, sort_order)
 values
@@ -563,3 +575,52 @@ set
   access_mode = excluded.access_mode,
   sort_order = excluded.sort_order,
   is_active = excluded.is_active;
+
+create table if not exists public.generation_sessions (
+  session_id text primary key,
+  customer_email text,
+  prompt text not null,
+  normalized_intent jsonb not null default '{}'::jsonb,
+  template_family text not null,
+  suggested_options jsonb not null default '[]'::jsonb,
+  sample_status text not null default 'missing',
+  bundle_status text not null default 'draft',
+  created_at timestamptz default now()
+);
+
+create table if not exists public.generated_assets (
+  id bigint generated always as identity primary key,
+  session_id text not null references public.generation_sessions(session_id) on delete cascade,
+  asset_role text not null,
+  format text not null,
+  file_name text not null,
+  storage_bucket text not null,
+  storage_path text not null,
+  is_paid boolean not null default false,
+  created_at timestamptz default now(),
+  unique (session_id, storage_path)
+);
+
+create table if not exists public.generation_orders (
+  id bigint generated always as identity primary key,
+  session_id text not null references public.generation_sessions(session_id) on delete cascade,
+  gateway_order_id text unique not null,
+  customer_email text not null,
+  amount_total numeric(10, 2) not null default 0,
+  currency text not null default 'INR',
+  payment_status text not null default 'pending',
+  status text not null default 'pending',
+  created_at timestamptz default now()
+);
+
+create table if not exists public.generation_order_assets (
+  order_id bigint not null references public.generation_orders(id) on delete cascade,
+  generated_asset_id bigint not null references public.generated_assets(id) on delete cascade,
+  primary key (order_id, generated_asset_id)
+);
+
+create index if not exists generation_sessions_customer_email_idx on public.generation_sessions(customer_email);
+create index if not exists generation_sessions_created_at_idx on public.generation_sessions(created_at desc);
+create index if not exists generated_assets_session_id_idx on public.generated_assets(session_id);
+create index if not exists generation_orders_customer_email_idx on public.generation_orders(customer_email);
+create index if not exists generation_orders_session_id_idx on public.generation_orders(session_id);

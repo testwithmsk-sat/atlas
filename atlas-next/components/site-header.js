@@ -6,17 +6,14 @@ import { usePathname } from "next/navigation";
 import { useCart } from "@/components/cart-provider";
 
 const primaryLinks = [
-  { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/bundles", label: "Bundles" },
-  { href: "/categories", label: "Categories" },
-  { href: "/best-sellers", label: "Best Sellers" }
+  { href: "/", label: "Start Workspace" },
+  { href: "/about", label: "Vision" },
+  { href: "/faq", label: "FAQ" }
 ];
 
 function isPrimaryLinkActive(pathname, href) {
   if (!pathname) return false;
-  if (href === "/") return pathname === "/";
-  if (href === "/shop") return pathname.startsWith("/shop") || pathname.startsWith("/products");
+  if (href === "/") return pathname === "/" || pathname.startsWith("/ideas");
   return pathname.startsWith(href);
 }
 
@@ -24,7 +21,6 @@ export function SiteHeader() {
   const { itemCount } = useCart();
   const pathname = usePathname();
   const [isCondensed, setIsCondensed] = useState(false);
-  const [isArcadeMode, setIsArcadeMode] = useState(true);
   const [indicatorStyle, setIndicatorStyle] = useState(null);
   const navRef = useRef(null);
   const linkRefs = useRef({});
@@ -67,22 +63,18 @@ export function SiteHeader() {
     };
   }, [pathname]);
 
-  useEffect(() => {
-    document.documentElement.dataset.uiMode = isArcadeMode ? "arcade" : "focus";
-  }, [isArcadeMode]);
-
   return (
     <header className={`site-header${isCondensed ? " is-condensed" : ""}`}>
       <div className="site-header-top">
         <Link className="brand-mark" href="/">
-          <span className="brand-kicker">Curated Digital Atelier</span>
+          <span className="brand-kicker">Intent To Product AI</span>
           <span className="brand-title-row">
             <span className="brand-title">The Digital Atlas</span>
             <span className="brand-monogram" aria-hidden="true">
               TDA
             </span>
           </span>
-          <span className="brand-subtitle">Digital templates, planners, bundles, and printables</span>
+          <span className="brand-subtitle">Describe a goal. Get a free sample, then unlock the right editable bundle.</span>
         </Link>
 
         <nav className="primary-nav" aria-label="Primary" ref={navRef}>
@@ -113,41 +105,18 @@ export function SiteHeader() {
         </nav>
 
         <div className="header-tools">
-          <form className="site-search-form" action="/shop" role="search">
-            <label className="site-search-field">
-              <span className="site-search-label">Search products</span>
-              <input
-                className="site-search-input"
-                type="search"
-                name="q"
-                placeholder="Search products"
-                autoComplete="off"
-              />
-            </label>
-            <button className="button button-secondary site-search-button" type="submit">
-              Search
-            </button>
-          </form>
+          <div className="site-search-form site-search-form--message" aria-label="Value proposition">
+            <span className="site-search-message">Unified intent layer for weddings, events, business, and calmer life systems.</span>
+          </div>
         </div>
 
         <div className="header-cta-group">
-          <button
-            className={`header-mode-toggle${isArcadeMode ? " is-arcade" : ""}`}
-            type="button"
-            aria-pressed={isArcadeMode}
-            onClick={() => setIsArcadeMode((current) => !current)}
-          >
-            <span className="header-mode-toggle-track">
-              <span className="header-mode-toggle-thumb"></span>
-            </span>
-            <span className="header-mode-toggle-label">{isArcadeMode ? "Arcade" : "Focus"}</span>
-          </button>
           <Link className={`nav-pill nav-pill--cart${itemCount > 0 ? " has-items" : ""}`} href="/cart">
             Cart
             <span>{itemCount}</span>
           </Link>
-          <Link className="button button-primary" href="/account">
-            Account
+          <Link className="button button-primary" href="/">
+            Start A Workspace
           </Link>
         </div>
       </div>

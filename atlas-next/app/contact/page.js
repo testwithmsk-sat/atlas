@@ -4,23 +4,23 @@ import { absoluteUrl, toJsonLd } from "@/lib/seo";
 export const metadata = {
   title: "Contact The Digital Atlas",
   description:
-    "Contact The Digital Atlas for help with digital downloads, product access, printable templates, and order support.",
+    "Contact The Digital Atlas for help with AI workspaces, generated downloads, editable bundles, and order support.",
   alternates: {
     canonical: "/contact"
   },
   openGraph: {
     title: "Contact The Digital Atlas",
     description:
-      "Contact The Digital Atlas for help with digital downloads, product access, printable templates, and order support.",
+      "Contact The Digital Atlas for help with AI workspaces, generated downloads, editable bundles, and order support.",
     url: absoluteUrl("/contact")
   }
 };
 
 const supportTopics = [
-  "Finding the right product or bundle for a use case",
+  "Choosing the right AI-generated output direction",
   "Download access after checkout",
-  "File format questions for PDF and spreadsheet products",
-  "Bundle contents and category recommendations"
+  "File format questions for PDF, DOCX, PNG, and XLSX outputs",
+  "Saved workspace and account access issues"
 ];
 
 export default function ContactPage() {
@@ -38,17 +38,17 @@ export default function ContactPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }} />
       <div className="page-intro">
         <p className="eyebrow">Contact</p>
-        <h1>Support that makes digital products easier to trust.</h1>
+        <h1>Support that makes AI-generated digital outputs easier to trust.</h1>
         <p>
-          Use this page when shoppers need help choosing a template, understanding a file format, or getting answers
-          about delivery and access after purchase.
+          Use this page when customers need help choosing an output direction, understanding a generated file format,
+          or getting answers about delivery and access after purchase.
         </p>
       </div>
 
       <div className="split-panel">
         <article className="info-card">
           <p className="eyebrow">Best Way To Reach Out</p>
-          <h3>Use the account and FAQ pages first, then follow up with store support if needed.</h3>
+          <h3>Use the workspace, account, and FAQ pages first, then follow up with support if needed.</h3>
           <ul className="feature-list">
             {supportTopics.map((topic) => (
               <li key={topic}>{topic}</li>
@@ -57,7 +57,7 @@ export default function ContactPage() {
         </article>
         <article className="info-card editorial-note">
           <p className="eyebrow">Helpful Links</p>
-          <h3>Point customers toward answers that reduce purchase hesitation.</h3>
+          <h3>Point customers toward the pages that reduce hesitation and help them act faster.</h3>
           <div className="catalog-chip-list">
             <Link className="catalog-chip" href="/faq">
               Read The FAQ
@@ -65,11 +65,11 @@ export default function ContactPage() {
             <Link className="catalog-chip" href="/account">
               View Account
             </Link>
-            <Link className="catalog-chip" href="/shop">
-              Browse The Shop
+            <Link className="catalog-chip" href="/">
+              Start The Workspace
             </Link>
             <Link className="catalog-chip" href="/guides">
-              Read Buying Guides
+              Read Guidance
             </Link>
           </div>
         </article>
