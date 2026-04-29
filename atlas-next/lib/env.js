@@ -4,6 +4,9 @@ function readEnvValue(value) {
 
 const razorpayServerKeyId = readEnvValue(process.env.RAZORPAY_KEY_ID);
 const razorpayPublicKeyId = readEnvValue(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) || razorpayServerKeyId;
+const vercelOidcToken = readEnvValue(process.env.VERCEL_OIDC_TOKEN);
+const aiGatewayApiKey = readEnvValue(process.env.AI_GATEWAY_API_KEY);
+const openaiApiKey = readEnvValue(process.env.OPENAI_API_KEY);
 
 export const env = {
   supabaseUrl: readEnvValue(process.env.NEXT_PUBLIC_SUPABASE_URL),
@@ -11,6 +14,9 @@ export const env = {
   supabaseServiceRoleKey: readEnvValue(process.env.SUPABASE_SERVICE_ROLE_KEY),
   supabaseDownloadsBucket: readEnvValue(process.env.SUPABASE_DOWNLOADS_BUCKET) || "product-downloads",
   supabaseSignedUrlExpiresIn: Number(process.env.SUPABASE_SIGNED_URL_EXPIRES_IN || 900),
+  openaiApiKey,
+  aiGatewayApiKey,
+  vercelOidcToken,
   razorpayPublicKeyId,
   razorpayKeyId: razorpayServerKeyId || razorpayPublicKeyId,
   razorpayKeySecret: readEnvValue(process.env.RAZORPAY_KEY_SECRET),
@@ -23,3 +29,5 @@ export const hasSupabaseAdmin = Boolean(hasSupabaseConfig && env.supabaseService
 export const hasRazorpayPublicConfig = Boolean(env.razorpayPublicKeyId);
 export const hasRazorpayServerConfig = Boolean(env.razorpayKeyId && env.razorpayKeySecret);
 export const hasRazorpayConfig = Boolean(hasRazorpayPublicConfig && hasRazorpayServerConfig);
+export const hasOpenAIConfig = Boolean(env.openaiApiKey);
+export const hasAIGatewayConfig = Boolean(env.aiGatewayApiKey || env.vercelOidcToken);
