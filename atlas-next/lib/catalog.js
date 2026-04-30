@@ -20,6 +20,164 @@ export async function getProductBySlug(slug) {
   return fallbackProducts.find((product) => product.slug === slug) || null;
 }
 
+function normalizeIntentText(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
+function tokenizeIntentText(value) {
+  return normalizeIntentText(value)
+    .split(/[^a-z0-9]+/g)
+    .filter((token) => token.length >= 3);
+}
+
+function resolveIntentCategorySlug(session) {
+  const text = normalizeIntentText(
+    [
+      session?.prompt,
+      session?.normalizedIntent?.useCaseType,
+      session?.normalizedIntent?.intentSummary,
+      session?.normalizedIntent?.audienceProfile
+    ]
+      .filter(Boolean)
+      .join(" ")
+  );
+
+  if (/(wedding|bride|groom|mehendi|reception|invitation|rsvp)/.test(text)) {
+    return "wedding";
+  }
+
+  if (/(business|client|proposal|invoice|startup|brand|freelancer|founder)/.test(text)) {
+    return "business";
+  }
+
+  if (/(party|event|birthday|shower|celebration|guest|corporate event)/.test(text)) {
+    return "events-parties";
+  }
+
+  if (/(home|family|routine|declutter|goal|productivity|interior|room|life)/.test(text)) {
+    return "planners-productivity";
+  }
+
+  return "";
+}
+
+function getPreferredSubcategoriesForFamily(templateFamily) {
+  switch (templateFamily) {
+    case "invitation_or_stationery":
+      return ["invitations-stationery", "party-invitations"];
+    case "sign_or_poster":
+      return ["signs-day-of-details", "signs-decor"];
+    case "planner_or_checklist":
+      return ["planning-budget", "signs-decor", "home-family", "operations-systems"];
+    case "business_document":
+      return ["client-documents", "operations-systems", "marketing-sales"];
+    case "tracker_or_workbook":
+      return ["planning-budget", "finance-budgeting", "operations-systems"];
+    case "bundle_pack":
+      return [];
+    default:
+      return [];
+  }
+}
+
+function getFamilyFormatSignals(templateFamily) {
+  switch (templateFamily) {
+    case "business_document":
+      return ["docx", "word", "document"];
+    case "tracker_or_workbook":
+      return ["xlsx", "excel", "spreadsheet", "workbook"];
+    case "sign_or_poster":
+      return ["pdf", "poster", "sign"];
+    default:
+      return ["pdf"];
+  }
+}
+
+function scoreProductForIntent(product, session, intentTokens, categorySlug, preferredSubcategories, familyFormatSignals) {
+  let score = 0;
+
+  if (categorySlug && product.categorySlug === categorySlug) {
+    score += 14;
+  }
+
+  if (preferredSubcategories.includes(product.subcategorySlug)) {
+    score += 10;
+  }
+
+  if (product.isBundle) {
+    score += 6;
+  }
+
+  if (session?.templateFamily === "bundle_pack" && product.isBundle) {
+    score += 8;
+  }
+
+  if (session?.templateFamily === "tracker_or_workbook") {
+    const formatText = normalizeIntentText(`${product.details?.format || ""} ${product.productType || ""}`);
+    if (familyFormatSignals.some((signal) => formatText.includes(signal))) {
+      score += 8;
+    }
+  }
+
+  if (session?.templateFamily === "business_document" && product.categorySlug === "business") {
+    score += 8;
+  }
+
+  if (Array.isArray(product.intentTags)) {
+    score += product.intentTags.reduce((sum, tag) => sum + (intentTokens.has(tag) ? 3 : 0), 0);
+  }
+
+  if (Array.isArray(product.styleKeywords)) {
+    score += product.styleKeywords.reduce((sum, keyword) => sum + (intentTokens.has(keyword) ? 2 : 0), 0);
+  }
+
+  if (Array.isArray(product.audienceTags)) {
+    score += product.audienceTags.reduce((sum, audienceTag) => sum + (intentTokens.has(audienceTag) ? 1 : 0), 0);
+  }
+
+  return score;
+}
+
+export async function getRecommendedProductsForIntent(session, limit = 3) {
+  if (!session?.normalizedIntent) return [];
+
+  const intentTokens = new Set(
+    [
+      ...tokenizeIntentText(session.prompt),
+      ...tokenizeIntentText(session.normalizedIntent.useCaseType),
+      ...tokenizeIntentText(session.normalizedIntent.intentSummary),
+      ...tokenizeIntentText(session.normalizedIntent.audienceProfile),
+      ...tokenizeIntentText(session.normalizedIntent.styleDirection),
+      ...(session.normalizedIntent.deliverables || []).flatMap((item) => tokenizeIntentText(item))
+    ]
+  );
+  const categorySlug = resolveIntentCategorySlug(session);
+  const preferredSubcategories = getPreferredSubcategoriesForFamily(session.templateFamily);
+  const familyFormatSignals = getFamilyFormatSignals(session.templateFamily);
+  const scoredProducts = fallbackProducts
+    .map((product) => ({
+      product,
+      score: scoreProductForIntent(product, session, intentTokens, categorySlug, preferredSubcategories, familyFormatSignals)
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort((left, right) => {
+      if (right.score !== left.score) return right.score - left.score;
+      if (left.product.isBundle !== right.product.isBundle) return left.product.isBundle ? -1 : 1;
+      return parseNumericAmount(right.product.priceLabel) - parseNumericAmount(left.product.priceLabel);
+    });
+
+  const bundleLead = scoredProducts.find((entry) => entry.product.isBundle)?.product || null;
+  const remainingProducts = scoredProducts
+    .map((entry) => entry.product)
+    .filter((product) => !bundleLead || product.slug !== bundleLead.slug);
+  const curated = [
+    ...(bundleLead ? [bundleLead] : []),
+    ...remainingProducts
+  ];
+
+  return curated.slice(0, limit);
+}
+
 export async function getProductsBySlugs(slugs) {
   const slugSet = new Set((slugs || []).filter(Boolean));
   if (slugSet.size === 0) return [];

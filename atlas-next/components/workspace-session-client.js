@@ -10,13 +10,15 @@ export function WorkspaceSessionClient({
   sampleAssets = [],
   bundleAssets = [],
   paidBundleOffer,
-  hasPaidAccess = false
+  hasPaidAccess = false,
+  entryMode = "workspace"
 }) {
   const router = useRouter();
   const [loadingOptionId, setLoadingOptionId] = useState("");
   const [error, setError] = useState("");
   const previewAsset = sampleAssets.find((asset) => asset.format === "PNG");
   const samplePdfAsset = sampleAssets.find((asset) => asset.format === "PDF");
+  const isIdeasEntry = entryMode === "ideas";
 
   const chooseOption = (optionId) => {
     setError("");
@@ -50,7 +52,7 @@ export function WorkspaceSessionClient({
     <div className="stack">
       <section className="section-block intent-results-hero">
         <div className="page-intro">
-          <p className="eyebrow eyebrow--electric">AI generation workspace</p>
+          <p className="eyebrow eyebrow--electric">{isIdeasEntry ? "Planning details behind the recommendation" : "AI generation workspace"}</p>
           <h1>{session.normalizedIntent.recommendedTitle}</h1>
           <p>{session.normalizedIntent.intentSummary}</p>
         </div>
@@ -71,9 +73,15 @@ export function WorkspaceSessionClient({
                   Download Free Sample
                 </a>
               ) : null}
-              <Link className="button button-secondary" href="/">
-                Start Another Idea
-              </Link>
+              {isIdeasEntry ? (
+                <Link className="button button-secondary" href={`/workspace/${session.sessionId}`}>
+                  Open planning workspace
+                </Link>
+              ) : (
+                <Link className="button button-secondary" href="/">
+                  Start Another Idea
+                </Link>
+              )}
             </div>
           </article>
 

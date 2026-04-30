@@ -72,7 +72,7 @@ export function IntentIntakeForm({
             throw new Error(payload?.error || "The planning assistant could not build a generation session right now.");
           }
 
-          router.push(`/workspace/${payload.sessionId}`);
+          router.push(`/ideas/${payload.sessionId}`);
         } catch (submitError) {
           setError(submitError instanceof Error ? submitError.message : "The planning assistant could not build a generation session right now.");
         } finally {
