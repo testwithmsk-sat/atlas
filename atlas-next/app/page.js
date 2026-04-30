@@ -25,29 +25,29 @@ export default async function HomePage({ searchParams }) {
       <section className="intent-hero-panel" data-reveal>
         <div className="intent-hero-grid">
           <div className="intent-hero-copy">
-            <p className="eyebrow eyebrow--electric">From information age to agency age</p>
+            <p className="eyebrow eyebrow--electric">Intent-first product planning</p>
             <h1>
-              STOP HUNTING FOR PRODUCTS.
-              <span className="outline-word"> START WITH</span>
-              <span className="accent-word"> INTENT.</span>
+              Describe the result.
+              <span className="outline-word"> We shape the right</span>
+              <span className="accent-word"> digital bundle.</span>
             </h1>
             <p className="intent-hero-text">
-              The Digital Atlas is now an AI-first generation partner. Instead of browsing a wall of products,
-              customers describe the outcome they want and the app turns that into a concrete digital direction, a free
-              starter sample, and a full editable bundle when they need more depth.
+              Stop digging through shelves and trying to reverse-engineer the right product. Give The Digital Atlas the
+              outcome you want and the workspace will turn it into a focused direction, a free starter sample, and a
+              full editable bundle when you want depth.
             </p>
             <div className="intent-signal-strip">
-              <span>Mental decluttering</span>
-              <span>Intent to execution</span>
-              <span>Printable + editable</span>
+              <span>One clear direction</span>
               <span>Free sample first</span>
+              <span>Printable + editable</span>
+              <span>Calmer decision-making</span>
             </div>
             <div className="hero-actions">
               <Link className="button button-primary" href="#intent-form">
-                Start the AI workspace
+                Start the workspace
               </Link>
-              <Link className="button button-secondary" href="/about">
-                See the product vision
+              <Link className="button button-secondary" href="/faq">
+                See sample flows
               </Link>
             </div>
             {source ? (
@@ -60,51 +60,29 @@ export default async function HomePage({ searchParams }) {
 
           <div className="intent-hero-stage" data-reveal>
             <div className="intent-orbit-card" data-tilt>
-              <p className="eyebrow">Intent detected</p>
-              <h3>"I have a budget, a deadline, and too many moving pieces."</h3>
-              <div className="intent-orbit-pills">
-                <span>clarity</span>
-                <span>certainty</span>
-                <span>execution</span>
-              </div>
+              <p className="eyebrow">What you get first</p>
+              <h3>A cleaner path from vague idea to usable deliverable.</h3>
+              <ul className="intent-proof-list">
+                <li>A focused output direction based on the job to be done</li>
+                <li>A free sample to validate the tone before you buy deeper</li>
+                <li>A premium editable bundle when the direction feels right</li>
+              </ul>
             </div>
             <div className="intent-orbit-card intent-orbit-card--secondary" data-tilt>
-              <p className="eyebrow">The AI layer returns</p>
-              <ul className="feature-list compact-detail-list">
-                <li>One clear output direction</li>
-                <li>A free starter sample</li>
-                <li>A paid editable full bundle</li>
-              </ul>
+              <p className="eyebrow">Best used for</p>
+              <div className="intent-orbit-pills">
+                <span>Weddings</span>
+                <span>Events</span>
+                <span>Business kits</span>
+                <span>Home systems</span>
+              </div>
+              <p className="intent-stage-note">
+                Start with one sentence. Add budget, audience, style, and timing only if you want the first direction
+                to feel more tailored.
+              </p>
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="section-block intent-summary-grid" data-reveal>
-        <article className="info-card intent-summary-card">
-          <p className="eyebrow eyebrow--electric">What changed</p>
-          <h3>The storefront has been replaced by an AI product factory.</h3>
-          <p>
-            The homepage now does the heavy lifting. Customers explain what they need, the app narrows the direction,
-            and the first useful output appears without forcing anyone through a catalog maze.
-          </p>
-        </article>
-        <article className="info-card intent-summary-card">
-          <p className="eyebrow eyebrow--electric">What customers get</p>
-          <h3>Free proof first. Paid depth when it actually helps.</h3>
-          <p>
-            Each generation session starts with a free sample and a structured idea brief, then unlocks the full
-            printable and editable bundle through checkout only when the direction feels right.
-          </p>
-        </article>
-        <article className="info-card intent-summary-card">
-          <p className="eyebrow eyebrow--electric">Where this starts</p>
-          <h3>One sentence about the outcome they want.</h3>
-          <p>
-            Weddings, parties, business setup, and life systems all begin the same way: describe the job to be done
-            and let the app translate it into a real downloadable direction.
-          </p>
-        </article>
       </section>
 
       <section className="section-block" id="intent-form">
@@ -121,28 +99,28 @@ export default async function HomePage({ searchParams }) {
       <section className="section-block intent-process-grid" data-reveal>
         <article className="catalog-card intent-process-card" data-tilt>
           <p className="eyebrow eyebrow--electric">Step 1</p>
-          <h2>Describe the pressure point.</h2>
-          <p>Budget, timing, audience, and desired outcome are enough for the workspace to understand the job.</p>
+          <h2>Describe the outcome.</h2>
+          <p>Start with the result you want, not the template name you think you need.</p>
         </article>
         <article className="catalog-card intent-process-card" data-tilt>
           <p className="eyebrow eyebrow--electric">Step 2</p>
-          <h2>Get a focused generation direction.</h2>
-          <p>The AI returns a safer template family, suggested deliverables, and a calm next-step structure.</p>
+          <h2>Review the first direction.</h2>
+          <p>The workspace narrows the format, tone, and deliverable path into something concrete and useful.</p>
         </article>
         <article className="catalog-card intent-process-card" data-tilt>
           <p className="eyebrow eyebrow--electric">Step 3</p>
-          <h2>Download the proof, then unlock the bundle.</h2>
-          <p>Take the free sample immediately or move into the paid full-bundle path for editable master files.</p>
+          <h2>Take the sample, then unlock the bundle.</h2>
+          <p>Use the free proof to validate the direction and move into the editable bundle only when it helps.</p>
         </article>
       </section>
 
       <section className="section-block intent-bottom-band" data-reveal>
         <article className="catalog-card intent-bottom-card">
           <p className="eyebrow eyebrow--electric">Agency, not more tabs</p>
-          <h2>The real product is certainty.</h2>
+          <h2>The real product is clarity.</h2>
           <p>
-            This first release is intentionally focused on high-stress scenarios where digital outputs reduce chaos:
-            wedding logistics, event planning, small business setup, and clutter-clearing systems.
+            This workspace is built for the moments where too many moving pieces make good decisions harder:
+            weddings, events, business setup, and calmer life systems.
           </p>
           <div className="catalog-chip-list">
             <Link className="catalog-chip" href="/about">
@@ -158,7 +136,7 @@ export default async function HomePage({ searchParams }) {
         </article>
         <article className="info-card intent-bottom-note">
           <p className="eyebrow eyebrow--electric">Phase 1 focus</p>
-          <h3>Open-ended intent at the front door. Deterministic template generation underneath.</h3>
+          <h3>Open-ended intent at the top. Reliable template generation underneath.</h3>
           <p>
             The experience feels like an AI partner, while real generation rules, checkout, and file delivery stay
             grounded in bounded template families the app can reliably produce.

@@ -20,6 +20,7 @@ function isPrimaryLinkActive(pathname, href) {
 export function SiteHeader() {
   const { itemCount } = useCart();
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const [isCondensed, setIsCondensed] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState(null);
   const navRef = useRef(null);
@@ -64,7 +65,7 @@ export function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header className={`site-header${isCondensed ? " is-condensed" : ""}`}>
+    <header className={`site-header${isCondensed ? " is-condensed" : ""}${isHome ? " site-header--home" : ""}`}>
       <div className="site-header-top">
         <Link className="brand-mark" href="/">
           <span className="brand-kicker">Intent To Product AI</span>
@@ -74,7 +75,7 @@ export function SiteHeader() {
               TDA
             </span>
           </span>
-          <span className="brand-subtitle">Describe a goal. Get a free sample, then unlock the right editable bundle.</span>
+          <span className="brand-subtitle">Describe the outcome. Get the right direction first.</span>
         </Link>
 
         <nav className="primary-nav" aria-label="Primary" ref={navRef}>
@@ -104,20 +105,16 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="header-tools">
-          <div className="site-search-form site-search-form--message" aria-label="Value proposition">
-            <span className="site-search-message">Unified intent layer for weddings, events, business, and calmer life systems.</span>
-          </div>
-        </div>
-
         <div className="header-cta-group">
           <Link className={`nav-pill nav-pill--cart${itemCount > 0 ? " has-items" : ""}`} href="/cart">
             Cart
             <span>{itemCount}</span>
           </Link>
-          <Link className="button button-primary" href="/">
-            Start A Workspace
-          </Link>
+          {!isHome ? (
+            <Link className="button button-primary" href="/">
+              Open Workspace
+            </Link>
+          ) : null}
         </div>
       </div>
     </header>

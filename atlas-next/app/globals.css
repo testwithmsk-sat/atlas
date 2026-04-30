@@ -6246,3 +6246,600 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
     gap: 12px;
   }
 }
+
+/* Intent workspace cleanup */
+
+.site-header {
+  margin-bottom: 24px;
+  padding: 14px 20px;
+  border-color: rgba(193, 149, 255, 0.18);
+  border-radius: 0 0 30px 30px;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 77, 184, 0.08), transparent 20%),
+    radial-gradient(circle at 84% 14%, rgba(64, 194, 255, 0.1), transparent 22%),
+    linear-gradient(180deg, rgba(18, 10, 34, 0.96), rgba(9, 5, 18, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 20px 44px rgba(4, 0, 12, 0.26);
+}
+
+.site-header.is-condensed {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.site-header-top {
+  grid-template-columns: minmax(220px, 270px) minmax(0, 1fr) auto;
+  grid-template-areas: "brand nav actions";
+  gap: 18px;
+}
+
+.brand-mark {
+  max-width: 17rem;
+}
+
+.brand-kicker,
+.brand-subtitle {
+  color: rgba(232, 220, 255, 0.74);
+}
+
+.brand-title {
+  color: #ffffff;
+  font-size: clamp(1.55rem, 1.7vw, 2rem);
+}
+
+.brand-monogram {
+  min-width: 42px;
+  min-height: 42px;
+  border-color: rgba(193, 149, 255, 0.24);
+  background: linear-gradient(135deg, rgba(133, 71, 255, 0.28), rgba(255, 77, 184, 0.16));
+  color: #f7efff;
+}
+
+.brand-subtitle {
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+}
+
+.primary-nav {
+  justify-self: center;
+  width: auto;
+  min-width: 0;
+  max-width: fit-content;
+  margin: 0;
+  border-color: rgba(193, 149, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(26, 14, 44, 0.92), rgba(11, 6, 20, 0.9)),
+    rgba(255, 255, 255, 0.04);
+}
+
+.primary-nav a {
+  min-height: 42px;
+  padding: 10px 16px;
+  color: rgba(238, 228, 255, 0.78);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+}
+
+.primary-nav a:hover,
+.primary-nav a:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.primary-nav a.is-active {
+  color: #ffffff;
+  box-shadow:
+    inset 0 0 0 1px rgba(194, 151, 255, 0.18),
+    0 10px 26px rgba(92, 29, 156, 0.28);
+}
+
+.header-tools {
+  display: none;
+}
+
+.header-cta-group {
+  justify-self: end;
+}
+
+.site-header--home .header-cta-group .button {
+  display: none;
+}
+
+.nav-pill {
+  min-height: 42px;
+  border-color: rgba(193, 149, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(242, 235, 255, 0.84);
+}
+
+.nav-pill--cart span {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.intent-homepage {
+  display: grid;
+  gap: 28px;
+  padding-bottom: 36px;
+}
+
+.intent-homepage [data-reveal] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.intent-hero-panel,
+.intent-shell,
+.intent-process-card,
+.intent-bottom-card,
+.intent-bottom-note {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(193, 149, 255, 0.18);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 84% 14%, rgba(255, 77, 184, 0.12), transparent 22%),
+    radial-gradient(circle at 16% 18%, rgba(64, 194, 255, 0.12), transparent 20%),
+    linear-gradient(180deg, rgba(18, 10, 32, 0.96), rgba(8, 5, 15, 0.95));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 26px 68px rgba(4, 0, 12, 0.34);
+}
+
+.intent-hero-panel::before,
+.intent-shell::before,
+.intent-process-card::before,
+.intent-bottom-card::before,
+.intent-bottom-note::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.intent-hero-panel,
+.intent-shell {
+  padding: 30px;
+}
+
+.intent-hero-grid,
+.intent-bottom-band {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.intent-hero-copy,
+.intent-hero-stage,
+.intent-panel-head,
+.intent-intake-form,
+.intent-bottom-card,
+.intent-bottom-note {
+  position: relative;
+  z-index: 1;
+}
+
+.intent-hero-copy h1,
+.intent-orbit-card h3,
+.intent-intake-form h2,
+.intent-process-card h2,
+.intent-bottom-card h2,
+.intent-bottom-note h3 {
+  margin: 0;
+  font-family: var(--font-heading), sans-serif;
+  color: #ffffff;
+  line-height: 0.96;
+}
+
+.intent-hero-copy h1 {
+  max-width: 10ch;
+  font-size: clamp(3rem, 5vw, 5.2rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.intent-hero-copy .outline-word,
+.intent-hero-copy .accent-word {
+  display: block;
+}
+
+.intent-hero-copy .outline-word {
+  color: rgba(236, 228, 255, 0.74);
+}
+
+.intent-hero-copy .accent-word {
+  color: #ffb8ea;
+}
+
+.intent-hero-text,
+.intent-redirect-note,
+.intent-orbit-card p,
+.intent-proof-list,
+.intent-panel-head p,
+.intent-form-hint,
+.intent-guide-list,
+.intent-process-card p,
+.intent-bottom-card p,
+.intent-bottom-note p,
+.status-note {
+  color: rgba(236, 227, 250, 0.8);
+  line-height: 1.72;
+}
+
+.intent-hero-text {
+  max-width: 54rem;
+  margin-top: 18px;
+  font-size: 1.02rem;
+}
+
+.intent-signal-strip,
+.intent-orbit-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.intent-signal-strip {
+  margin-top: 20px;
+}
+
+.intent-signal-strip span,
+.intent-orbit-pills span,
+.intent-chip,
+.intent-details-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 14px;
+  border: 1px solid rgba(193, 149, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(244, 237, 255, 0.86);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero-actions {
+  margin-top: 26px;
+}
+
+.intent-redirect-note {
+  margin-top: 18px;
+}
+
+.intent-hero-stage {
+  display: grid;
+  gap: 16px;
+}
+
+.intent-orbit-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid rgba(193, 149, 255, 0.18);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(26, 16, 44, 0.92), rgba(11, 6, 20, 0.9)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 42px rgba(4, 0, 12, 0.24);
+}
+
+.intent-orbit-card h3 {
+  font-size: clamp(1.5rem, 2vw, 2.15rem);
+  letter-spacing: 0.03em;
+}
+
+.intent-proof-list,
+.intent-guide-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 1.15rem;
+}
+
+.intent-proof-list li,
+.intent-guide-list li {
+  padding-left: 0.15rem;
+}
+
+.intent-stage-note {
+  margin: 0;
+}
+
+.intent-shell {
+  padding: 0;
+}
+
+.intent-intake-form {
+  display: grid;
+  gap: 24px;
+  padding: 30px;
+}
+
+.intent-panel-head {
+  max-width: 48rem;
+  display: grid;
+  gap: 12px;
+}
+
+.intent-panel-head h2 {
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  letter-spacing: 0.02em;
+}
+
+.intent-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.intent-main-column,
+.intent-details-block {
+  display: grid;
+  gap: 12px;
+}
+
+.intent-guide-card {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid rgba(193, 149, 255, 0.16);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.intent-field {
+  display: grid;
+  gap: 10px;
+}
+
+.intent-field span {
+  color: rgba(231, 214, 255, 0.82);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.intent-field input,
+.intent-field textarea {
+  width: 100%;
+  border: 1px solid rgba(193, 149, 255, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font: inherit;
+  line-height: 1.6;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.intent-field input {
+  min-height: 56px;
+  padding: 0 18px;
+}
+
+.intent-field textarea {
+  min-height: 220px;
+  padding: 18px;
+  resize: vertical;
+}
+
+.intent-field input::placeholder,
+.intent-field textarea::placeholder {
+  color: rgba(220, 204, 248, 0.48);
+}
+
+.intent-field input:hover,
+.intent-field input:focus,
+.intent-field textarea:hover,
+.intent-field textarea:focus {
+  border-color: rgba(132, 214, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(132, 214, 255, 0.08);
+}
+
+.intent-form-hint {
+  margin: 0;
+}
+
+.intent-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.intent-chip,
+.intent-details-toggle {
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.intent-chip:hover,
+.intent-chip:focus-visible,
+.intent-details-toggle:hover,
+.intent-details-toggle:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(132, 214, 255, 0.3);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.24), rgba(64, 194, 255, 0.14));
+  color: #ffffff;
+  outline: none;
+}
+
+.intent-details-toggle {
+  justify-self: start;
+}
+
+.intent-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.intent-field--wide {
+  grid-column: 1 / -1;
+}
+
+.status-note {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 112, 145, 0.24);
+  border-radius: 18px;
+  background: rgba(255, 77, 184, 0.08);
+}
+
+.intent-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.intent-submit-button {
+  min-width: 232px;
+}
+
+.intent-process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.intent-process-card,
+.intent-bottom-card,
+.intent-bottom-note {
+  padding: 24px;
+}
+
+.intent-process-card h2,
+.intent-bottom-card h2,
+.intent-bottom-note h3 {
+  margin-top: 8px;
+  font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.intent-bottom-band {
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+}
+
+.intent-bottom-note {
+  background:
+    radial-gradient(circle at 84% 14%, rgba(64, 194, 255, 0.12), transparent 22%),
+    linear-gradient(180deg, rgba(20, 12, 36, 0.96), rgba(9, 5, 18, 0.94));
+}
+
+@media (max-width: 1180px) {
+  .site-header-top {
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions"
+      "nav nav";
+  }
+
+  .primary-nav {
+    justify-self: start;
+  }
+
+  .intent-hero-grid,
+  .intent-form-layout,
+  .intent-bottom-band,
+  .intent-process-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .site-header-top {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "brand"
+      "nav"
+      "actions";
+  }
+
+  .brand-mark,
+  .primary-nav,
+  .header-cta-group {
+    width: 100%;
+    max-width: none;
+  }
+
+  .primary-nav {
+    justify-self: stretch;
+    flex-wrap: wrap;
+  }
+
+  .header-cta-group {
+    justify-self: stretch;
+  }
+
+  .intent-hero-panel,
+  .intent-intake-form,
+  .intent-process-card,
+  .intent-bottom-card,
+  .intent-bottom-note {
+    padding: 22px;
+  }
+
+  .intent-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .intent-field--wide {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .brand-subtitle {
+    display: none;
+  }
+
+  .primary-nav {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 24px;
+  }
+
+  .primary-nav a,
+  .header-cta-group,
+  .header-cta-group .button,
+  .nav-pill {
+    width: 100%;
+  }
+
+  .intent-hero-copy h1 {
+    font-size: clamp(2.5rem, 13vw, 4rem);
+  }
+
+  .intent-panel-head h2 {
+    font-size: clamp(1.85rem, 10vw, 2.8rem);
+  }
+
+  .intent-actions .button,
+  .intent-submit-button,
+  .intent-details-toggle {
+    width: 100%;
+    min-width: 0;
+  }
+}

@@ -32,12 +32,14 @@ export function IntentIntakeForm({
   initialUseCaseType = ""
 }) {
   const router = useRouter();
+  const hasInitialDetails = Boolean(initialBudget || initialTimeline || initialAudience || initialStyle || initialUseCaseType);
   const [prompt, setPrompt] = useState(initialPrompt);
   const [budget, setBudget] = useState(initialBudget);
   const [timeline, setTimeline] = useState(initialTimeline);
   const [audience, setAudience] = useState(initialAudience);
   const [style, setStyle] = useState(initialStyle);
   const [useCaseType, setUseCaseType] = useState(initialUseCaseType);
+  const [showDetails, setShowDetails] = useState(hasInitialDetails);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -84,90 +86,118 @@ export function IntentIntakeForm({
     <div className="intent-shell" data-reveal>
       <form className="intent-intake-form" onSubmit={handleSubmit}>
         <div className="intent-panel-head">
-          <p className="eyebrow eyebrow--electric">Unified intent layer</p>
-          <h2>Describe the result you want. Let the app shape the right digital product around it.</h2>
+          <p className="eyebrow eyebrow--electric">Start with the outcome</p>
+          <h2>Tell us what success looks like. The workspace will shape the right product around it.</h2>
           <p>
-            The Digital Atlas now starts with intent, not shelves. Give the app the job to be done and it will
-            recommend the strongest output direction, generate a free sample, and unlock the full editable bundle when
-            you are ready.
+            One clear sentence is enough to begin. Add optional details if you want the first direction to land closer
+            to your budget, audience, timing, and style.
           </p>
         </div>
 
-        <label className="intent-field intent-field--prompt">
-          <span>Your goal in one sentence</span>
-          <textarea
-            rows={4}
-            value={prompt}
-            onChange={(event) => setPrompt(event.target.value)}
-            placeholder="Example: I need a printable wedding planning bundle with a budget tracker, checklists, and a few elegant guest-facing pages."
-            required
-          />
-        </label>
+        <div className="intent-form-layout">
+          <div className="intent-main-column">
+            <label className="intent-field intent-field--prompt">
+              <span>Your goal in one sentence</span>
+              <textarea
+                rows={5}
+                value={prompt}
+                onChange={(event) => setPrompt(event.target.value)}
+                placeholder="Example: I need a printable wedding planning bundle with a budget tracker, checklists, and a few elegant guest-facing pages."
+                required
+              />
+            </label>
+            <p className="intent-form-hint">
+              Start with the result, pressure point, or bundle outcome you want. The workspace can infer the best
+              format from there.
+            </p>
+          </div>
 
-        <div className="intent-chip-row">
-          {promptPresets.map((preset) => (
-            <button className="intent-chip" key={preset.label} type="button" onClick={() => setPrompt(preset.prompt)}>
-              {preset.label}
-            </button>
-          ))}
+          <aside className="intent-guide-card" aria-label="Helpful starting points">
+            <p className="eyebrow eyebrow--electric">Helpful starting points</p>
+            <ul className="intent-guide-list">
+              <li>Lead with the outcome, not the file type.</li>
+              <li>Mention urgency, audience, or tone only if it matters.</li>
+              <li>The first sample should reduce uncertainty, not add options.</li>
+            </ul>
+            <div className="intent-chip-row">
+              {promptPresets.map((preset) => (
+                <button className="intent-chip" key={preset.label} type="button" onClick={() => setPrompt(preset.prompt)}>
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </aside>
         </div>
 
-        <div className="intent-details-grid">
-          <label className="intent-field">
-            <span>Budget</span>
-            <input
-              type="text"
-              value={budget}
-              onChange={(event) => setBudget(event.target.value)}
-              placeholder="$500, premium, low-cost, etc."
-            />
-          </label>
-          <label className="intent-field">
-            <span>Timeline</span>
-            <input
-              type="text"
-              value={timeline}
-              onChange={(event) => setTimeline(event.target.value)}
-              placeholder="ASAP, 2 weeks, next month, etc."
-            />
-          </label>
-          <label className="intent-field">
-            <span>Audience</span>
-            <input
-              type="text"
-              value={audience}
-              onChange={(event) => setAudience(event.target.value)}
-              placeholder="Bride and guests, clients, family, solo use, etc."
-            />
-          </label>
-          <label className="intent-field">
-            <span>Style</span>
-            <input
-              type="text"
-              value={style}
-              onChange={(event) => setStyle(event.target.value)}
-              placeholder="Minimal, elegant, playful, formal, clean, etc."
-            />
-          </label>
-          <label className="intent-field">
-            <span>Use case type</span>
-            <input
-              type="text"
-              value={useCaseType}
-              onChange={(event) => setUseCaseType(event.target.value)}
-              placeholder="Wedding logistics, proposal template, party signage, weekly planner, etc."
-            />
-          </label>
+        <div className="intent-details-block">
+          <button
+            className="intent-details-toggle"
+            type="button"
+            aria-expanded={showDetails}
+            onClick={() => setShowDetails((currentValue) => !currentValue)}
+          >
+            {showDetails ? "Hide optional details" : "Add optional details"}
+          </button>
+
+          {showDetails ? (
+            <div className="intent-details-grid">
+              <label className="intent-field">
+                <span>Budget</span>
+                <input
+                  type="text"
+                  value={budget}
+                  onChange={(event) => setBudget(event.target.value)}
+                  placeholder="$500, premium, low-cost, etc."
+                />
+              </label>
+              <label className="intent-field">
+                <span>Timeline</span>
+                <input
+                  type="text"
+                  value={timeline}
+                  onChange={(event) => setTimeline(event.target.value)}
+                  placeholder="ASAP, 2 weeks, next month, etc."
+                />
+              </label>
+              <label className="intent-field">
+                <span>Audience</span>
+                <input
+                  type="text"
+                  value={audience}
+                  onChange={(event) => setAudience(event.target.value)}
+                  placeholder="Bride and guests, clients, family, solo use, etc."
+                />
+              </label>
+              <label className="intent-field">
+                <span>Style</span>
+                <input
+                  type="text"
+                  value={style}
+                  onChange={(event) => setStyle(event.target.value)}
+                  placeholder="Minimal, elegant, playful, formal, clean, etc."
+                />
+              </label>
+              <label className="intent-field intent-field--wide">
+                <span>Use case type</span>
+                <input
+                  type="text"
+                  value={useCaseType}
+                  onChange={(event) => setUseCaseType(event.target.value)}
+                  placeholder="Wedding logistics, proposal template, party signage, weekly planner, etc."
+                />
+              </label>
+            </div>
+          ) : null}
         </div>
 
         {error ? <p className="status-note">{error}</p> : null}
 
         <div className="intent-actions">
           <button className="button button-primary intent-submit-button" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Building your workspace..." : "Start My AI Workspace"}
+            {isSubmitting ? "Building your workspace..." : "Build my first direction"}
           </button>
           <Link className="button button-secondary" href="/faq">
-            See how samples and bundles work
+            See sample flows
           </Link>
         </div>
       </form>
