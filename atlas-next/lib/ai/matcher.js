@@ -82,6 +82,12 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
+function clampText(value, maxLength) {
+  const normalized = normalizeText(value).replace(/\s+/g, " ");
+  if (normalized.length <= maxLength) return normalized;
+  return `${normalized.slice(0, Math.max(0, maxLength - 3)).trimEnd()}...`;
+}
+
 function scoreFamilies(text) {
   const normalized = lower(text);
 
@@ -180,7 +186,7 @@ export function getPaidBundleOffer(templateFamily) {
 
   return {
     bundleName: `Full ${familyTitles[templateFamily]}`,
-    description: "Unlock the full editable and printable asset bundle for this generation session.",
+    description: clampText("Unlock the full editable and printable asset bundle for this generation session.", 220),
     priceLabel: formatUsdAmount(amountUsd),
     amountUsd,
     includedFormats: getOutputFormatsForFamily(templateFamily)
@@ -193,11 +199,17 @@ export function buildSuggestedOptions(input, rankedFamilies) {
   return rankedFamilies.slice(0, 3).map((entry, index) =>
     generationOptionSchema.parse({
       id: `option-${index + 1}`,
-      title: familyTitles[entry.templateFamily],
-      description: `${familyDescriptions[entry.templateFamily]} This option is tuned to the request: "${prompt.slice(0, 72)}${prompt.length > 72 ? "..." : ""}"`,
+      title: clampText(familyTitles[entry.templateFamily], 90),
+      description: clampText(
+        `${familyDescriptions[entry.templateFamily]} This option is tuned to the request: "${prompt.slice(0, 72)}${prompt.length > 72 ? "..." : ""}"`,
+        220
+      ),
       templateFamily: entry.templateFamily,
       outputFormats: getOutputFormatsForFamily(entry.templateFamily),
-      rationale: `This direction keeps the output focused on ${familyTitles[entry.templateFamily].toLowerCase()} so the first generated asset feels useful immediately.`
+      rationale: clampText(
+        `This direction keeps the output focused on ${familyTitles[entry.templateFamily].toLowerCase()} so the first generated asset feels useful immediately.`,
+        180
+      )
     })
   );
 }
@@ -214,14 +226,20 @@ export function buildFallbackIntent(input) {
   const useCaseType = inferUseCase(input, templateFamily);
 
   return normalizedIntentSchema.parse({
-    intentSummary: `The customer wants an AI-guided digital product that turns "${normalizeText(input.prompt)}" into a clear, editable, and printable output with less mental clutter.`,
-    recommendedTitle: familyTitles[templateFamily],
-    recommendedDescription: `Start with a ${familyTitles[templateFamily].toLowerCase()} that gives the customer a concrete first output, then expand into a fuller downloadable bundle if they want more depth.`,
-    audienceProfile: inferAudience(input),
-    useCaseType,
-    styleDirection: inferStyleDirection(input),
+    intentSummary: clampText(
+      `The customer wants an AI-guided digital product that turns "${normalizeText(input.prompt)}" into a clear, editable, and printable output with less mental clutter.`,
+      320
+    ),
+    recommendedTitle: clampText(familyTitles[templateFamily], 100),
+    recommendedDescription: clampText(
+      `Start with a ${familyTitles[templateFamily].toLowerCase()} that gives the customer a concrete first output, then expand into a fuller downloadable bundle if they want more depth.`,
+      420
+    ),
+    audienceProfile: clampText(inferAudience(input), 120),
+    useCaseType: clampText(useCaseType, 120),
+    styleDirection: clampText(inferStyleDirection(input), 80),
     deliverables: buildDeliverables(templateFamily, input),
-    whyItFits: buildWhyItFits(templateFamily, input),
+    whyItFits: buildWhyItFits(templateFamily, input).map((item) => clampText(item, 180)),
     scopeStatus,
     templateFamily
   });
@@ -249,13 +267,22 @@ export function mergePlannerOutput(fallbackOutput, aiOutput) {
   const mergedIntent = normalizedIntentSchema.parse({
     ...fallbackOutput.normalizedIntent,
     ...aiOutput.normalizedIntent,
+    intentSummary: clampText(aiOutput.normalizedIntent?.intentSummary || fallbackOutput.normalizedIntent.intentSummary, 320),
+    recommendedTitle: clampText(aiOutput.normalizedIntent?.recommendedTitle || fallbackOutput.normalizedIntent.recommendedTitle, 100),
+    recommendedDescription: clampText(
+      aiOutput.normalizedIntent?.recommendedDescription || fallbackOutput.normalizedIntent.recommendedDescription,
+      420
+    ),
+    audienceProfile: clampText(aiOutput.normalizedIntent?.audienceProfile || fallbackOutput.normalizedIntent.audienceProfile, 120),
+    useCaseType: clampText(aiOutput.normalizedIntent?.useCaseType || fallbackOutput.normalizedIntent.useCaseType, 120),
+    styleDirection: clampText(aiOutput.normalizedIntent?.styleDirection || fallbackOutput.normalizedIntent.styleDirection, 80),
     deliverables:
       Array.isArray(aiOutput.normalizedIntent?.deliverables) && aiOutput.normalizedIntent.deliverables.length
-        ? unique(aiOutput.normalizedIntent.deliverables).slice(0, 8)
+        ? unique(aiOutput.normalizedIntent.deliverables).map((item) => clampText(item, 90)).slice(0, 8)
         : fallbackOutput.normalizedIntent.deliverables,
     whyItFits:
       Array.isArray(aiOutput.normalizedIntent?.whyItFits) && aiOutput.normalizedIntent.whyItFits.length
-        ? unique(aiOutput.normalizedIntent.whyItFits).slice(0, 5)
+        ? unique(aiOutput.normalizedIntent.whyItFits).map((item) => clampText(item, 180)).slice(0, 5)
         : fallbackOutput.normalizedIntent.whyItFits
   });
 
@@ -263,7 +290,14 @@ export function mergePlannerOutput(fallbackOutput, aiOutput) {
     normalizedIntent: mergedIntent,
     suggestedOptions:
       Array.isArray(aiOutput.suggestedOptions) && aiOutput.suggestedOptions.length >= 2
-        ? aiOutput.suggestedOptions.slice(0, 3)
+        ? aiOutput.suggestedOptions.slice(0, 3).map((option) =>
+            generationOptionSchema.parse({
+              ...option,
+              title: clampText(option.title, 90),
+              description: clampText(option.description, 220),
+              rationale: clampText(option.rationale, 180)
+            })
+          )
         : fallbackOutput.suggestedOptions
   };
 }
