@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Wedding Prompt Pack Contracts",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "output_mode": {
+      "type": "string",
+      "enum": [
+        "wedding_template",
+        "product_summary",
+        "creative_brief",
+        "all"
+      ],
+      "description": "Optional orchestrator mode for selecting one or more deliverables."
+    },
+    "assumption_policy": {
+      "type": "string",
+      "enum": [
+        "conservative",
+        "flexible"
+      ],
+      "default": "conservative",
+      "description": "Controls whether the generator should prefer strict placeholders or slightly more interpretive defaults."
+    },
+    "wedding_brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "couple_names": {
+          "type": "string",
+          "description": "Display names for the couple. Use a premium placeholder when missing."
+        },
+        "wedding_date": {
+          "type": "string",
+          "description": "Primary wedding date in presentation-ready text."
+        },
+        "theme_tagline": {
+          "type": "string",
+          "description": "Short premium tagline that captures the wedding theme."
+        },
+        "wedding_style": {
+          "type": "string",
+          "description": "Overall style direction such as modern royal, minimal luxury, or garden editorial."
+        },
+        "color_palette": {
+          "type": "string",
+          "description": "Primary colors or palette direction."
+        },
+        "cultural_influence": {
+          "type": "string",
+          "description": "Cultural context that should shape language and design."
+        },
+        "venue_location": {
+          "type": "string",
+          "description": "Venue or location reference when known."
+        },
+        "event_list": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ordered list of included events."
+        },
+        "timeline": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "event": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string"
+              },
+              "time": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Structured timing details for event presentation."
+        },
+        "guest_notes": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "Guest instructions, etiquette notes, or practical reminders."
+        },
+        "target_audience": {
+          "type": "string",
+          "description": "Intended customer or reader for the deliverable."
+        },
+        "tone": {
+          "type": "string",
+          "description": "Desired voice and emotional register."
+        },
+        "special_requests": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "Optional customization notes or constraints."
+        }
+      },
+      "description": "Preferred structured input fields. Partial briefs are valid and should trigger prompt fallback behavior rather than validation failure."
+    },
+    "WeddingTemplateDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cover_page": {
+          "type": "string"
+        },
+        "event_details": {
+          "type": "string"
+        },
+        "schedule_timeline": {
+          "type": "string"
+        },
+        "guest_notes": {
+          "type": "string"
+        },
+        "design_style_description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "cover_page",
+        "event_details",
+        "schedule_timeline",
+        "guest_notes",
+        "design_style_description"
+      ]
+    },
+    "WeddingProductSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "emotional_description": {
+          "type": "string"
+        },
+        "key_highlights": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "title",
+        "emotional_description",
+        "key_highlights",
+        "deliverables"
+      ]
+    },
+    "WeddingCreativeBrief": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style": {
+          "type": "string"
+        },
+        "palette": {
+          "type": "string"
+        },
+        "cultural_influence": {
+          "type": "string"
+        },
+        "tone": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        },
+        "creative_direction": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "style",
+        "palette",
+        "cultural_influence",
+        "tone",
+        "audience",
+        "creative_direction"
+      ]
+    }
+  },
+  "required": [
+    "wedding_brief"
+  ]
+}
