@@ -1,30 +1,6 @@
-import { env } from "@/lib/env";
-import { getSupabaseAdmin } from "@/lib/supabase-admin";
-
-export async function getFreebieDownloadUrl(productSlug) {
-  if (!productSlug) return "";
-
-  const supabase = getSupabaseAdmin();
-  if (!supabase) return "";
-
-  const { data, error } = await supabase
-    .from("download_files")
-    .select("file_url, storage_bucket, storage_path, access_mode, sort_order")
-    .eq("product_slug", productSlug)
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true })
-    .limit(1);
-
-  if (error || !data?.length) return "";
-
-  const file = data[0];
-  if (file.access_mode === "signed" && file.storage_path) {
-    const bucket = file.storage_bucket || env.supabaseDownloadsBucket;
-    const signedUrlResult = await supabase.storage.from(bucket).createSignedUrl(file.storage_path, env.supabaseSignedUrlExpiresIn);
-    return signedUrlResult.data?.signedUrl || "";
-  }
-
-  return file.file_url || "";
+// Static file lookup removed — all freebies are now generated dynamically by AI.
+export async function getFreebieDownloadUrl(_productSlug) {
+  return "";
 }
 
 export function buildStarterBriefContent({ product, session }) {
