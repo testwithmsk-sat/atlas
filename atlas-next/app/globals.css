@@ -6955,3 +6955,135 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
     min-height: 460px;
   }
 }
+
+/* ── Contact Owner Card ───────────────────────────────────── */
+.contact-owner-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  align-items: center;
+  margin: 0 0 48px;
+  padding: 40px 48px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--panel-strong);
+  box-shadow: var(--shadow-strong);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-owner-card::before {
+  content: "";
+  position: absolute;
+  inset: -30% auto auto -8%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(217, 126, 162, 0.13), transparent 65%);
+  pointer-events: none;
+}
+
+.contact-owner-photo-wrap {
+  flex-shrink: 0;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--accent-soft);
+  box-shadow: 0 8px 32px rgba(51, 33, 18, 0.18);
+}
+
+.contact-owner-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.contact-owner-info {
+  display: grid;
+  gap: 10px;
+}
+
+.contact-owner-info h2 {
+  margin: 0;
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: clamp(1.4rem, 2vw, 1.9rem);
+  font-weight: 600;
+  color: var(--text-strong);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.contact-owner-info p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.97rem;
+  line-height: 1.6;
+  max-width: 48ch;
+}
+
+.contact-owner-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.contact-owner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  text-decoration: none;
+}
+
+.contact-owner-link:hover,
+.contact-owner-link:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(51, 33, 18, 0.14);
+}
+
+.contact-owner-link--phone {
+  background: linear-gradient(135deg, var(--accent), #b8794a);
+  color: #fff;
+  border: none;
+}
+
+.contact-owner-link--email {
+  background: transparent;
+  border: 1.5px solid var(--line-strong);
+  color: var(--text-strong);
+}
+
+.contact-owner-link--email:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 680px) {
+  .contact-owner-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 28px 24px;
+    gap: 24px;
+  }
+
+  .contact-owner-photo-wrap {
+    margin: 0 auto;
+    width: 120px;
+    height: 120px;
+  }
+
+  .contact-owner-links {
+    justify-content: center;
+  }
+
+  .contact-owner-info p {
+    max-width: 100%;
+  }
+}

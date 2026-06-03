@@ -4,9 +4,111 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact | The Digital Atlas</title>
-  <meta name="description" content="Contact The Digital Atlas for support, questions, or general inquiries.">
+  <meta name="description" content="Reach out to The Digital Atlas for support, questions, or general inquiries.">
   <meta name="theme-color" content="#0b0b0d">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Contact Owner Card (local override) ── */
+    .contact-owner-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 40px;
+      align-items: center;
+      margin: 0 0 48px;
+      padding: 40px 48px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-owner-card::before {
+      content: "";
+      position: absolute;
+      inset: -30% auto auto -8%;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,175,55,0.12), transparent 65%);
+      pointer-events: none;
+    }
+    .contact-owner-photo-wrap {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--gold);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+      flex-shrink: 0;
+    }
+    .contact-owner-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .contact-owner-info {
+      display: grid;
+      gap: 10px;
+    }
+    .contact-owner-info h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .contact-owner-info p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.97rem;
+      line-height: 1.6;
+      max-width: 48ch;
+    }
+    .contact-owner-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .contact-owner-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+    .contact-owner-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .contact-owner-link--phone {
+      background: var(--button-primary-bg);
+      color: var(--button-primary-text);
+    }
+    .contact-owner-link--email {
+      border: 1.5px solid var(--line);
+      color: var(--gold-soft);
+    }
+    .contact-owner-link--email:hover {
+      border-color: var(--gold);
+    }
+    @media (max-width: 640px) {
+      .contact-owner-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 28px 20px;
+        gap: 20px;
+      }
+      .contact-owner-photo-wrap { margin: 0 auto; }
+      .contact-owner-links { justify-content: center; }
+    }
+  </style>
 </head>
 <body data-page="contact">
   <a class="skip-link" href="#contact-page">Skip to content</a>
@@ -19,21 +121,49 @@
         <a href="about.html">About</a>
         <a href="free-resources.html">Resources</a>
         <a href="faq.html">FAQ</a>
+        <a href="contact.html" aria-current="page">Contact</a>
       </nav>
       <a class="nav-cta" href="login.html">Account</a>
     </header>
 
     <main id="contact-page" class="shop-page">
+
       <section class="page-hero" data-section="hero">
         <p class="eyebrow">Contact</p>
-        <h1 data-edit-id="contact-hero-title">Reach out for support or general questions.</h1>
-        <p class="hero-text">Use this page for help, follow-up, or any general inquiry you want answered directly.</p>
+        <h1>Reach out — I'm here to help.</h1>
+        <p class="hero-text">Whether it's a product question, order follow-up, or a custom bundle request — get in touch directly and I'll respond as soon as possible.</p>
       </section>
+
+      <!-- Owner Card -->
+      <section data-section="owner-card" style="max-width:900px;margin:0 auto 48px;">
+        <div class="contact-owner-card">
+          <div class="contact-owner-photo-wrap">
+            <img src="images/owner-photo.jpg" alt="The Digital Atlas founder" loading="eager">
+          </div>
+          <div class="contact-owner-info">
+            <p class="eyebrow">Founder &amp; Support</p>
+            <h2>Let's talk directly</h2>
+            <p>I personally handle all inquiries for The Digital Atlas. Expect a fast, helpful response — no bots, no wait queues.</p>
+            <div class="contact-owner-links">
+              <a class="contact-owner-link contact-owner-link--phone" href="tel:+917010087906">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.07 3.4 2 2 0 0 1 3.04 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16z"/></svg>
+                +91 70100 87906
+              </a>
+              <a class="contact-owner-link contact-owner-link--email" href="mailto:support@thedigitalatlas.com">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                support@thedigitalatlas.com
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Form -->
       <section class="lead-card" data-section="contact-card">
         <div>
           <p class="panel-label">Support Form</p>
-          <h2 data-edit-id="contact-card-title">Contact The Digital Atlas</h2>
-          <p data-edit-id="contact-card-text">Send a message if you need help, want clarification, or simply want to get in touch.</p>
+          <h2>Send a message</h2>
+          <p>Use the form below for help, clarification, or any general inquiry you'd like answered directly.</p>
         </div>
         <form class="lead-form" name="contact-support" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" data-live-form="contact">
           <input type="hidden" name="form-name" value="contact-support">
@@ -44,23 +174,34 @@
           <label><span>Subject</span><input type="text" name="subject" placeholder="What do you need help with?" required></label>
           <label><span>Message</span><textarea name="message" rows="5" placeholder="Write your message" required></textarea></label>
           <button class="button button-primary" type="submit">Send Message</button>
-          <p class="form-note">Hosted form: ready for Netlify form capture on a live deployment.</p>
         </form>
       </section>
+
+      <!-- Help Cards -->
       <section class="policy-layout" data-section="contact-help">
         <article class="policy-card">
           <h2>Best reasons to reach out</h2>
-          <p>Use the contact page for support, site questions, clarification, or follow-up requests.</p>
+          <p>Use the contact page for product support, order questions, file format clarification, or custom bundle requests.</p>
         </article>
         <article class="policy-card">
           <h2>General inquiries</h2>
-          <p>If you want to ask about the website, future plans, or anything else, this is the right place to start.</p>
+          <p>If you want to ask about the website, future plans, or anything else — this is the right place to start.</p>
         </article>
       </section>
+
     </main>
+
     <footer class="footer">
-      <div><h2>The Digital Atlas</h2><p>The website is currently empty and ready for future updates.</p></div>
-      <div class="footer-links"><a href="index.html">Home</a><a href="about.html">About</a><a href="faq.html">FAQ</a><a href="login.html">Login</a></div>
+      <div>
+        <h2>The Digital Atlas</h2>
+        <p>Ready to help — reach out any time via phone or email.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="faq.html">FAQ</a>
+        <a href="login.html">Login</a>
+      </div>
     </footer>
   </div>
   <script src="app.js"></script>
