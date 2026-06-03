@@ -9,9 +9,12 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export async function generateMetadata({ params }) {
   const { sessionId } = await params;
+  const session = await getGenerationSession(sessionId).catch(() => null);
   return {
-    title: `Ideas ${sessionId}`,
-    description: "Matched product ideas for your AI-generated request",
+    title: session?.normalizedIntent?.recommendedTitle
+      ? `${session.normalizedIntent.recommendedTitle} — The Digital Atlas`
+      : "Your AI Digital Product — The Digital Atlas",
+    description: session?.normalizedIntent?.recommendedDescription || "AI-generated digital product for your goal.",
     robots: { index: false, follow: false }
   };
 }
@@ -19,7 +22,6 @@ export async function generateMetadata({ params }) {
 export default async function IdeaSessionPage({ params }) {
   const { sessionId } = await params;
   const session = await getGenerationSession(sessionId);
-
   if (!session) notFound();
 
   const assets = await listGeneratedAssetsForSession(sessionId);
@@ -31,70 +33,237 @@ export default async function IdeaSessionPage({ params }) {
   const sampleAssets = getSampleAssets(assets);
   const bundleAssets = hasPaidAccess ? getBundleAssets(assets) : [];
   const intent = session.normalizedIntent;
+  const samplePdf = sampleAssets.find(a => a.format === "PDF");
+  const previewPng = sampleAssets.find(a => a.format === "PNG");
+
+  const formatLabel = (family = "") =>
+    family.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 
   return (
     <div className="stack">
-      <section className="section-block intent-product-recommendation-shell">
-        <div className="intent-product-recommendation-layout">
-          <article className="intent-product-preview-card">
-            <div className="product-preview-heading">
-              <p className="eyebrow eyebrow--electric">AI-generated direction</p>
-              <h2>{intent.recommendedTitle}</h2>
-              <p>{intent.recommendedDescription}</p>
-            </div>
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <section className="section-block" style={{ paddingTop: "3rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2.5rem", alignItems: "start" }}>
 
-            {/* AI-generated preview card instead of static PDF iframe */}
-            <div className="intent-product-preview-mockup" style={{ padding: "2rem", background: "linear-gradient(135deg, #efe5cf 0%, #f7f3ea 52%, #d6e6df 100%)", borderRadius: "12px", minHeight: "260px" }}>
-              <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "0.75rem", opacity: 0.6 }}>The Digital Atlas</p>
-              <h3 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: "0.75rem" }}>{intent.recommendedTitle}</h3>
-              <p style={{ fontSize: "0.95rem", marginBottom: "1.25rem", opacity: 0.8 }}>{intent.intentSummary || intent.recommendedDescription}</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                {(intent.deliverables || []).slice(0, 4).map((item) => (
-                  <span key={item} style={{ padding: "0.35rem 0.75rem", border: "1.5px solid rgba(23,33,47,0.18)", borderRadius: "999px", fontSize: "0.82rem", background: "rgba(255,255,255,0.5)" }}>
+          {/* Left: Product preview card */}
+          <div style={{
+            background: "linear-gradient(145deg, #1B2A4A 0%, #243659 60%, #1a3048 100%)",
+            borderRadius: "18px",
+            padding: "2.5rem 2rem 2rem",
+            position: "relative",
+            overflow: "hidden",
+            minHeight: "420px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            boxShadow: "0 20px 60px rgba(27,42,74,0.35)"
+          }}>
+            {/* Gold accent top bar */}
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "4px", background: "#C9A84C" }} />
+
+            {/* Top badge */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
+                <span style={{
+                  background: "rgba(201,168,76,0.18)",
+                  border: "1px solid rgba(201,168,76,0.4)",
+                  color: "#C9A84C",
+                  padding: "4px 12px",
+                  borderRadius: "999px",
+                  fontSize: "0.7rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase"
+                }}>
+                  {formatLabel(session.templateFamily)}
+                </span>
+                <span style={{
+                  background: "#C9A84C",
+                  color: "#1B2A4A",
+                  padding: "4px 12px",
+                  borderRadius: "999px",
+                  fontSize: "0.7rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.08em"
+                }}>
+                  FREE SAMPLE
+                </span>
+              </div>
+
+              {/* Title */}
+              <h2 style={{ color: "#FFFFFF", fontSize: "1.6rem", fontWeight: 800, lineHeight: 1.2, marginBottom: "0.75rem" }}>
+                {intent.recommendedTitle}
+              </h2>
+              <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.9rem", lineHeight: 1.5, marginBottom: "1.5rem" }}>
+                {intent.intentSummary || intent.recommendedDescription}
+              </p>
+
+              {/* Deliverables chips */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1.5rem" }}>
+                {(intent.deliverables || []).slice(0, 5).map(item => (
+                  <span key={item} style={{
+                    padding: "5px 12px",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    borderRadius: "8px",
+                    fontSize: "0.78rem",
+                    color: "rgba(255,255,255,0.8)",
+                    background: "rgba(255,255,255,0.06)"
+                  }}>
                     {item}
                   </span>
                 ))}
               </div>
             </div>
-          </article>
 
-          <article className="intent-product-match-card">
-            <p className="eyebrow">Your AI-generated bundle</p>
-            <h2>{paidBundleOffer.bundleName}</h2>
-            <p>{intent.recommendedDescription}</p>
-
-            <div className="checkout-microcopy">
-              {intent.useCaseType && <span>{intent.useCaseType}</span>}
-              {intent.audienceProfile && <span>{intent.audienceProfile}</span>}
-              {intent.styleDirection && <span>{intent.styleDirection}</span>}
-            </div>
-
-            <div className="summary-lines">
-              <div>
-                <span>Price</span>
-                <strong>{paidBundleOffer.priceLabel}</strong>
-              </div>
-              <div>
-                <span>Type</span>
-                <strong>{paidBundleOffer.bundleName}</strong>
-              </div>
-            </div>
-
-            <ul className="feature-list compact-detail-list">
-              {(intent.whyItFits || []).map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-
-            <div className="summary-actions">
-              <Link className="button button-secondary" href={`/workspace/${sessionId}`}>
-                Open planning workspace
+            {/* Bottom actions */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {samplePdf ? (
+                <a
+                  href={`/api/assets/${samplePdf.id}/download`}
+                  style={{
+                    display: "block",
+                    background: "#C9A84C",
+                    color: "#1B2A4A",
+                    padding: "12px 20px",
+                    borderRadius: "10px",
+                    fontWeight: 700,
+                    fontSize: "0.9rem",
+                    textAlign: "center",
+                    textDecoration: "none"
+                  }}
+                >
+                  ↓ Download Free Sample PDF
+                </a>
+              ) : (
+                <div style={{
+                  background: "rgba(201,168,76,0.12)",
+                  border: "1px dashed rgba(201,168,76,0.4)",
+                  padding: "12px 20px",
+                  borderRadius: "10px",
+                  color: "rgba(255,255,255,0.5)",
+                  fontSize: "0.85rem",
+                  textAlign: "center"
+                }}>
+                  Sample generating — open workspace to download
+                </div>
+              )}
+              <Link
+                href={`/workspace/${sessionId}`}
+                style={{
+                  display: "block",
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#FFFFFF",
+                  padding: "10px 20px",
+                  borderRadius: "10px",
+                  fontWeight: 600,
+                  fontSize: "0.85rem",
+                  textAlign: "center",
+                  textDecoration: "none"
+                }}
+              >
+                Open Full Workspace →
               </Link>
             </div>
-          </article>
+
+            {/* TDA watermark */}
+            <div style={{
+              position: "absolute",
+              bottom: "1.25rem",
+              right: "1.5rem",
+              fontSize: "0.65rem",
+              color: "rgba(255,255,255,0.2)",
+              letterSpacing: "0.12em",
+              fontWeight: 700,
+              textTransform: "uppercase"
+            }}>
+              The Digital Atlas
+            </div>
+          </div>
+
+          {/* Right: Intent breakdown */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+            <div>
+              <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#C9A84C", marginBottom: "0.4rem" }}>
+                AI DIRECTION
+              </p>
+              <h1 style={{ fontSize: "1.9rem", fontWeight: 800, lineHeight: 1.15, marginBottom: "0.75rem" }}>
+                {intent.recommendedTitle}
+              </h1>
+              <p style={{ fontSize: "1rem", color: "#555F6F", lineHeight: 1.6 }}>
+                {intent.recommendedDescription}
+              </p>
+            </div>
+
+            {/* Intent tags */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+              {[intent.useCaseType, intent.audienceProfile, intent.styleDirection].filter(Boolean).map(tag => (
+                <span key={tag} style={{
+                  padding: "5px 14px",
+                  background: "#F0ECD8",
+                  borderRadius: "999px",
+                  fontSize: "0.8rem",
+                  color: "#1B2A4A",
+                  fontWeight: 500
+                }}>{tag}</span>
+              ))}
+            </div>
+
+            {/* Why it fits */}
+            {(intent.whyItFits || []).length > 0 && (
+              <div style={{ background: "#F8F6F2", borderRadius: "12px", padding: "1.25rem" }}>
+                <p style={{ fontWeight: 700, fontSize: "0.8rem", color: "#1B2A4A", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  Why this fits
+                </p>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  {(intent.whyItFits || []).slice(0, 4).map(item => (
+                    <li key={item} style={{ display: "flex", gap: "0.6rem", fontSize: "0.88rem", color: "#444" }}>
+                      <span style={{ color: "#C9A84C", flexShrink: 0, fontWeight: 700 }}>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Bundle offer */}
+            <div style={{
+              border: "2px solid #1B2A4A",
+              borderRadius: "12px",
+              padding: "1.25rem",
+              background: "#FFFFFF"
+            }}>
+              <p style={{ fontWeight: 700, fontSize: "0.75rem", color: "#C9A84C", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.5rem" }}>
+                Full Bundle
+              </p>
+              <p style={{ fontWeight: 800, fontSize: "1.1rem", color: "#1B2A4A", marginBottom: "0.25rem" }}>
+                {paidBundleOffer.bundleName}
+              </p>
+              <p style={{ fontSize: "0.85rem", color: "#666", marginBottom: "1rem" }}>
+                {paidBundleOffer.description}
+              </p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1B2A4A" }}>
+                  {paidBundleOffer.priceLabel}
+                </span>
+                <Link href={`/workspace/${sessionId}`} style={{
+                  background: "#1B2A4A",
+                  color: "#FFFFFF",
+                  padding: "9px 18px",
+                  borderRadius: "8px",
+                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  textDecoration: "none"
+                }}>
+                  Unlock Bundle →
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* ── Workspace section ────────────────────────────────────────── */}
       <WorkspaceSessionClient
         session={session}
         sampleAssets={sampleAssets}
