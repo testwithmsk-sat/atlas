@@ -7578,3 +7578,19 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
   margin: -4px 0 0;
   letter-spacing: 0.01em;
 }
+
+/* ── Creator unlock button ── */
+.creator-unlock-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.creator-unlock-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 10px 0 0;
+  width: 100%;
+}

@@ -346,7 +346,7 @@ export default function AICreatorClient({ userId, initialProducts }) {
 
           {/* Free sample card */}
           <div className="info-card creator-card">
-            <span className="creator-dir-tag creator-dir-tag--free">🎁 Free starter sample</span>
+            <span className="creator-dir-tag creator-dir-tag--premium">✨ Your product direction</span>
             <h3 className="creator-dir-title">{output?.title ?? "Building your product…"}</h3>
             {output?.description && <p className="creator-dir-desc">{output.description}</p>}
             {output?.formats && (
@@ -395,8 +395,20 @@ export default function AICreatorClient({ userId, initialProducts }) {
                 ))}
               </div>
               <div className="creator-action-row">
-                <button className="button button-secondary" onClick={() => toast("Free sample downloading…")}>⬇️ Free sample</button>
-                <button className="button button-primary" onClick={() => toast("Unlock the full bundle — pricing coming soon!")}>👑 Unlock full bundle</button>
+                <button
+                  className="button button-primary creator-unlock-btn"
+                  onClick={() => {
+                    if (!userId) {
+                      toast("Please sign in to purchase the full bundle.");
+                    } else {
+                      toast("Redirecting to checkout…");
+                      window.location.href = `/checkout?bundle=${encodeURIComponent(output.title)}`;
+                    }
+                  }}
+                >
+                  👑 Unlock Full Bundle — Buy Now
+                </button>
+                <p className="creator-unlock-note">🔒 Download unlocks immediately after purchase</p>
               </div>
             </div>
           )}
