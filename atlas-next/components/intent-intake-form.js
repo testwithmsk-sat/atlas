@@ -5,22 +5,12 @@ import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const promptPresets = [
-  {
-    label: "Budget bride",
-    prompt: "I have $500 and 2 months to plan a 50-person wedding and I need a calm printable kit with a checklist, budget tracker, and elegant guest-facing pieces."
-  },
-  {
-    label: "Birthday host",
-    prompt: "I need a digital party bundle with invitations, a planning checklist, a welcome sign, and a simple budget sheet."
-  },
-  {
-    label: "Small business",
-    prompt: "I want an editable business starter pack for onboarding, proposals, pricing, and client documents that still feels simple to use."
-  },
-  {
-    label: "Home reset",
-    prompt: "I want a low-stress digital system for routines, decluttering, and weekly planning with printable pages and a simple tracker."
-  }
+  { label: "💍 Wedding planner", prompt: "I need a wedding planning bundle with a budget tracker, 12-month checklist, and guest list for 80 people in 4 months." },
+  { label: "🎉 Birthday party", prompt: "I'm planning a birthday party for 30 people and need a run sheet, guest list, and fun invitation template." },
+  { label: "💼 Freelance business", prompt: "I run a freelance design studio and need a client proposal template, invoice, and onboarding checklist." },
+  { label: "🏠 Home reset", prompt: "I want a home organization system with weekly routines, a declutter checklist, and a simple habit tracker." },
+  { label: "📋 Corporate event", prompt: "I'm organising a 100-person corporate conference and need a run sheet, speaker schedule, and attendee tracker." },
+  { label: "🚀 Startup launch", prompt: "I'm launching a startup and need a pitch deck outline, go-to-market checklist, and investor one-pager template." },
 ];
 
 export function IntentIntakeForm({
@@ -46,35 +36,22 @@ export function IntentIntakeForm({
   const handleSubmit = (event) => {
     event.preventDefault();
     setError("");
-
     startTransition(() => {
       void (async () => {
         setIsSubmitting(true);
-
         try {
           const response = await fetch("/api/intent", {
             method: "POST",
-            headers: {
-              "content-type": "application/json"
-            },
-            body: JSON.stringify({
-              prompt,
-              budget,
-              timeline,
-              audience,
-              style,
-              useCaseType
-            })
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ prompt, budget, timeline, audience, style, useCaseType })
           });
-
           const payload = await response.json().catch(() => ({}));
           if (!response.ok || !payload?.sessionId) {
-            throw new Error(payload?.error || "The planning assistant could not build a generation session right now.");
+            throw new Error(payload?.error || "Could not generate your workspace. Please try again.");
           }
-
           router.push(`/ideas/${payload.sessionId}`);
         } catch (submitError) {
-          setError(submitError instanceof Error ? submitError.message : "The planning assistant could not build a generation session right now.");
+          setError(submitError instanceof Error ? submitError.message : "Something went wrong. Please try again.");
         } finally {
           setIsSubmitting(false);
         }
@@ -85,120 +62,140 @@ export function IntentIntakeForm({
   return (
     <div className="intent-shell" data-reveal>
       <form className="intent-intake-form" onSubmit={handleSubmit}>
+
+        {/* Header */}
         <div className="intent-panel-head">
-          <p className="eyebrow eyebrow--electric">Start with the outcome</p>
-          <h2>Tell us what success looks like. The workspace will shape the right product around it.</h2>
+          <p className="eyebrow eyebrow--electric">Free — no account needed</p>
+          <h2>What do you need? Describe it in one sentence.</h2>
           <p>
-            One clear sentence is enough to begin. Add optional details if you want the first direction to land closer
-            to your budget, audience, timing, and style.
+            The more specific you are, the better the result. Try: <em>"I need a wedding budget tracker for 60 guests with a 6-month timeline and an elegant style."</em>
           </p>
         </div>
 
+        {/* Quick-start presets */}
+        <div style={{ marginBottom: "1.25rem" }}>
+          <p style={{ fontSize: "0.78rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted)", marginBottom: "0.6rem" }}>
+            Quick starts
+          </p>
+          <div className="intent-chip-row" style={{ flexWrap: "wrap", gap: "0.5rem" }}>
+            {promptPresets.map((preset) => (
+              <button
+                className="intent-chip"
+                key={preset.label}
+                type="button"
+                onClick={() => setPrompt(preset.prompt)}
+                style={{ fontSize: "0.82rem", padding: "6px 14px" }}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="intent-form-layout">
+          {/* Main prompt */}
           <div className="intent-main-column">
             <label className="intent-field intent-field--prompt">
-              <span>Your goal in one sentence</span>
+              <span>Your goal</span>
               <textarea
-                rows={5}
+                rows={4}
                 value={prompt}
-                onChange={(event) => setPrompt(event.target.value)}
-                placeholder="Example: I need a printable wedding planning bundle with a budget tracker, checklists, and a few elegant guest-facing pages."
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="e.g. I need a wedding planning kit with a budget tracker, checklist, and guest list for 80 people in 4 months."
                 required
+                style={{ resize: "vertical" }}
               />
             </label>
-            <p className="intent-form-hint">
-              Start with the result, pressure point, or bundle outcome you want. The workspace can infer the best
-              format from there.
+
+            {/* Character count hint */}
+            <p className="intent-form-hint" style={{ display: "flex", justifyContent: "space-between" }}>
+              <span>Be specific about your goal, timeline, audience, and style for the best output.</span>
+              <span style={{ color: prompt.length > 20 ? "var(--sage)" : "var(--muted)" }}>
+                {prompt.length > 20 ? "✓ Good length" : "Add more detail"}
+              </span>
             </p>
           </div>
 
-          <aside className="intent-guide-card" aria-label="Helpful starting points">
-            <p className="eyebrow eyebrow--electric">Helpful starting points</p>
+          {/* Guide card */}
+          <aside className="intent-guide-card" aria-label="Tips for a great result">
+            <p className="eyebrow eyebrow--electric">Tips for the best result</p>
             <ul className="intent-guide-list">
-              <li>Lead with the outcome, not the file type.</li>
-              <li>Mention urgency, audience, or tone only if it matters.</li>
-              <li>The first sample should reduce uncertainty, not add options.</li>
+              <li><strong>Mention the occasion</strong> — wedding, birthday, business launch</li>
+              <li><strong>Add a number</strong> — guests, pages, budget, timeline</li>
+              <li><strong>Say the style</strong> — elegant, minimal, playful, professional</li>
+              <li><strong>Name the deliverable</strong> — checklist, tracker, proposal, planner</li>
             </ul>
-            <div className="intent-chip-row">
-              {promptPresets.map((preset) => (
-                <button className="intent-chip" key={preset.label} type="button" onClick={() => setPrompt(preset.prompt)}>
-                  {preset.label}
-                </button>
-              ))}
-            </div>
           </aside>
         </div>
 
+        {/* Optional details toggle */}
         <div className="intent-details-block">
           <button
             className="intent-details-toggle"
             type="button"
             aria-expanded={showDetails}
-            onClick={() => setShowDetails((currentValue) => !currentValue)}
+            onClick={() => setShowDetails(v => !v)}
           >
-            {showDetails ? "Hide optional details" : "Add optional details"}
+            {showDetails ? "▲ Hide optional refinements" : "▼ Add optional refinements (budget, style, audience)"}
           </button>
 
-          {showDetails ? (
+          {showDetails && (
             <div className="intent-details-grid">
               <label className="intent-field">
                 <span>Budget</span>
-                <input
-                  type="text"
-                  value={budget}
-                  onChange={(event) => setBudget(event.target.value)}
-                  placeholder="$500, premium, low-cost, etc."
-                />
+                <input type="text" value={budget} onChange={e => setBudget(e.target.value)} placeholder="$500, premium, shoestring, etc." />
               </label>
               <label className="intent-field">
                 <span>Timeline</span>
-                <input
-                  type="text"
-                  value={timeline}
-                  onChange={(event) => setTimeline(event.target.value)}
-                  placeholder="ASAP, 2 weeks, next month, etc."
-                />
+                <input type="text" value={timeline} onChange={e => setTimeline(e.target.value)} placeholder="ASAP, 2 weeks, 3 months, etc." />
               </label>
               <label className="intent-field">
                 <span>Audience</span>
-                <input
-                  type="text"
-                  value={audience}
-                  onChange={(event) => setAudience(event.target.value)}
-                  placeholder="Bride and guests, clients, family, solo use, etc."
-                />
+                <input type="text" value={audience} onChange={e => setAudience(e.target.value)} placeholder="Clients, wedding guests, family, solo use, etc." />
               </label>
               <label className="intent-field">
-                <span>Style</span>
-                <input
-                  type="text"
-                  value={style}
-                  onChange={(event) => setStyle(event.target.value)}
-                  placeholder="Minimal, elegant, playful, formal, clean, etc."
-                />
+                <span>Style preference</span>
+                <input type="text" value={style} onChange={e => setStyle(e.target.value)} placeholder="Minimal, elegant, bold, playful, corporate, etc." />
               </label>
               <label className="intent-field intent-field--wide">
-                <span>Use case type</span>
-                <input
-                  type="text"
-                  value={useCaseType}
-                  onChange={(event) => setUseCaseType(event.target.value)}
-                  placeholder="Wedding logistics, proposal template, party signage, weekly planner, etc."
-                />
+                <span>Specific use case</span>
+                <input type="text" value={useCaseType} onChange={e => setUseCaseType(e.target.value)} placeholder="e.g. Wedding logistics, client onboarding, party signage, habit tracker" />
               </label>
             </div>
-          ) : null}
+          )}
         </div>
 
-        {error ? <p className="status-note">{error}</p> : null}
+        {error && (
+          <div style={{
+            background: "rgba(217,126,162,0.12)",
+            border: "1px solid rgba(217,126,162,0.3)",
+            borderRadius: "12px",
+            padding: "0.75rem 1rem",
+            color: "#8b2252",
+            fontSize: "0.9rem",
+            marginBottom: "1rem"
+          }}>
+            {error}
+          </div>
+        )}
 
         <div className="intent-actions">
-          <button className="button button-primary intent-submit-button" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Building your workspace..." : "Build my first direction"}
+          <button
+            className="button button-primary intent-submit-button"
+            type="submit"
+            disabled={isSubmitting || !prompt.trim()}
+            style={{ opacity: (!prompt.trim() && !isSubmitting) ? 0.6 : 1 }}
+          >
+            {isSubmitting ? (
+              <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span style={{ display: "inline-block", width: "14px", height: "14px", border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "rotate-slow 0.8s linear infinite" }} />
+                Building your workspace...
+              </span>
+            ) : "Generate my free sample →"}
           </button>
-          <Link className="button button-secondary" href="/faq">
-            See sample flows
-          </Link>
+          <p style={{ fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.5rem" }}>
+            Free. No credit card. No account required.
+          </p>
         </div>
       </form>
     </div>
