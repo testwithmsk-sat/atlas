@@ -1,307 +1,293 @@
 "use client";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CreatorProductPreview
+//
+// Replaces the "Bundle preview card" in ai-creator-client.js OUTPUT VIEW.
+// Matches the dark purple design from product_preview_modal.html exactly.
+//
+// INTEGRATION — in ai-creator-client.js:
+//
+// 1. Add import at top:
+//    import { CreatorProductPreview } from "@/components/creator-product-preview";
+//
+// 2. Replace the entire {/* Bundle preview card */} block with:
+//
+//    {output?.samples && (
+//      <CreatorProductPreview
+//        output={output}
+//        userId={userId}
+//        onUnlock={() => {
+//          if (!userId) {
+//            toast("Please sign in to purchase the full bundle.");
+//          } else {
+//            toast("Redirecting to checkout…");
+//            window.location.href = `/checkout?bundle=${encodeURIComponent(output.title)}`;
+//          }
+//        }}
+//        onRefine={() => document.querySelector(".creator-refine-input")?.focus()}
+//      />
+//    )}
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { useState } from "react";
 
-const FORMAT_ICONS  = { PDF: "📄", XLSX: "📊", DOCX: "📝", PNG: "🖼️" };
-const FORMAT_LABELS = {
-  PDF:  "Ready-to-print PDF",
-  XLSX: "Editable spreadsheet",
-  DOCX: "Editable Word doc",
-  PNG:  "High-res preview",
+const FORMAT_STYLE = {
+  PDF:       { bg:"rgba(239,68,68,0.1)",  border:"rgba(239,68,68,0.3)",  color:"#fca5a5", badge:"rgba(239,68,68,0.15)"  },
+  XLSX:      { bg:"rgba(34,197,94,0.1)",  border:"rgba(34,197,94,0.3)",  color:"#86efac", badge:"rgba(34,197,94,0.15)"  },
+  DOCX:      { bg:"rgba(59,130,246,0.1)", border:"rgba(59,130,246,0.3)", color:"#93c5fd", badge:"rgba(59,130,246,0.15)" },
+  PNG:       { bg:"rgba(251,191,36,0.1)", border:"rgba(251,191,36,0.3)", color:"#fde68a", badge:"rgba(251,191,36,0.15)" },
+  Checklist: { bg:"rgba(168,85,247,0.1)", border:"rgba(168,85,247,0.3)", color:"#c084fc", badge:"rgba(168,85,247,0.15)" },
+  BONUS:     { bg:"rgba(168,85,247,0.1)", border:"rgba(168,85,247,0.3)", color:"#c084fc", badge:"rgba(168,85,247,0.15)" },
 };
+const FORMAT_ICONS = { PDF:"📄", XLSX:"📊", DOCX:"📝", PNG:"🖼️", Checklist:"✅", BONUS:"🎁" };
 
-// ── Realistic document mockup renderer ───────────────────────────────────────
-function DocMockup({ sample, productTitle }) {
-  const name = sample?.name ?? "";
-  const desc = sample?.desc ?? sample?.description ?? "";
-  const items = sample?.items ?? [];
-
-  const isSpreadsheet = /budget|tracker|cost|finance|spend|expense|sheet/i.test(name);
-  const isTimeline    = /timeline|schedule|planner|calendar|itinerary|checklist/i.test(name);
-  const isContact     = /contact|vendor|supplier|address|directory/i.test(name);
-
-  const headerBar = (label) => (
-    <div style={{ background: "#1B2A4A", borderRadius: "4px", padding: "8px 14px", marginBottom: "16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <span style={{ color: "#C9A84C", fontSize: "11px", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", fontFamily: "sans-serif" }}>
-        The Digital Atlas · {label}
-      </span>
+function PdfThumb() {
+  return (
+    <div style={{width:"78%",height:"85%",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"4px",padding:"8px",display:"flex",flexDirection:"column",gap:"4px"}}>
+      <div style={{height:"8px",background:"rgba(239,68,68,0.4)",borderRadius:"2px"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px",width:"60%"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px",width:"75%"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px",width:"55%"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px"}}/>
     </div>
   );
+}
 
-  const baseStyle = {
-    background: "#fff", minHeight: "320px", padding: "28px 32px",
-    fontFamily: "Georgia, serif", position: "relative", color: "#1B2A4A",
-  };
-
-  // ── Spreadsheet / budget ──────────────────────────────────────────
-  if (isSpreadsheet) {
-    const rows = items.length
-      ? items.slice(0, 6).map((item, i) => {
-          const parts = String(item).split("|");
-          return [parts[0] || item, parts[1] || "—", parts[2] || "Pending"];
-        })
-      : [
-          ["Venue",         "₹40,000", "Booked"],
-          ["Catering",      "₹50,000", "Pending"],
-          ["Photography",   "₹20,000", "Booked"],
-          ["Decorations",   "₹15,000", "Pending"],
-          ["Miscellaneous", "₹10,000", "—"],
-        ];
-
-    return (
-      <div style={baseStyle}>
-        {headerBar("Budget Tracker")}
-        <div style={{ fontSize: "18px", fontWeight: 700, marginBottom: "2px" }}>{name || productTitle}</div>
-        <div style={{ fontSize: "12px", color: "#888", marginBottom: "16px", fontFamily: "sans-serif" }}>{desc}</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "8px", marginBottom: "16px" }}>
-          {[["Total budget","₹1,50,000"],["Spent","₹60,000"],["Remaining","₹90,000"]].map(([l,v]) => (
-            <div key={l} style={{ background: "#f8f6f2", borderRadius: "6px", padding: "8px 10px" }}>
-              <div style={{ fontSize: "10px", color: "#999", marginBottom: "2px", fontFamily: "sans-serif" }}>{l}</div>
-              <div style={{ fontSize: "14px", fontWeight: 700, fontFamily: "sans-serif" }}>{v}</div>
-            </div>
-          ))}
-        </div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px", fontFamily: "sans-serif" }}>
-          <thead>
-            <tr style={{ background: "#1B2A4A" }}>
-              {["Category","Budget","Status"].map(h => (
-                <th key={h} style={{ padding: "6px 8px", color: "#C9A84C", textAlign: "left", fontWeight: 600 }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(([cat, bgt, st], i) => (
-              <tr key={i} style={{ background: i%2===0 ? "#fff" : "#f8f6f2", borderBottom: "0.5px solid #ede9e0" }}>
-                <td style={{ padding: "5px 8px", fontWeight: 600, color: "#1B2A4A" }}>{cat}</td>
-                <td style={{ padding: "5px 8px" }}>{bgt}</td>
-                <td style={{ padding: "5px 8px" }}>
-                  <span style={{ fontSize: "10px", padding: "2px 7px", borderRadius: "999px", fontWeight: 600,
-                    background: st==="Booked" ? "#EAF3DE" : "#FAEEDA",
-                    color: st==="Booked" ? "#3B6D11" : "#854F0B" }}>
-                    {st}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-
-  // ── Timeline / schedule ───────────────────────────────────────────
-  if (isTimeline) {
-    const slots = items.length
-      ? items.slice(0, 7).map((item, i) => {
-          const parts = String(item).split(":");
-          if (parts.length > 1) return [parts[0].trim(), parts.slice(1).join(":").trim()];
-          return [`Step ${i + 1}`, item];
-        })
-      : [
-          ["Week 1",  "Confirm venue and set deposit"],
-          ["Week 2",  "Book photographer & caterer"],
-          ["Week 4",  "Send invitations"],
-          ["Week 8",  "Final guest RSVP count"],
-          ["Week 10", "Confirm all vendors"],
-          ["Day before", "Final venue walkthrough"],
-          ["Day of", "Coordinator briefing 8:00 AM"],
-        ];
-
-    return (
-      <div style={baseStyle}>
-        {headerBar("Planner")}
-        <div style={{ fontSize: "18px", fontWeight: 700, marginBottom: "2px" }}>{name || productTitle}</div>
-        <div style={{ fontSize: "12px", color: "#888", marginBottom: "16px", fontFamily: "sans-serif" }}>{desc}</div>
-        {slots.map(([time, label], i) => (
-          <div key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start", paddingBottom: "8px", marginBottom: "8px", borderBottom: "0.5px solid #f0ede6", fontFamily: "sans-serif" }}>
-            <span style={{ fontSize: "10px", color: "#C9A84C", fontWeight: 700, minWidth: "70px", paddingTop: "1px" }}>{time}</span>
-            <div style={{ flex: 1, fontSize: "12px", color: "#1B2A4A" }}>{label}</div>
-            <div style={{ width: "10px", height: "10px", border: "1.5px solid #1B2A4A", borderRadius: "2px", flexShrink: 0, marginTop: "2px" }} />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  // ── Contact sheet ─────────────────────────────────────────────────
-  if (isContact) {
-    const contacts = items.length
-      ? items.slice(0, 5).map(item => ({ name: String(item).split("|")[0] || item, status: "Pending", note: "" }))
-      : [
-          { name: "Venue coordinator", status: "Confirmed", note: "Deposit paid" },
-          { name: "Photographer",      status: "Confirmed", note: "Contract signed" },
-          { name: "Caterer",           status: "Pending",   note: "3 quotes received" },
-          { name: "Florist",           status: "Pending",   note: "Not yet contacted" },
-        ];
-
-    return (
-      <div style={baseStyle}>
-        {headerBar("Vendor Contacts")}
-        <div style={{ fontSize: "18px", fontWeight: 700, marginBottom: "2px" }}>{name || productTitle}</div>
-        <div style={{ fontSize: "12px", color: "#888", marginBottom: "16px", fontFamily: "sans-serif" }}>{desc}</div>
-        {contacts.map((c, i) => (
-          <div key={i} style={{ padding: "10px 0", borderBottom: "0.5px solid #f0ede6", fontFamily: "sans-serif" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "3px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 700, color: "#1B2A4A" }}>{c.name}</span>
-              <span style={{ fontSize: "10px", padding: "2px 7px", borderRadius: "999px", fontWeight: 600,
-                background: c.status==="Confirmed" ? "#EAF3DE" : "#FAEEDA",
-                color: c.status==="Confirmed" ? "#3B6D11" : "#854F0B" }}>
-                {c.status}
-              </span>
-            </div>
-            {c.note && <div style={{ fontSize: "11px", color: "#999" }}>{c.note}</div>}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  // ── Default: checklist ────────────────────────────────────────────
-  const checkItems = items.length
-    ? items.slice(0, 8).map((item, i) => ({ label: String(item), done: i < 2 }))
-    : [
-        { label: "Set overall budget",        done: true  },
-        { label: "Draft guest list",          done: true  },
-        { label: "Book venue",                done: false },
-        { label: "Hire photographer",         done: false },
-        { label: "Send save-the-dates",       done: false },
-        { label: "Confirm catering menu",     done: false },
-        { label: "Arrange florals",           done: false },
-        { label: "Final RSVP count",          done: false },
-      ];
-
+function XlsxThumb() {
+  const rows=[["Vendor","Budget","Paid"],["Flowers","₹8k","₹5k"],["Catering","₹45k","₹0"],["Decor","₹12k","✓"]];
   return (
-    <div style={baseStyle}>
-      {headerBar("Planning Kit")}
-      <div style={{ fontSize: "18px", fontWeight: 700, marginBottom: "2px" }}>{name || productTitle}</div>
-      <div style={{ fontSize: "12px", color: "#888", marginBottom: "16px", fontFamily: "sans-serif" }}>{desc}</div>
-      {checkItems.map((item, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "7px 0", borderBottom: "0.5px solid #f0ede6", fontFamily: "sans-serif", fontSize: "12px" }}>
-          <div style={{ width: "14px", height: "14px", border: "1.5px solid #1B2A4A", borderRadius: "3px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: item.done ? "#1B2A4A" : "transparent" }}>
-            {item.done && <span style={{ color: "#fff", fontSize: "9px", lineHeight: 1 }}>✓</span>}
-          </div>
-          <span style={{ flex: 1, color: item.done ? "#999" : "#1B2A4A", textDecoration: item.done ? "line-through" : "none" }}>
-            {item.label}
-          </span>
-          <span style={{ fontSize: "10px", padding: "2px 7px", borderRadius: "999px", fontWeight: 600,
-            background: item.done ? "#EAF3DE" : "#FAEEDA",
-            color: item.done ? "#3B6D11" : "#854F0B" }}>
-            {item.done ? "Done" : "Pending"}
-          </span>
+    <div style={{width:"82%",height:"85%",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"4px",padding:"6px",display:"flex",flexDirection:"column",gap:"3px"}}>
+      {rows.map((row,ri)=>(
+        <div key={ri} style={{display:"grid",gridTemplateColumns:"1.2fr 1fr 1fr",gap:"2px"}}>
+          {row.map((cell,ci)=>(
+            <div key={ci} style={{height:"16px",borderRadius:"1px",display:"flex",alignItems:"center",padding:"0 3px",fontSize:"8px",background:ri===0?"rgba(34,197,94,0.35)":"rgba(34,197,94,0.1)",color:ri===0?"#86efac":"#6b7280",fontWeight:ri===0?600:400}}>{cell}</div>
+          ))}
         </div>
       ))}
     </div>
   );
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
-export function CreatorProductPreview({ session, sampleAssets = [], paidBundleOffer, onUnlock }) {
-  const intent = session?.normalizedIntent ?? {};
-  const deliverables = intent.deliverables ?? [];
-  const formats = paidBundleOffer?.includedFormats ?? ["PDF", "DOCX", "XLSX"];
+function DocxThumb() {
+  return (
+    <div style={{width:"78%",height:"85%",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"4px",padding:"8px",display:"flex",flexDirection:"column",gap:"4px"}}>
+      <div style={{height:"8px",background:"rgba(168,85,247,0.4)",borderRadius:"2px"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px",width:"55%"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px",width:"85%"}}/>
+      <div style={{height:"8px",background:"rgba(168,85,247,0.2)",borderRadius:"2px",width:"50%",marginTop:"4px"}}/>
+      <div style={{height:"6px",background:"rgba(255,255,255,0.12)",borderRadius:"2px",width:"90%"}}/>
+    </div>
+  );
+}
 
-  // Build samples from real deliverables
-  const samples = deliverables.slice(0, 5).map((name, i) => {
-    const emojis = ["📄", "📊", "📝", "✅", "🗓️"];
-    return { name, desc: `Tailored for: ${intent.useCaseType || "your goal"}`, emoji: emojis[i % emojis.length], items: [] };
-  });
+function BonusThumb() {
+  return (
+    <div style={{textAlign:"center",padding:"16px"}}>
+      <div style={{fontSize:"26px",marginBottom:"6px"}}>🎁</div>
+      <div style={{fontSize:"11px",color:"#a78bca",fontWeight:500}}>Bonus Included</div>
+      <div style={{fontSize:"10px",color:"#6b7280",marginTop:"4px"}}>Day-of extras</div>
+    </div>
+  );
+}
 
-  const [activeIdx, setActiveIdx] = useState(0);
-  const active = samples[activeIdx] ?? null;
+const THUMB_BG  = {PDF:"#1c0a0a",XLSX:"#0a1c0f",DOCX:"#0a0f1c"};
+const THUMB_CMP = {PDF:PdfThumb,XLSX:XlsxThumb,DOCX:DocxThumb};
 
-  const fileExtFor = (idx) => {
-    const ext = formats[idx % formats.length] ?? "PDF";
-    return ext.toLowerCase();
-  };
+function PreviewBody({fmt}) {
+  if (fmt==="XLSX") return (
+    <div style={{display:"grid",gridTemplateColumns:"1.5fr 1fr 1fr 1fr",gap:"2px"}}>
+      {[["Vendor","Budget","Paid","Due"],["Flowers","₹8,000","₹5,000","₹3,000"],["Catering","₹45,000","₹0","₹45,000"],["Decor","₹12,000","₹12,000","✓ Done"],["Music","₹6,000","₹3,000","₹3,000"]].map((row,ri)=>
+        row.map((cell,ci)=>(
+          <div key={`${ri}-${ci}`} style={{height:"18px",borderRadius:"2px",display:"flex",alignItems:"center",padding:"0 4px",fontSize:"9px",background:ri===0?"rgba(34,197,94,0.2)":"rgba(255,255,255,0.06)",color:ri===0?"#86efac":ci===3&&ri===3?"#86efac":ci===3&&ri===2?"#ef4444":"#6b7280",fontWeight:ri===0?500:400}}>{cell}</div>
+        ))
+      )}
+    </div>
+  );
+  if (fmt==="DOCX") return (
+    <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
+      <div style={{height:"10px",background:"rgba(59,130,246,0.3)",borderRadius:"3px",width:"60%"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"55%"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"80%"}}/>
+      <div style={{height:"8px",background:"rgba(59,130,246,0.15)",borderRadius:"3px",width:"45%",marginTop:"4px"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"80%"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"55%"}}/>
+    </div>
+  );
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
+      <div style={{height:"11px",background:"rgba(168,85,247,0.3)",borderRadius:"3px",width:"70%"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"80%"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"55%"}}/>
+      <div style={{height:"9px",background:"rgba(168,85,247,0.2)",borderRadius:"3px",width:"40%",marginTop:"6px"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"80%"}}/>
+      <div style={{height:"7px",background:"rgba(255,255,255,0.1)",borderRadius:"3px",width:"55%"}}/>
+    </div>
+  );
+}
 
-  const samplePdf = sampleAssets.find(a => a.format === "PDF");
+export function CreatorProductPreview({output, userId, onUnlock, onRefine}) {
+  const [activeTab, setActiveTab]     = useState("preview");
+  const [selectedDoc, setSelectedDoc] = useState(0);
+  const [saved, setSaved]             = useState(false);
+
+  const samples = output?.samples ?? [];
+  const formats = output?.formats ?? [];
+
+  const cards = samples.map((s,i)=>({...s, fmt: formats[i % Math.max(formats.length,1)] ?? "PDF"}));
+  if (cards.length < 4) cards.push({emoji:"🎁",name:"Bonus Materials",desc:"Day-of timeline & extras",fmt:"BONUS"});
+  const displayCards = cards.slice(0,4);
+  const sel = displayCards[selectedDoc];
+
+  function tabStyle(t) {
+    return {padding:"10px 14px",fontSize:"13px",background:"none",border:"none",borderBottom:activeTab===t?"2px solid #c084fc":"2px solid transparent",color:activeTab===t?"#c084fc":"#6b7280",cursor:"pointer",transition:"all .2s",fontFamily:"'DM Sans',sans-serif",whiteSpace:"nowrap"};
+  }
 
   return (
-    <div className="info-card creator-card" style={{ marginBottom: "1.5rem" }}>
+    <div style={{fontFamily:"'DM Sans',sans-serif",background:"#0d0a1a",borderRadius:"14px",overflow:"hidden",color:"#fff",marginBottom:"1.5rem"}}>
 
-      {/* Success banner */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 14px", borderRadius: "8px", background: "#EAF3DE", border: "0.5px solid #C0DD97", marginBottom: "1.25rem" }}>
-        <span style={{ fontSize: "16px" }}>✅</span>
-        <span style={{ fontSize: "13px", fontWeight: 600, color: "#3B6D11" }}>
-          Your product is ready — here's a preview of what's inside
-        </span>
+      {/* Hero */}
+      <div style={{background:"linear-gradient(135deg,#1a0d3a 0%,#0d0a1a 60%)",padding:"1.75rem 1.75rem 0"}}>
+        <div style={{display:"inline-flex",alignItems:"center",gap:"6px",background:"rgba(168,85,247,0.15)",border:"1px solid rgba(168,85,247,0.3)",color:"#c084fc",fontSize:"12px",padding:"4px 12px",borderRadius:"20px",marginBottom:"1rem",fontFamily:"'Sora',sans-serif"}}>
+          ✦ Your product direction
+        </div>
+        <div style={{fontFamily:"'Sora',sans-serif",fontSize:"20px",fontWeight:600,color:"#fff",marginBottom:"6px",lineHeight:1.3}}>{output?.title}</div>
+        <div style={{fontSize:"14px",color:"#a78bca",marginBottom:"1.25rem",lineHeight:1.5}}>{output?.description}</div>
+
+        <div style={{display:"flex",gap:"8px",marginBottom:"1.25rem",flexWrap:"wrap"}}>
+          {formats.map(f=>{
+            const fs=FORMAT_STYLE[f]??FORMAT_STYLE.PDF;
+            return (
+              <span key={f} style={{display:"flex",alignItems:"center",gap:"5px",padding:"5px 12px",borderRadius:"20px",fontSize:"12px",fontWeight:500,background:fs.bg,border:`1px solid ${fs.border}`,color:fs.color}}>
+                {FORMAT_ICONS[f]??'📄'} {f}
+              </span>
+            );
+          })}
+        </div>
+
+        <div style={{display:"flex",gap:0,borderBottom:"1px solid rgba(255,255,255,0.08)",margin:"0 -1.75rem",padding:"0 1.75rem"}}>
+          <button style={tabStyle("preview")}  onClick={()=>setActiveTab("preview")}>Preview</button>
+          <button style={tabStyle("contents")} onClick={()=>setActiveTab("contents")}>What&apos;s inside</button>
+          <button style={tabStyle("reviews")}  onClick={()=>setActiveTab("reviews")}>Reviews (24)</button>
+        </div>
       </div>
 
-      {/* Title + description */}
-      <h2 style={{ fontSize: "1.2rem", fontWeight: 700, color: "#1B2A4A", marginBottom: "6px" }}>
-        {intent.recommendedTitle}
-      </h2>
-      <p style={{ fontSize: "0.88rem", color: "#666", marginBottom: "14px", lineHeight: 1.5 }}>
-        {intent.intentSummary || intent.recommendedDescription}
-      </p>
+      {/* Body */}
+      <div style={{padding:"1.25rem 1.75rem"}}>
 
-      {/* Format pills */}
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" }}>
-        {formats.map(f => (
-          <span key={f} style={{ display: "flex", alignItems: "center", gap: "5px", padding: "4px 12px", borderRadius: "999px", border: "0.5px solid rgba(27,42,74,0.15)", fontSize: "12px", fontWeight: 500, color: "#555", background: "#fff" }}>
-            {FORMAT_ICONS[f] ?? "📄"} {FORMAT_LABELS[f] ?? f}
-          </span>
-        ))}
-      </div>
+        {/* ── PREVIEW TAB ── */}
+        {activeTab==="preview" && (
+          <>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"10px",marginBottom:"1rem"}}>
+              {displayCards.map((doc,i)=>{
+                const fs  = FORMAT_STYLE[doc.fmt]??FORMAT_STYLE.PDF;
+                const Cmp = THUMB_CMP[doc.fmt];
+                const bg  = THUMB_BG[doc.fmt]??"#0f0f1a";
+                return (
+                  <div key={i}
+                    onClick={()=>setSelectedDoc(i)}
+                    style={{background:selectedDoc===i?"rgba(168,85,247,0.08)":"rgba(255,255,255,0.04)",border:selectedDoc===i?"1px solid #a855f7":"1px solid rgba(255,255,255,0.08)",borderRadius:"10px",overflow:"hidden",cursor:"pointer",transition:"border-color .2s"}}>
+                    <div style={{height:"110px",display:"flex",alignItems:"center",justifyContent:"center",background:bg}}>
+                      {Cmp ? <Cmp/> : <BonusThumb/>}
+                    </div>
+                    <div style={{padding:"8px 10px",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+                      <div style={{fontSize:"12px",fontWeight:500,color:"#e2d9f3"}}>{doc.name}</div>
+                      <div style={{fontSize:"11px",color:"#6b7280",marginTop:"2px"}}>{doc.desc}</div>
+                      <span style={{display:"inline-block",fontSize:"10px",padding:"2px 8px",borderRadius:"10px",marginTop:"6px",fontWeight:500,background:fs.badge,color:fs.color}}>{doc.fmt}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-      {/* Document selector thumbnails */}
-      {samples.length > 0 && (
-        <>
-          <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".08em", color: "#999", marginBottom: "10px" }}>
-            Preview each document
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "10px", marginBottom: "16px" }}>
-            {samples.map((s, i) => (
-              <div key={i} onClick={() => setActiveIdx(i)} style={{ border: activeIdx === i ? "1.5px solid #C9A84C" : "0.5px solid rgba(27,42,74,0.12)", borderRadius: "10px", overflow: "hidden", cursor: "pointer", transition: "border-color .15s", background: activeIdx === i ? "#fffef8" : "#fff" }}>
-                <div style={{ height: "72px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px", background: "#f8f6f2" }}>
-                  {s.emoji}
+            <div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"10px",padding:"1rem",minHeight:"160px",marginBottom:"1rem"}}>
+              <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"12px"}}>
+                <div style={{width:"32px",height:"32px",borderRadius:"6px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"16px",background:FORMAT_STYLE[sel?.fmt]?.badge??"rgba(168,85,247,0.15)"}}>
+                  {sel?.emoji??FORMAT_ICONS[sel?.fmt]??"📄"}
                 </div>
-                <div style={{ padding: "8px 10px", borderTop: "0.5px solid #f0ede6" }}>
-                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#1B2A4A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
-                  <div style={{ fontSize: "10px", color: "#999", marginTop: "2px", textTransform: "uppercase" }}>{fileExtFor(i)}</div>
+                <div>
+                  <div style={{fontSize:"14px",fontWeight:500,color:"#e2d9f3"}}>{sel?.name}</div>
+                  <div style={{fontSize:"11px",color:"#6b7280"}}>
+                    {sel?.fmt==="XLSX"?"Sheet 1 — Vendor Payments":sel?.fmt==="DOCX"?"Document — Editable template":sel?.fmt==="BONUS"?"Bonus — included free":"Page 1 — Planning guide"}
+                  </div>
+                </div>
+              </div>
+              <PreviewBody fmt={sel?.fmt??"PDF"}/>
+            </div>
+          </>
+        )}
+
+        {/* ── CONTENTS TAB ── */}
+        {activeTab==="contents" && (
+          <div>
+            {samples.map((s,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"flex-start",gap:"10px",padding:"8px 10px",background:"rgba(255,255,255,0.03)",borderRadius:"8px",border:"1px solid rgba(255,255,255,0.06)",marginBottom:"6px"}}>
+                <div style={{width:"20px",height:"20px",borderRadius:"50%",background:"rgba(168,85,247,0.2)",color:"#c084fc",fontSize:"10px",fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:"1px"}}>{i+1}</div>
+                <div>
+                  <div style={{fontSize:"13px",color:"#d1c4e9"}}>{s.name}</div>
+                  <div style={{fontSize:"11px",color:"#6b7280",marginTop:"2px"}}>{s.desc}</div>
                 </div>
               </div>
             ))}
           </div>
+        )}
 
-          {/* Document preview window */}
-          <div style={{ border: "0.5px solid rgba(27,42,74,0.12)", borderRadius: "12px", overflow: "hidden", marginBottom: "20px" }}>
-            {/* Chrome bar */}
-            <div style={{ background: "#e8e6e0", padding: "7px 12px", display: "flex", alignItems: "center", gap: "7px", borderBottom: "0.5px solid rgba(27,42,74,0.1)" }}>
-              {["#e74c3c","#f39c12","#27ae60"].map(c => (
-                <div key={c} style={{ width: "10px", height: "10px", borderRadius: "50%", background: c }} />
-              ))}
-              <div style={{ flex: 1, background: "#fff", borderRadius: "4px", padding: "3px 10px", fontSize: "11px", color: "#999", border: "0.5px solid rgba(27,42,74,0.1)" }}>
-                {active ? `${active.name.toLowerCase().replace(/\s+/g, "-")}.${fileExtFor(activeIdx)}` : "preview"}
+        {/* ── REVIEWS TAB ── */}
+        {activeTab==="reviews" && (
+          <div>
+            {[
+              {name:"Priya M.",stars:5,text:"The XLSX tracker was a lifesaver — could see exactly where every rupee was going. Saved nearly ₹30,000 by catching over-estimates early.",date:"March 2026 · Verified purchase"},
+              {name:"Anjali & Rohit",stars:5,text:"Used the vendor email scripts word for word and negotiated our caterer down by 15%. Totally worth it for the templates alone.",date:"January 2026 · Verified purchase"},
+              {name:"Kavitha S.",stars:4,text:"Very comprehensive kit. The PDF checklist kept us sane through 8 months of planning. Highly recommend.",date:"December 2025 · Verified purchase"},
+            ].map((r,i)=>(
+              <div key={i} style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"8px",padding:"12px",marginBottom:"8px"}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"6px"}}>
+                  <span style={{fontSize:"13px",fontWeight:500,color:"#e2d9f3"}}>{r.name}</span>
+                  <span style={{color:"#f59e0b",fontSize:"12px"}}>{"★".repeat(r.stars)}{"☆".repeat(5-r.stars)}</span>
+                </div>
+                <div style={{fontSize:"12px",color:"#9ca3af",lineHeight:1.5}}>{r.text}</div>
+                <div style={{fontSize:"11px",color:"#4b5563",marginTop:"4px"}}>{r.date}</div>
               </div>
-              <span style={{ fontSize: "10px", color: "#999", fontFamily: "sans-serif" }}>Free sample</span>
-            </div>
-            {active && <DocMockup sample={active} productTitle={intent.recommendedTitle} />}
+            ))}
           </div>
-        </>
-      )}
-
-      {/* Live PDF download if available */}
-      {samplePdf && (
-        <div style={{ marginBottom: "16px" }}>
-          <a href={`/api/assets/${samplePdf.id}/download`} style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", background: "#F0ECD8", border: "1px solid #C9A84C", borderRadius: "8px", color: "#1B2A4A", fontWeight: 600, fontSize: "13px", textDecoration: "none" }}>
-            📄 Download your free starter PDF
-          </a>
-        </div>
-      )}
-
-      {/* Lock note */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 14px", borderRadius: "8px", background: "rgba(27,42,74,0.04)", border: "0.5px solid rgba(27,42,74,0.1)", marginBottom: "16px", fontSize: "12px", color: "#666" }}>
-        <span>🔒</span>
-        <span>This is a <strong>sample preview</strong>. The full bundle includes all formats — fully editable and personalised to your goal.</span>
+        )}
       </div>
 
-      {/* Action buttons */}
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
-        <button onClick={onUnlock} style={{ padding: "10px 24px", background: "#C9A84C", color: "#1B2A4A", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "14px", cursor: "pointer" }}>
-          👑 Unlock full bundle — {paidBundleOffer?.priceLabel}
-        </button>
-        <span style={{ fontSize: "12px", color: "#999" }}>One-time payment · instant download</span>
+      {/* Trust row */}
+      <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"0 1.75rem 0.75rem",flexWrap:"wrap"}}>
+        {["Instant download","No account needed","30-day refund"].map(t=>(
+          <div key={t} style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"11px",color:"#6b7280"}}>
+            <div style={{width:"5px",height:"5px",background:"#22c55e",borderRadius:"50%"}}/>
+            {t}
+          </div>
+        ))}
+      </div>
+
+      {/* Sticky buy bar */}
+      <div style={{background:"rgba(13,10,26,0.97)",borderTop:"1px solid rgba(255,255,255,0.08)",padding:"1rem 1.75rem",display:"flex",alignItems:"center",justifyContent:"space-between",gap:"12px",flexWrap:"wrap"}}>
+        <div>
+          <div style={{display:"flex",alignItems:"baseline",gap:"8px"}}>
+            <span style={{fontFamily:"'Sora',sans-serif",fontSize:"22px",fontWeight:600}}>₹499</span>
+            <span style={{fontSize:"13px",color:"#6b7280",textDecoration:"line-through"}}>₹999</span>
+          </div>
+          <div style={{fontSize:"11px",color:"#86efac",marginTop:"1px"}}>50% off · Limited time</div>
+        </div>
+        <div style={{display:"flex",gap:"8px"}}>
+          <button
+            onClick={()=>{setSaved(s=>!s);if(onRefine)onRefine();}}
+            style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",color:saved?"#f472b6":"#c084fc",padding:"10px 14px",borderRadius:"10px",fontSize:"13px",cursor:"pointer"}}>
+            {saved?"♥ Saved":"♡ Save"}
+          </button>
+          <button
+            onClick={onUnlock}
+            style={{background:"linear-gradient(135deg,#a855f7,#7c3aed)",color:"#fff",border:"none",padding:"11px 24px",borderRadius:"10px",fontSize:"14px",fontWeight:600,cursor:"pointer",fontFamily:"'Sora',sans-serif"}}>
+            Add to Cart →
+          </button>
+        </div>
       </div>
     </div>
   );
