@@ -188,7 +188,8 @@ export default function AICreatorClient({ userId, initialProducts }) {
       await saveProduct(parsed);
     } catch (err) {
       console.error("Creator generate error:", err);
-      toast(`Something went wrong: ${err?.message ?? "Please try again."}`);
+      const msg = err?.message || "Unknown error";
+      toast(msg.length > 80 ? msg.slice(0, 80) + "…" : msg);
       setView("create");
     } finally {
       setLoading(false);

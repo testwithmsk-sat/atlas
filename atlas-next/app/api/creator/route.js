@@ -25,16 +25,28 @@ Respond ONLY in this exact JSON format with no markdown or preamble:
 
 export async function POST(request) {
   try {
-    const { messages, system, mode } = await request.json();
+    const { messages, mode } = await request.json();
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    // Try all possible key names used across the project
+    const apiKey =
+      process.env.ANTHROPIC_API_KEY ||
+      process.env.AI_GATEWAY_API_KEY ||
+      "";
+
     if (!apiKey) {
-      return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+      console.error(
+        "[creator] No API key found. Checked: ANTHROPIC_API_KEY, AI_GATEWAY_API_KEY. " +
+        "Available env keys:", Object.keys(process.env).filter(k => k.includes("ANTHROPIC") || k.includes("AI_") || k.includes("GATEWAY")).join(", ")
+      );
+      return NextResponse.json(
+        { error: "ANTHROPIC_API_KEY is not set in Vercel environment variables. Add it in Vercel → Settings → Environment Variables." },
+        { status: 500 }
+      );
     }
 
     const systemPrompt = mode === "refine"
       ? "You are a helpful planning assistant. Write warm, specific, actionable summaries. Plain text only."
-      : (system || SYSTEM_PROMPT);
+      : SYSTEM_PROMPT;
 
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -53,8 +65,11 @@ export async function POST(request) {
 
     if (!res.ok) {
       const err = await res.text();
-      console.error("Anthropic API error:", res.status, err);
-      return NextResponse.json({ error: "AI service error" }, { status: 502 });
+      console.error("[creator] Anthropic API error:", res.status, err);
+      return NextResponse.json(
+        { error: `Anthropic API returned ${res.status}: ${err}` },
+        { status: 502 }
+      );
     }
 
     const data = await res.json();
@@ -62,7 +77,7 @@ export async function POST(request) {
     return NextResponse.json({ text });
 
   } catch (err) {
-    console.error("Creator API route error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("[creator] Route error:", err);
+    return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
   }
 }
