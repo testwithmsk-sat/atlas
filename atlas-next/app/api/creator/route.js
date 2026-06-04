@@ -1,103 +1,96 @@
 import { NextResponse } from "next/server";
 
-export const maxDuration = 30;
+export const maxDuration = 60;
 
-const SYSTEM_PROMPT = `You are a digital product planning AI for The Digital Atlas. When given a user's goal, you:
-1. Generate a clear, focused product direction title (max 8 words)
-2. Write a 2-sentence product description that feels personal and actionable
-3. List 3-4 appropriate file formats from: PDF, DOCX, XLSX, PNG, Checklist
-4. Write a detailed 150-word AI direction summary that feels like a smart planning partner — specific, warm, action-oriented. Include 2-3 concrete suggestions tailored to their goal.
-5. List 4 sample bundle items with emoji and short description
+const SYSTEM_PROMPT = `You are a digital product planning AI for The Digital Atlas.
+Given a user's goal, generate a complete, specific digital product direction.
 
-Respond ONLY in this exact JSON format with no markdown or preamble:
+RULES:
+- Be HIGHLY SPECIFIC to the user's actual request — use their event, guest count, timeline, budget
+- Never use placeholder text. Every item must be real and immediately useful.
+- summary must be plain text only — NO JSON, NO curly braces
+- Return ONLY valid JSON, no markdown fences, no explanation
+
+Return this exact JSON:
 {
-  "title": "...",
-  "description": "...",
-  "formats": ["PDF","XLSX"],
-  "summary": "...",
+  "title": "Specific product title using their details (max 9 words)",
+  "description": "2 warm, specific sentences about what this product covers for their exact goal.",
+  "formats": ["PDF", "XLSX", "DOCX"],
+  "summary": "150-word plain-text planning direction. Warm expert tone. 3 concrete recommendations specific to their goal. NO JSON here — plain sentences only.",
   "samples": [
-    {"emoji":"📋","name":"...","desc":"..."},
-    {"emoji":"💰","name":"...","desc":"..."},
-    {"emoji":"📅","name":"...","desc":"..."},
-    {"emoji":"✉️","name":"...","desc":"..."}
-  ]
+    {"emoji":"📋","name":"Specific document name","desc":"What this document contains for their goal"},
+    {"emoji":"💰","name":"Specific document name","desc":"What this document contains"},
+    {"emoji":"📅","name":"Specific document name","desc":"What this document contains"},
+    {"emoji":"✉️","name":"Specific document name","desc":"What this document contains"}
+  ],
+  "preview": {
+    "checklist": [
+      "Specific actionable task 1 for their exact goal",
+      "Specific actionable task 2",
+      "Specific actionable task 3",
+      "Specific actionable task 4",
+      "Specific actionable task 5",
+      "Specific actionable task 6",
+      "Specific actionable task 7",
+      "Specific actionable task 8"
+    ],
+    "timeline": [
+      {"phase": "Week 1", "task": "Specific task for their goal", "detail": "Actionable tip"},
+      {"phase": "Week 2", "task": "Specific task", "detail": "Actionable tip"},
+      {"phase": "Week 4", "task": "Specific task", "detail": "Actionable tip"},
+      {"phase": "Week 6", "task": "Specific task", "detail": "Actionable tip"},
+      {"phase": "Week 8", "task": "Specific task", "detail": "Actionable tip"},
+      {"phase": "2 Weeks Before", "task": "Specific task", "detail": "Actionable tip"},
+      {"phase": "Day Before", "task": "Final preparation task", "detail": "Tip"},
+      {"phase": "Day Of", "task": "Execution task", "detail": "Tip"}
+    ],
+    "budget": [
+      {"category": "Specific cost category for their goal", "estimated": "Realistic amount", "status": "Pending"},
+      {"category": "Specific cost category", "estimated": "Realistic amount", "status": "Pending"},
+      {"category": "Specific cost category", "estimated": "Realistic amount", "status": "Pending"},
+      {"category": "Specific cost category", "estimated": "Realistic amount", "status": "Pending"},
+      {"category": "Specific cost category", "estimated": "Realistic amount", "status": "Pending"},
+      {"category": "Miscellaneous", "estimated": "Realistic amount", "status": "Pending"}
+    ]
+  }
 }`;
 
-const REFINE_PROMPT = "You are a helpful planning assistant. Write warm, specific, actionable summaries. Plain text only.";
+const REFINE_PROMPT = "You are a helpful planning assistant. Write warm, specific, actionable summaries. Plain text only. No JSON.";
 
-// Try models in order until one works
-const MODELS = [
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
-  "gemini-2.0-flash-lite",
-  "gemini-flash-latest",
-];
+async function callClaude(systemPrompt, messages) {
+  const apiKey = process.env.ANTHROPIC_API_KEY || "";
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set in Vercel environment variables.");
 
-async function callGemini(apiKey, systemPrompt, messages) {
-  const contents = messages.map(m => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01"
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 2000,
+      system: systemPrompt,
+      messages
+    })
+  });
 
-  for (const model of MODELS) {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          contents,
-          generationConfig: { temperature: 0.7, maxOutputTokens: 1200 },
-        }),
-      }
-    );
-
-    if (res.status === 404) {
-      console.log(`[creator] Model ${model} not found, trying next...`);
-      continue;
-    }
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`Gemini ${model} returned ${res.status}: ${err}`);
-    }
-
-    const data = await res.json();
-    const text = data.candidates?.[0]?.content?.parts?.map(p => p.text ?? "").join("") ?? "";
-    if (text) {
-      console.log(`[creator] Success with model: ${model}`);
-      return text;
-    }
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Claude API ${response.status}: ${err.slice(0, 200)}`);
   }
 
-  throw new Error("No Gemini model available. Check your API key at aistudio.google.com");
+  const data = await response.json();
+  return data.content?.[0]?.text || "";
 }
 
 export async function POST(request) {
   try {
     const { messages, mode } = await request.json();
-
-    const apiKey =
-      process.env.GEMINI_API_KEY ||
-      process.env.GOOGLE_GEMINI_API_KEY ||
-      process.env.GOOGLE_API_KEY ||
-      "";
-
-    if (!apiKey) {
-      const found = Object.keys(process.env)
-        .filter(k => k.includes("GEMINI") || k.includes("GOOGLE"))
-        .join(", ") || "none";
-      return NextResponse.json(
-        { error: `GEMINI_API_KEY not set in Vercel. Related vars found: ${found}` },
-        { status: 500 }
-      );
-    }
-
     const systemPrompt = mode === "refine" ? REFINE_PROMPT : SYSTEM_PROMPT;
-    const text = await callGemini(apiKey, systemPrompt, messages);
+    const text = await callClaude(systemPrompt, messages);
     return NextResponse.json({ text });
-
   } catch (err) {
     console.error("[creator] Error:", err?.message);
     return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
@@ -106,27 +99,9 @@ export async function POST(request) {
 
 // Debug — visit /api/creator in browser
 export async function GET() {
-  const apiKey =
-    process.env.GEMINI_API_KEY ||
-    process.env.GOOGLE_GEMINI_API_KEY ||
-    process.env.GOOGLE_API_KEY ||
-    "";
-
-  const keyStatus = apiKey ? `set (${apiKey.slice(0, 8)}...)` : "NOT SET";
-
-  // List available models if key exists
-  let availableModels = [];
-  if (apiKey) {
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
-      );
-      const data = await res.json();
-      availableModels = data.models?.map(m => m.name) ?? [];
-    } catch (e) {
-      availableModels = [`error listing models: ${e.message}`];
-    }
-  }
-
-  return NextResponse.json({ keyStatus, availableModels });
+  const apiKey = process.env.ANTHROPIC_API_KEY || "";
+  return NextResponse.json({
+    ai: "Claude (claude-sonnet-4-20250514)",
+    keyStatus: apiKey ? `set (${apiKey.slice(0, 8)}...)` : "NOT SET — add ANTHROPIC_API_KEY to Vercel env vars"
+  });
 }
