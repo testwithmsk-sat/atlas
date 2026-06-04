@@ -6,15 +6,15 @@ import { usePathname } from "next/navigation";
 import { useCart } from "@/components/cart-provider";
 
 const primaryLinks = [
-  { href: "/", label: "Start Workspace" },
   { href: "/creator", label: "AI Creator" },
-  { href: "/about", label: "Vision" },
-  { href: "/faq", label: "FAQ" }
+  { href: "/about", label: "About" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/contact", label: "Contact" }
 ];
 
 function isPrimaryLinkActive(pathname, href) {
   if (!pathname) return false;
-  if (href === "/") return pathname === "/" || pathname.startsWith("/ideas");
+  if (href === "/creator") return pathname === "/" || pathname === "/creator" || pathname.startsWith("/creator");
   return pathname.startsWith(href);
 }
 
@@ -112,8 +112,8 @@ export function SiteHeader() {
             <span>{itemCount}</span>
           </Link>
           {!isHome ? (
-            <Link className="button button-primary" href="/">
-              Open Workspace
+            <Link className="button button-primary" href="/creator">
+              Create Now
             </Link>
           ) : null}
         </div>

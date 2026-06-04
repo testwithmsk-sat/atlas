@@ -6,12 +6,11 @@ export function SiteFooter() {
       <div>
         <h2>The Digital Atlas</h2>
         <p>
-          An AI-first intent workspace that turns messy goals into focused digital directions, free starter samples,
-          and premium editable bundles that are easier to act on.
+          Describe your goal and get a focused digital product — free starter sample first,
+          premium editable bundle when you're ready.
         </p>
       </div>
       <div className="footer-links">
-        <Link href="/">Workspace</Link>
         <Link href="/creator">AI Creator</Link>
         <Link href="/about">About</Link>
         <Link href="/faq">FAQ</Link>
