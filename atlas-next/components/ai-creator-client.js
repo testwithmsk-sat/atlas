@@ -109,16 +109,18 @@ export default function AICreatorClient({ userId, initialProducts }) {
     }, 14);
   }
 
-  async function callClaude(messages, system) {
-    const body = { model: "claude-sonnet-4-20250514", max_tokens: 1000, messages };
-    if (system) body.system = system;
-    const res  = await fetch("https://api.anthropic.com/v1/messages", {
+  async function callClaude(messages, system, mode) {
+    const res = await fetch("/api/creator", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ messages, system, mode }),
     });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Request failed: ${res.status}`);
+    }
     const data = await res.json();
-    return data.content?.map(b => b.text ?? "").join("") ?? "";
+    return data.text ?? "";
   }
 
   // ── Save to Supabase ────────────────────────────────────────────────────────
@@ -184,8 +186,9 @@ export default function AICreatorClient({ userId, initialProducts }) {
       setOutput(parsed);
       streamText(parsed.summary, setStreamedSummary);
       await saveProduct(parsed);
-    } catch {
-      toast("Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("Creator generate error:", err);
+      toast(`Something went wrong: ${err?.message ?? "Please try again."}`);
       setView("create");
     } finally {
       setLoading(false);
@@ -202,7 +205,7 @@ export default function AICreatorClient({ userId, initialProducts }) {
       const text = await callClaude([{
         role: "user",
         content: `Original goal: ${currentGoalRef.current}\nRefinement: ${refineText}\n\nWrite a revised 150-word planning direction summary incorporating this refinement. Be specific and warm. Plain text only.`,
-      }]);
+      }], null, "refine");
       streamText(text, setStreamedSummary);
       setRefineText("");
       toast("Direction refined!");
