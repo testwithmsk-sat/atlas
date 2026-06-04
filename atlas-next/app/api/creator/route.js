@@ -27,11 +27,10 @@ const REFINE_PROMPT = "You are a helpful planning assistant. Write warm, specifi
 
 // Try models in order until one works
 const MODELS = [
-  "gemini-2.0-flash-lite",
+  "gemini-2.5-flash",
   "gemini-2.0-flash",
-  "gemini-1.5-flash",
-  "gemini-1.5-flash-8b",
-  "gemini-pro",
+  "gemini-2.0-flash-lite",
+  "gemini-flash-latest",
 ];
 
 async function callGemini(apiKey, systemPrompt, messages) {
