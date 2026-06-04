@@ -60,11 +60,10 @@ Write warm, specific, actionable planning advice as plain text only.
 No JSON. No bullet symbols. No curly braces. Just helpful sentences.`;
 
 const MODELS = [
-  "gemini-2.5-pro",
   "gemini-2.5-flash",
+  "gemini-2.5-pro",
   "gemini-2.0-flash",
   "gemini-1.5-pro",
-  "gemini-1.5-flash",
 ];
 
 async function callGemini(apiKey, systemPrompt, messages) {
