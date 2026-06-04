@@ -7570,3 +7570,11 @@ html[data-ui-mode="focus"] .primary-nav-indicator {
   .creator-action-row  { flex-direction: column; }
   .creator-refine-bar  { flex-direction: column; }
 }
+
+.contact-owner-role {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin: -4px 0 0;
+  letter-spacing: 0.01em;
+}

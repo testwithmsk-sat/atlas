@@ -52,7 +52,7 @@ export default function ContactPage() {
         <div className="contact-owner-photo-wrap">
           <Image
             src="/owner-photo.jpg"
-            alt="The Digital Atlas founder"
+            alt="Sathiskumar — Founder of The Digital Atlas"
             width={200}
             height={200}
             className="contact-owner-photo"
@@ -60,8 +60,9 @@ export default function ContactPage() {
           />
         </div>
         <div className="contact-owner-info">
-          <p className="eyebrow">Founder &amp; Support</p>
-          <h2>Get in touch directly</h2>
+          <p className="eyebrow">Founder &amp; Creator</p>
+          <h2>Sathiskumar</h2>
+          <p className="contact-owner-role">Founder &amp; Creator, The Digital Atlas</p>
           <p>
             Whether you have a question about a product, need help with your order, or want to explore a custom
             bundle — reach out directly and I'll get back to you as soon as possible.

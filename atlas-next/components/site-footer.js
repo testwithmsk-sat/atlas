@@ -9,6 +9,9 @@ export function SiteFooter() {
           Describe your goal and get a focused digital product — free starter sample first,
           premium editable bundle when you're ready.
         </p>
+        <p style={{ marginTop: "10px", fontSize: "0.82rem", opacity: 0.7 }}>
+          Founded &amp; built by <strong>Sathiskumar</strong>
+        </p>
       </div>
       <div className="footer-links">
         <Link href="/creator">AI Creator</Link>
