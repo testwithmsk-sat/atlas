@@ -29,19 +29,28 @@ export async function POST(request) {
   try {
     const { messages, mode } = await request.json();
 
-    const apiKey = process.env.GEMINI_API_KEY || "";
+    // Check all possible key names the user might have used in Vercel
+    const apiKey =
+      process.env.GEMINI_API_KEY ||
+      process.env.GOOGLE_GEMINI_API_KEY ||
+      process.env.GOOGLE_API_KEY ||
+      process.env.GEMINI_KEY ||
+      "";
 
     if (!apiKey) {
+      // Log which keys exist to help debug
+      const found = Object.keys(process.env)
+        .filter(k => k.includes("GEMINI") || k.includes("GOOGLE") || k.includes("AI"))
+        .join(", ") || "none found";
+      console.error("[creator] No Gemini key found. Related env vars present:", found);
       return NextResponse.json(
-        { error: "GEMINI_API_KEY is not set in Vercel environment variables." },
+        { error: `API key not found. Please add GEMINI_API_KEY to Vercel env vars and redeploy. (Checked: GEMINI_API_KEY, GOOGLE_GEMINI_API_KEY, GOOGLE_API_KEY, GEMINI_KEY. Related vars visible: ${found})` },
         { status: 500 }
       );
     }
 
     const systemPrompt = mode === "refine" ? REFINE_PROMPT : SYSTEM_PROMPT;
 
-    // Convert messages array to Gemini format
-    // Prepend system prompt as first user turn + model ack (Gemini doesn't have a system role in v1)
     const geminiContents = [
       { role: "user",  parts: [{ text: systemPrompt }] },
       { role: "model", parts: [{ text: "Understood. I will follow those instructions exactly." }] },
@@ -58,10 +67,7 @@ export async function POST(request) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: geminiContents,
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1200,
-          },
+          generationConfig: { temperature: 0.7, maxOutputTokens: 1200 },
         }),
       }
     );
@@ -69,10 +75,7 @@ export async function POST(request) {
     if (!res.ok) {
       const err = await res.text();
       console.error("[creator] Gemini API error:", res.status, err);
-      return NextResponse.json(
-        { error: `Gemini API returned ${res.status}: ${err}` },
-        { status: 502 }
-      );
+      return NextResponse.json({ error: `Gemini API error ${res.status}: ${err}` }, { status: 502 });
     }
 
     const data = await res.json();
@@ -89,4 +92,15 @@ export async function POST(request) {
     console.error("[creator] Route error:", err);
     return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
   }
+}
+
+// GET handler — debug endpoint to confirm env var is visible
+export async function GET() {
+  const found = Object.keys(process.env)
+    .filter(k => k.includes("GEMINI") || k.includes("GOOGLE") || k.includes("AI_GATEWAY"))
+    .reduce((acc, k) => {
+      acc[k] = process.env[k] ? `set (${process.env[k].slice(0, 6)}...)` : "empty";
+      return acc;
+    }, {});
+  return NextResponse.json({ status: "ok", relatedEnvVars: found });
 }
