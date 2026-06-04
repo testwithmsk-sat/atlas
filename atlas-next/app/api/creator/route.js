@@ -23,57 +23,66 @@ Respond ONLY in this exact JSON format with no markdown or preamble:
   ]
 }`;
 
+const REFINE_PROMPT = "You are a helpful planning assistant. Write warm, specific, actionable summaries. Plain text only.";
+
 export async function POST(request) {
   try {
     const { messages, mode } = await request.json();
 
-    // Try all possible key names used across the project
-    const apiKey =
-      process.env.ANTHROPIC_API_KEY ||
-      process.env.AI_GATEWAY_API_KEY ||
-      "";
+    const apiKey = process.env.GEMINI_API_KEY || "";
 
     if (!apiKey) {
-      console.error(
-        "[creator] No API key found. Checked: ANTHROPIC_API_KEY, AI_GATEWAY_API_KEY. " +
-        "Available env keys:", Object.keys(process.env).filter(k => k.includes("ANTHROPIC") || k.includes("AI_") || k.includes("GATEWAY")).join(", ")
-      );
       return NextResponse.json(
-        { error: "ANTHROPIC_API_KEY is not set in Vercel environment variables. Add it in Vercel → Settings → Environment Variables." },
+        { error: "GEMINI_API_KEY is not set in Vercel environment variables." },
         { status: 500 }
       );
     }
 
-    const systemPrompt = mode === "refine"
-      ? "You are a helpful planning assistant. Write warm, specific, actionable summaries. Plain text only."
-      : SYSTEM_PROMPT;
+    const systemPrompt = mode === "refine" ? REFINE_PROMPT : SYSTEM_PROMPT;
 
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages,
-      }),
-    });
+    // Convert messages array to Gemini format
+    // Prepend system prompt as first user turn + model ack (Gemini doesn't have a system role in v1)
+    const geminiContents = [
+      { role: "user",  parts: [{ text: systemPrompt }] },
+      { role: "model", parts: [{ text: "Understood. I will follow those instructions exactly." }] },
+      ...messages.map(m => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{ text: m.content }],
+      })),
+    ];
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: geminiContents,
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1200,
+          },
+        }),
+      }
+    );
 
     if (!res.ok) {
       const err = await res.text();
-      console.error("[creator] Anthropic API error:", res.status, err);
+      console.error("[creator] Gemini API error:", res.status, err);
       return NextResponse.json(
-        { error: `Anthropic API returned ${res.status}: ${err}` },
+        { error: `Gemini API returned ${res.status}: ${err}` },
         { status: 502 }
       );
     }
 
     const data = await res.json();
-    const text = data.content?.map(b => b.text ?? "").join("") ?? "";
+    const text = data.candidates?.[0]?.content?.parts?.map(p => p.text ?? "").join("") ?? "";
+
+    if (!text) {
+      console.error("[creator] Empty Gemini response:", JSON.stringify(data));
+      return NextResponse.json({ error: "Empty response from Gemini" }, { status: 502 });
+    }
+
     return NextResponse.json({ text });
 
   } catch (err) {
