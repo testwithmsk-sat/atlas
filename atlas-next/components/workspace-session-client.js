@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useState, useEffect } from "react";
 import { GeneratedBundleAddToCartButton } from "@/components/generated-bundle-add-to-cart";
-import { CreatorProductPreview } from "@/components/creator-product-preview";
+import { ProductPreview } from "@/components/product-preview";
 
 // ── In-browser PDF preview component ─────────────────────────────────────────
 function PdfPreviewPanel({ assetId, title, isPaid, locked }) {
@@ -149,7 +149,8 @@ export function WorkspaceSessionClient({
   bundleAssets = [],
   paidBundleOffer,
   hasPaidAccess = false,
-  entryMode = "workspace"
+  entryMode = "workspace",
+  sessionToken = ""
 }) {
   const router = useRouter();
   const [loadingOptionId, setLoadingOptionId] = useState("");
@@ -274,11 +275,12 @@ export function WorkspaceSessionClient({
         <div>
           {/* Creator product preview — rich visual before PDF loads */}
           {!hasPaidAccess && (
-            <CreatorProductPreview
+            <ProductPreview
               session={session}
               sampleAssets={sampleAssets}
               paidBundleOffer={paidBundleOffer}
               onUnlock={() => setShowBundlePanel(true)}
+              sessionToken={sessionToken}
             />
           )}
 
