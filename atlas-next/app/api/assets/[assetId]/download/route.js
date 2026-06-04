@@ -101,7 +101,9 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: "Asset not found." }, { status: 404 });
   }
 
-  const session = await getGenerationSession(asset.sessionId);
+  const sessionToken = request.nextUrl.searchParams.get("t") || "";
+  const { getOrRecoverSession } = await import("@/lib/ai/session-recovery");
+  const session = await getOrRecoverSession(asset.sessionId, sessionToken);
   if (!session) {
     return NextResponse.json({ error: "Session not found." }, { status: 404 });
   }

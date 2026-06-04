@@ -49,7 +49,7 @@ export function IntentIntakeForm({
           if (!response.ok || !payload?.sessionId) {
             throw new Error(payload?.error || "Could not generate your workspace. Please try again.");
           }
-          router.push(`/ideas/${payload.sessionId}`);
+          router.push(`/ideas/${payload.sessionId}${payload.sessionToken ? "?t=" + payload.sessionToken : ""}`);
         } catch (submitError) {
           setError(submitError instanceof Error ? submitError.message : "Something went wrong. Please try again.");
         } finally {

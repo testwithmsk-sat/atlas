@@ -3,29 +3,25 @@ import { WorkspaceSessionClient } from "@/components/workspace-session-client";
 import { getBundleAssets, getSampleAssets, listGeneratedAssetsForSession } from "@/lib/ai/assets";
 import { getPaidBundleOffer } from "@/lib/ai/matcher";
 import { customerHasPaidBundleAccess } from "@/lib/ai/orders";
-import { getGenerationSession } from "@/lib/ai/sessions";
+import { getOrRecoverSession } from "@/lib/ai/session-recovery";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 export async function generateMetadata({ params }) {
   const { sessionId } = await params;
-
   return {
-    title: `Workspace ${sessionId}`,
-    description: "AI-generated workspace for The Digital Atlas",
-    robots: {
-      index: false,
-      follow: false
-    }
+    title: "Workspace — The Digital Atlas",
+    description: "Your AI-generated digital product workspace.",
+    robots: { index: false, follow: false }
   };
 }
 
-export default async function WorkspacePage({ params }) {
+export default async function WorkspacePage({ params, searchParams }) {
   const { sessionId } = await params;
-  const session = await getGenerationSession(sessionId);
+  const sp = await searchParams;
+  const token = typeof sp?.t === "string" ? sp.t : "";
 
-  if (!session) {
-    notFound();
-  }
+  const session = await getOrRecoverSession(sessionId, token);
+  if (!session) notFound();
 
   const assets = await listGeneratedAssetsForSession(sessionId);
   const supabase = await createSupabaseServerClient();
@@ -40,6 +36,7 @@ export default async function WorkspacePage({ params }) {
       bundleAssets={hasPaidAccess ? getBundleAssets(assets) : []}
       paidBundleOffer={getPaidBundleOffer(session.templateFamily)}
       hasPaidAccess={hasPaidAccess}
+      sessionToken={token}
     />
   );
 }
