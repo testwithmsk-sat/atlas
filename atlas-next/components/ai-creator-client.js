@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { env } from "@/lib/env";
 import { CreatorProductPreview } from "@/components/creator-product-preview";
+import { useCart } from "@/components/cart-provider";
 
 const CATEGORIES = [
   { key: "wedding",  icon: "💍", label: "Wedding",     sub: "Planning kits" },
@@ -317,6 +319,8 @@ function ProductPreviewCard({ output, goal, userId, onUnlock }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function AICreatorClient({ userId, initialProducts }) {
+  const router = useRouter();
+  const { addItem } = useCart();
   const supabase = env.supabaseUrl && env.supabaseAnonKey
     ? createBrowserClient(env.supabaseUrl, env.supabaseAnonKey) : null;
 
@@ -339,8 +343,63 @@ export default function AICreatorClient({ userId, initialProducts }) {
   const [refining, setRefining]               = useState(false);
   const [savedProducts, setSavedProducts]     = useState(initialProducts);
 
-  const goalRef        = useRef(null);
-  const currentGoalRef = useRef("");
+  const goalRef           = useRef(null);
+  const currentGoalRef    = useRef("");
+  const creatorSessionRef = useRef(""); // stores session created from creator output
+
+  // ── Add to cart from creator flow ─────────────────────────────────────────
+  async function addToCartAndCheckout() {
+    if (!output) return;
+    setLoading(true);
+    toast("Preparing your bundle…");
+
+    try {
+      // Create a real workspace session from the creator output
+      const intentRes = await fetch("/api/intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: currentGoalRef.current || output.title,
+          useCaseType: selectedCat || "general",
+          audience: audience,
+          timeline: timing,
+          budget: budget,
+          style: format,
+        }),
+      });
+
+      const intentData = await intentRes.json().catch(() => ({}));
+      const sessionId = intentData?.sessionId || "";
+      const sessionToken = intentData?.sessionToken || "";
+
+      if (!sessionId) throw new Error("Could not create bundle session.");
+
+      creatorSessionRef.current = sessionId;
+
+      // Add to cart with real sessionId + token for session recovery
+      addItem({
+        kind: "generated_bundle",
+        sessionId,
+        sessionToken,
+        name: output.title || "AI Digital Planning Bundle",
+        priceLabel: "₹499",
+        priceValue: 499,
+        includedFormats: output.formats || ["PDF", "XLSX", "DOCX"],
+        deliverables: (output.samples || []).map(s => s.name),
+        image: "",
+        status: "AI-generated premium bundle",
+      });
+
+      toast("Added to cart! Redirecting…");
+      setTimeout(() => {
+        router.push(`/checkout${sessionToken ? `?t=${sessionToken}` : ""}`);
+      }, 800);
+    } catch (err) {
+      toast(err?.message || "Could not add to cart. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function toast(msg) {
     setToastMsg(msg); setShowToast(true);
@@ -624,14 +683,7 @@ export default function AICreatorClient({ userId, initialProducts }) {
             <CreatorProductPreview
               output={output}
               userId={userId}
-              onUnlock={() => {
-                if (!userId) {
-                  toast("Please sign in to purchase the full bundle.");
-                } else {
-                  toast("Redirecting to checkout…");
-                  window.location.href = `/checkout?bundle=${encodeURIComponent(output.title)}`;
-                }
-              }}
+              onUnlock={addToCartAndCheckout}
               onRefine={() => document.querySelector(".creator-refine-input")?.focus()}
             />
           )}

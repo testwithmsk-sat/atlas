@@ -22,10 +22,11 @@ function sanitizeCartItems(items) {
         return {
           kind: "generated_bundle",
           sessionId,
+          sessionToken: typeof item?.sessionToken === "string" ? item.sessionToken : "",
           name: typeof item?.name === "string" ? item.name : "Generated Digital Bundle",
           image: typeof item?.image === "string" ? item.image : "",
-          priceLabel: typeof item?.priceLabel === "string" ? item.priceLabel : "$0.00",
-          priceValue: Number(item?.priceValue || parseNumericAmount(item?.priceLabel)),
+          priceLabel: typeof item?.priceLabel === "string" ? item.priceLabel : "₹499",
+          priceValue: Number(item?.priceValue || 499),
           status: typeof item?.status === "string" ? item.status : "AI-generated premium bundle",
           includedFormats: Array.isArray(item?.includedFormats) ? item.includedFormats : [],
           deliverables: Array.isArray(item?.deliverables) ? item.deliverables : [],
