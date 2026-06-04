@@ -7,6 +7,7 @@ import { useCart } from "@/components/cart-provider";
 
 const primaryLinks = [
   { href: "/", label: "Start Workspace" },
+  { href: "/creator", label: "AI Creator" },
   { href: "/about", label: "Vision" },
   { href: "/faq", label: "FAQ" }
 ];
