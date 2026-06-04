@@ -29,7 +29,6 @@ export async function POST(request) {
   try {
     const { messages, mode } = await request.json();
 
-    // Check all possible key names the user might have used in Vercel
     const apiKey =
       process.env.GEMINI_API_KEY ||
       process.env.GOOGLE_GEMINI_API_KEY ||
@@ -38,34 +37,30 @@ export async function POST(request) {
       "";
 
     if (!apiKey) {
-      // Log which keys exist to help debug
       const found = Object.keys(process.env)
-        .filter(k => k.includes("GEMINI") || k.includes("GOOGLE") || k.includes("AI"))
-        .join(", ") || "none found";
-      console.error("[creator] No Gemini key found. Related env vars present:", found);
+        .filter(k => k.includes("GEMINI") || k.includes("GOOGLE") || k.includes("AI_GATEWAY"))
+        .join(", ") || "none";
       return NextResponse.json(
-        { error: `API key not found. Please add GEMINI_API_KEY to Vercel env vars and redeploy. (Checked: GEMINI_API_KEY, GOOGLE_GEMINI_API_KEY, GOOGLE_API_KEY, GEMINI_KEY. Related vars visible: ${found})` },
+        { error: `API key not found. Add GEMINI_API_KEY to Vercel env vars and redeploy. (Related vars visible: ${found})` },
         { status: 500 }
       );
     }
 
     const systemPrompt = mode === "refine" ? REFINE_PROMPT : SYSTEM_PROMPT;
 
-    const geminiContents = [
-      { role: "user",  parts: [{ text: systemPrompt }] },
-      { role: "model", parts: [{ text: "Understood. I will follow those instructions exactly." }] },
-      ...messages.map(m => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
-      })),
-    ];
+    // Use proper systemInstruction field — avoids role ordering issues
+    const geminiContents = messages.map(m => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    }));
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemPrompt }] },
           contents: geminiContents,
           generationConfig: { temperature: 0.7, maxOutputTokens: 1200 },
         }),
@@ -94,7 +89,7 @@ export async function POST(request) {
   }
 }
 
-// GET handler — debug endpoint to confirm env var is visible
+// Debug endpoint — visit /api/creator in browser to check env vars
 export async function GET() {
   const found = Object.keys(process.env)
     .filter(k => k.includes("GEMINI") || k.includes("GOOGLE") || k.includes("AI_GATEWAY"))
