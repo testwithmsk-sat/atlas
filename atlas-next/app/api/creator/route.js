@@ -5,43 +5,43 @@ export const maxDuration = 60;
 const SYSTEM_PROMPT = `You are a digital product planning AI for The Digital Atlas.
 Given a user's goal, generate a complete, specific digital product direction.
 
-RULES:
-- Be HIGHLY SPECIFIC to the user's actual request — use their event, guest count, timeline, budget
-- Never use placeholder text. Every item must be real and immediately useful.
-- summary must be plain text only — NO JSON, NO curly braces
-- Return ONLY valid JSON, no markdown fences, no explanation
+CRITICAL RULES:
+- Be HIGHLY SPECIFIC to the user's actual request — use their exact event, guest count, timeline, budget
+- summary field must be plain conversational text ONLY — no JSON, no curly braces, no quotes
+- Return ONLY valid JSON with no markdown fences, no backticks, no explanation before or after
+- Every checklist item, timeline step, and budget row must be specific to the user's goal
 
-Return this exact JSON:
+Return this exact JSON structure:
 {
   "title": "Specific product title using their details (max 9 words)",
-  "description": "2 warm, specific sentences about what this product covers for their exact goal.",
+  "description": "2 warm specific sentences about what this covers for their exact goal.",
   "formats": ["PDF", "XLSX", "DOCX"],
-  "summary": "150-word plain-text planning direction. Warm expert tone. 3 concrete recommendations specific to their goal. NO JSON here — plain sentences only.",
+  "summary": "150 words of warm expert plain text advice specific to their goal. Include 3 concrete recommendations. No JSON. No symbols. Just helpful sentences.",
   "samples": [
-    {"emoji":"📋","name":"Specific document name","desc":"What this document contains for their goal"},
-    {"emoji":"💰","name":"Specific document name","desc":"What this document contains"},
-    {"emoji":"📅","name":"Specific document name","desc":"What this document contains"},
-    {"emoji":"✉️","name":"Specific document name","desc":"What this document contains"}
+    {"emoji":"📋","name":"Specific document name for their goal","desc":"What this document contains"},
+    {"emoji":"💰","name":"Specific document name","desc":"What this contains"},
+    {"emoji":"📅","name":"Specific document name","desc":"What this contains"},
+    {"emoji":"✉️","name":"Specific document name","desc":"What this contains"}
   ],
   "preview": {
     "checklist": [
-      "Specific actionable task 1 for their exact goal",
-      "Specific actionable task 2",
-      "Specific actionable task 3",
-      "Specific actionable task 4",
-      "Specific actionable task 5",
-      "Specific actionable task 6",
-      "Specific actionable task 7",
-      "Specific actionable task 8"
+      "Specific task 1 tailored to their exact goal",
+      "Specific task 2",
+      "Specific task 3",
+      "Specific task 4",
+      "Specific task 5",
+      "Specific task 6",
+      "Specific task 7",
+      "Specific task 8"
     ],
     "timeline": [
-      {"phase": "Week 1", "task": "Specific task for their goal", "detail": "Actionable tip"},
-      {"phase": "Week 2", "task": "Specific task", "detail": "Actionable tip"},
-      {"phase": "Week 4", "task": "Specific task", "detail": "Actionable tip"},
-      {"phase": "Week 6", "task": "Specific task", "detail": "Actionable tip"},
-      {"phase": "Week 8", "task": "Specific task", "detail": "Actionable tip"},
-      {"phase": "2 Weeks Before", "task": "Specific task", "detail": "Actionable tip"},
-      {"phase": "Day Before", "task": "Final preparation task", "detail": "Tip"},
+      {"phase": "Week 1", "task": "Specific first task", "detail": "Actionable tip"},
+      {"phase": "Week 2", "task": "Specific task", "detail": "Tip"},
+      {"phase": "Week 4", "task": "Specific task", "detail": "Tip"},
+      {"phase": "Week 6", "task": "Specific task", "detail": "Tip"},
+      {"phase": "Week 8", "task": "Specific task", "detail": "Tip"},
+      {"phase": "2 Weeks Before", "task": "Specific task", "detail": "Tip"},
+      {"phase": "Day Before", "task": "Final prep task", "detail": "Tip"},
       {"phase": "Day Of", "task": "Execution task", "detail": "Tip"}
     ],
     "budget": [
@@ -55,53 +55,124 @@ Return this exact JSON:
   }
 }`;
 
-const REFINE_PROMPT = "You are a helpful planning assistant. Write warm, specific, actionable summaries. Plain text only. No JSON.";
+const REFINE_PROMPT = `You are a helpful planning assistant. 
+Write warm, specific, actionable planning advice as plain text only. 
+No JSON. No bullet symbols. No curly braces. Just helpful sentences.`;
 
-async function callClaude(systemPrompt, messages) {
-  const apiKey = process.env.ANTHROPIC_API_KEY || "";
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set in Vercel environment variables.");
+const MODELS = [
+  "gemini-2.0-flash",
+  "gemini-1.5-pro",
+  "gemini-1.5-flash",
+  "gemini-2.0-flash-lite",
+  "gemini-1.0-pro",
+];
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01"
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2000,
-      system: systemPrompt,
-      messages
-    })
-  });
+async function callGemini(apiKey, systemPrompt, messages) {
+  const contents = messages.map(m => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Claude API ${response.status}: ${err.slice(0, 200)}`);
+  let lastError = "";
+  for (const model of MODELS) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents,
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 2000,
+              responseMimeType: "application/json",
+            },
+          }),
+        }
+      );
+
+      if (res.status === 404) { lastError = `Model ${model} not found`; continue; }
+      if (res.status === 400) {
+        // Some models don't support responseMimeType — retry without it
+        const res2 = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents,
+              generationConfig: { temperature: 0.7, maxOutputTokens: 2000 },
+            }),
+          }
+        );
+        if (!res2.ok) { lastError = `${model} ${res2.status}`; continue; }
+        const data2 = await res2.json();
+        const text2 = data2.candidates?.[0]?.content?.parts?.map(p => p.text ?? "").join("") ?? "";
+        if (text2) { console.log(`[creator] OK: ${model} (no mimeType)`); return { text: text2, model }; }
+        continue;
+      }
+      if (!res.ok) { lastError = `${model} ${res.status}`; continue; }
+
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.map(p => p.text ?? "").join("") ?? "";
+      if (text) { console.log(`[creator] OK: ${model}`); return { text, model }; }
+    } catch (e) {
+      lastError = e.message;
+    }
   }
-
-  const data = await response.json();
-  return data.content?.[0]?.text || "";
+  throw new Error(`No Gemini model worked. Last error: ${lastError}. Check your API key at aistudio.google.com`);
 }
 
 export async function POST(request) {
   try {
     const { messages, mode } = await request.json();
+
+    const apiKey =
+      process.env.GEMINI_API_KEY ||
+      process.env.GOOGLE_GEMINI_API_KEY ||
+      process.env.GOOGLE_API_KEY ||
+      "";
+
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "GEMINI_API_KEY not set. Add it in Vercel → Settings → Environment Variables." },
+        { status: 500 }
+      );
+    }
+
     const systemPrompt = mode === "refine" ? REFINE_PROMPT : SYSTEM_PROMPT;
-    const text = await callClaude(systemPrompt, messages);
-    return NextResponse.json({ text });
+    const { text, model } = await callGemini(apiKey, systemPrompt, messages);
+
+    return NextResponse.json({ text, model });
   } catch (err) {
     console.error("[creator] Error:", err?.message);
-    return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: err?.message || "Generation failed" }, { status: 500 });
   }
 }
 
-// Debug — visit /api/creator in browser
+// Debug — GET /api/creator
 export async function GET() {
-  const apiKey = process.env.ANTHROPIC_API_KEY || "";
-  return NextResponse.json({
-    ai: "Claude (claude-sonnet-4-20250514)",
-    keyStatus: apiKey ? `set (${apiKey.slice(0, 8)}...)` : "NOT SET — add ANTHROPIC_API_KEY to Vercel env vars"
-  });
+  const apiKey =
+    process.env.GEMINI_API_KEY ||
+    process.env.GOOGLE_GEMINI_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    "";
+
+  const keyStatus = apiKey ? `set (${apiKey.slice(0, 8)}...)` : "NOT SET";
+  let models = [];
+
+  if (apiKey) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+      const data = await res.json();
+      models = (data.models ?? []).map(m => m.name).filter(n => n.includes("gemini"));
+    } catch (e) {
+      models = [`Error: ${e.message}`];
+    }
+  }
+
+  return NextResponse.json({ ai: "Gemini", keyStatus, availableModels: models });
 }

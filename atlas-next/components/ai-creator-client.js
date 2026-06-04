@@ -363,7 +363,7 @@ export default function AICreatorClient({ userId, initialProducts }) {
     }, 12);
   }
 
-  async function callClaude(messages, system) {
+  async function callAI(messages, system) {
     const res = await fetch("/api/creator", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -402,16 +402,35 @@ export default function AICreatorClient({ userId, initialProducts }) {
     ].filter(Boolean).join("\n");
 
     try {
-      const text = await callClaude([{ role: "user", content: userMsg }], SYSTEM_PROMPT);
-      const clean = text.replace(/```json[\s\S]*?```/g, t => t.slice(7, -3)).replace(/```/g, "").trim();
+      const text = await callAI([{ role: "user", content: userMsg }], SYSTEM_PROMPT);
+
+      // Strip markdown fences Gemini sometimes adds
+      const clean = text
+        .replace(/^```json\s*/i, "").replace(/^```\s*/i, "")
+        .replace(/\s*```$/i, "").trim();
+
+      // Extract JSON block
       const jsonMatch = clean.match(/\{[\s\S]*\}/);
       let parsed;
       try {
         parsed = JSON.parse(jsonMatch?.[0] ?? clean);
-        // Ensure summary is plain text — sometimes Claude puts JSON in it
-        if (parsed.summary && (parsed.summary.trim().startsWith("{") || parsed.summary.includes('"title"'))) {
-          parsed.summary = `Your personalised ${parsed.title || "planning kit"} is ready. ${parsed.description || ""}`.trim();
+
+        // Guard: if summary contains JSON (Gemini sometimes echoes structure), replace it
+        if (
+          !parsed.summary ||
+          parsed.summary.trim().startsWith("{") ||
+          parsed.summary.includes('"title"') ||
+          parsed.summary.includes('"checklist"')
+        ) {
+          parsed.summary = `Your ${parsed.title || "planning kit"} is ready. ${parsed.description || "This personalised bundle is built around your exact goal."}`;
         }
+
+        // Ensure preview exists with at least empty arrays
+        if (!parsed.preview) parsed.preview = {};
+        if (!Array.isArray(parsed.preview.checklist)) parsed.preview.checklist = [];
+        if (!Array.isArray(parsed.preview.timeline))  parsed.preview.timeline  = [];
+        if (!Array.isArray(parsed.preview.budget))    parsed.preview.budget    = [];
+
       } catch {
         // fallback structure if JSON parse fails entirely
         parsed = {
@@ -457,7 +476,7 @@ export default function AICreatorClient({ userId, initialProducts }) {
     if (!refineText.trim() || !output) return;
     setRefining(true); setStreamedSummary("");
     try {
-      const text = await callClaude([{
+      const text = await callAI([{
         role: "user",
         content: `Original goal: ${currentGoalRef.current}\nRefinement: ${refineText}\n\nWrite a revised 150-word planning direction summary. Be specific and warm. Plain text only.`,
       }]);
